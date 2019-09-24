@@ -1,0 +1,11 @@
+# Search 1:
+
+* Eff Programming Language:
+	* home: https://www.eff-lang.org/learn/
+	* github: https://github.com/matijapretnar/eff/releases
+	* (paper) An Introduction to Algebraic Effects and Handlers: https://www.eff-lang.org/handlers-tutorial.pdf
+	* (paper) Programming with Algebraic Effects and Handlers [2012]: http://math.andrej.com/wp-content/uploads/2012/03/eff.pdf
+
+* Idris effects: https://www.idris-lang.org/documentation/effects/
+* Haskell - extensible-effects: https://hackage.haskell.org/package/extensible-effects
+* 
