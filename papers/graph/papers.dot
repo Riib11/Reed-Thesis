@@ -1,8 +1,16 @@
 digraph G {
+	node[shape=box, style=dotted]
+
+	"Moggi E - Computational Lambda-Calculus and Monads" [style=solid]
+	"Moggi E - Computational Lambda-Calculus and Monads" -> "Moggi E - Notions of Computation and Monads"	
+
+	"Moggi E - Notions of Computation and Monads" [style=solid]
 	"Moggi E - Notions of Computation and Monads" -> "Plotkin, Power - Combining Effects: Sum and Tensor"
-	"Moggi E - Computational Lambda-Calculus and Monads" -> "Plotkin, Power - Combining Effects: Sum and Tensor"
+
+	"Plotkin, Power - Combining Effects: Sum and Tensor"
 	"Plotkin, Power - Combining Effects: Sum and Tensor" -> "Plotkin, Power - Semantics for algebraic operations"
 
+	"Plotkin, Power - Adequacy for Algebraic Effects"
 	"Plotkin, Power - Adequacy for Algebraic Effects" -> "Plotkin, Power - Semantics for algebraic operations"
 
 	"Plotkin, Power - Semantics for algebraic operations"
