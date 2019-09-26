@@ -1,0 +1,31 @@
+digraph G {
+graph[ratio=1]
+node[shape=box, fillcolor=white, color=lightgrey]
+
+"ME-CLC" [label="Moggi E - Computational Lambda-Calculus and Monads", color=black, style=solid]
+"ME-CLC" -> { "ME-NOC" }
+
+"ME-NOC" [label="Moggi E - Notions of Computation and Monads", color=black, style=solid]
+"ME-NOC" -> { "PG,PJ-CES" "PG,PJ-NOC" }
+
+"PG,PJ-NOC" [label="Plotkin G, Power J - Notions of Computation Determine Monads"]
+"PG,PJ-NOC" -> { "PG,PJ-CES" }
+
+"ME-AAV" [label="Moggi E - An Abstract View of Programming Languages"]
+"ME-AAV" -> { "PG,PJ-CES" }
+
+"BM,WC-CTF" [label="Barr M, Wells C - Category Theory for Computing Science"]
+"BM,WC-CTF" -> { "PG,PJ-CES" }
+
+"BM,WC-TTT" [label="Barr M, Wells C - Toposes, Triples, and Theories"]
+"BM,WC-TTT" -> { "PG,PJ-CES" }
+
+"PG,PJ-CES" [label="Plotkin G, Power J - Combining Effects: Sum and Tensor", color=black, style=diagonals]
+"PG,PJ-CES" -> { "PG,PJ-SFA" }
+
+"PG,PJ-AFA" [label="Plotkin G, Power J - Adequacy for Algebraic Effects", color=black, style=diagonals]
+"PG,PJ-AFA" -> { "PG,PJ-SFA" }
+
+"PG,PJ-SFA" [label="Plotkin G, Power J - Semantics for Algebraic Operations", color=black, style=diagonals]
+"PG,PJ-SFA" -> {  }
+}
