@@ -1,0 +1,46 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{effigy-definitions}
+
+%
+% required packages
+%
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+\RequirePackage{enumitem}
+\RequirePackage{amsthm}
+\RequirePackage{mathtools}
+\RequirePackage{multirow}
+
+%
+% text styles
+%
+\newcommand{\tsf}{\textsf}
+\newcommand{\tit}{\textit}
+\newcommand{\tbf}{\textbf}
+
+%
+% other commands
+%
+\newcommand{\join}{~ \lor ~}
+\newcommand{\meet}{~ \land ~}
+\renewcommand{\to}{\rightarrow}
+\newcommand{\mt}{\Rightarrow}
+\newcommand{\map}[2]{#1 \mt #2}
+\renewcommand{\list}{\overline}
+\newcommand{\set}[1]{\{ #1 \}}
+\newcommand{\rewritesto}{\twoheadrightarrow}
+\newcommand{\rwto}{\rewritesto}
+\newcommand{\effect}[2]{\tsf{E} ~ #1 ~ #2}
+\newcommand{\handler}[2]{\tsf{H} ~ #1 ~ #2}
+% \newcommand{\handler}[2]{#1 \hookrightarrow #2}
+\newcommand{\alt}{~ \mid ~}
+\newcommand{\entails}{\vdash}
+\newcommand{\sep}{\hspace{1.5em}}
+
+
+\newcommand{\inference}[2]{\begin{array}{c} #1 \\ \hline #2 \end{array}}
+
+
+\newcommand{\context}{\Gamma}

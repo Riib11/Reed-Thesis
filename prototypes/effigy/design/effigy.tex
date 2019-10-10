@@ -1,0 +1,289 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{bussproofs}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage{multirow}
+\usepackage{setspace}
+
+\usepackage{effigy-definitions}
+
+\renewcommand{\baselinestretch}{1.5}
+
+\title{Effigy}
+\author{Henry Blanchette}
+\date{October 2019}
+
+\begin{document}
+
+\maketitle
+
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+\section{Conventions}
+
+\begin{center} \begin{tabular}{l|l}
+  Notation               & Meaning                        \\ \hline
+  $e$                    & expression                     \\
+  $x, y, z$              & term variable                  \\
+  $v$                    & value                          \\
+  $h$                    & handler                        \\
+  $\tau, \sigma, \rho$   & type                           \\
+  $\list{x}$             & list of $x$                    \\
+  $\phi$                 & effect                         \\
+  $\Phi$                 & set of effects                 \\
+  $\handler{\Phi}{\tau}$ & $\Phi$-handler yielding $\tau$ \\
+  $\effect{\Phi}{\tau}$  & $\Phi$-effect yielding $\tau$
+ \end{tabular} \end{center}
+
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+\newpage
+\section{Grammar}
+
+\[ \begin{array}{rcl}
+  \tit{program}     & :=  & \list{\tit{declaration}} ~ \tsf{Main} ~ := ~ e ~ .
+  \\
+  \tit{declaration} & ::= &
+  \tsf{Effect} ~ \phi:\tau. \alt
+  \tsf{Value} ~ x : \tau := e.
+  \\
+  e                 & ::= &
+  x \in \tit{Term-Names} \alt
+  v \alt
+  e ~ e \alt
+  \{ ~ \list{e ~ ;} ~ e ~ \} \alt
+  \tsf{do} ~ e ~ \tsf{with} ~ e
+  \\
+  v                 & :=  &
+  v \in \tit{Primitive-Values} \alt
+  x \mt e \alt
+  h
+  \\
+  h                 & ::= &
+  \tsf{handler} ~ \{ ~
+  \tsf{effect} ~ (x ~ x) ~ x \mt e ~ | ~
+  \tsf{value} ~ x \mt e ~ | ~
+  \tsf{run} ~ x \mt e
+  ~ \}
+  \\
+  \tau              & ::= &
+  \tau \in \tit{Types} \alt
+  \tau \to \tau \alt
+  \handler{\Phi}{\tau} \alt
+  \effect{\Phi}{\tau}
+  \\
+  \phi              & \in & \tit{Effect-Names}
+  \\
+  \Phi              & \in & \mathcal{P}(\tit{Effect-Names})
+ \end{array} \]
+
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+\section{Definitions}
+
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+\subsection{Lifting to Effects}
+
+Since $\effect{\Phi}{\tau}$ is the type of terms that have effects $\Phi$ and result in $\tau$,
+if $\Phi = \varnothing$ then this $\effect{\Phi}{\tau}$ is the type of terms that have
+no effects and result in $\tau$ i.e. just $\tau$. The following bijection reflects this.
+\begin{align*}
+ \tsf{lift} : \tau & \iff \effect{\varnothing}{\tau} \tag{lift to effect}
+\end{align*}
+
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+% \subsection{Effect Monad}
+% TODO
+
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+\subsection{Partial Ordering for Effects}
+
+The power set of effects, $\mathcal{P}(\tit{Effects})$,
+has a partial order induced by set inclusion.
+Define meet, $\meet$, to be set intersection
+and join, $\join$, to be set union.
+Note that $\varnothing$ is the minimal element and $\tit{Effects}$ is the maximal element.
+
+$\meet$ and $\join$ is overloaded to apply to types as well,
+via the following definitions:
+\[ \begin{array}{lclcl}
+  \effect{\Phi}{\tau} & \meet & \effect{\Phi'}{\tau'}
+                      & :=    & \effect{(\Phi \meet \Phi')}{\tau'}
+  \\
+  \tau                & \meet & \tau'
+                      & :=    & \tsf{lift} \tau \meet \tsf{lift} \tau'
+  \\[1em]
+  \effect{\Phi}{\tau} & \join & \effect{\Phi'}{\tau'}
+                      & :=    & \effect{(\Phi \join \Phi')}{\tau'}
+  \\
+  \tau                & \join & \tau'
+                      & :=    & \tsf{lift} \tau \join \tsf{lift} \tau'
+ \end{array} \]
+
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------
+\newpage
+\section{Typing}
+
+\subsection{Functional Foundations}
+This first set of typing rules reflect a traditional functional-style type system.
+
+\[ \begin{array}{ccc}
+  % judgement introduction
+  \inference
+  { x:\tau \in \context }
+  { \Gamma \entails x:\tau }
+
+   &
+
+  % lambda introduction
+  \inference
+  { \context, x:\sigma \entails e:\tau }
+  {\Gamma \entails x \mt e : \sigma \to \tau }
+
+   &
+
+  % lambda destruction
+  \inference
+  { \context \entails e_1 : \sigma \to \tau \sep
+   \context \entails e_2 : \sigma }
+  { \context \entails e_1 ~ e_2 : \tau }
+
+  \\\\
+ \end{array} \]
+
+\noindent
+\subsection{Sequences of effects}
+This next set of typing rules allow for the introduction of sequenced terms.
+In the usual pure context, such expressions are unneeded because the sequencing of terms
+must have no effect on computation.
+However, with the introduction of effects in mind, sequencing allows for ``complex'' effects
+that perform multiple effects in some order, possibly using the results of earlier
+effectual computations later in the sequence.
+
+\[ \begin{array}{ccc}
+
+  % sequence introduction
+  \inference
+  {
+   \context \entails e:\tau
+  }{
+   \context \entails \{ ~ e ~ \} : \tau
+  }
+
+   &
+
+  \inference
+  {
+   \context \entails e_1:\sigma \sep
+   \context \entails e_2:\tau
+  }{
+   \context \entails \{ ~ e_1 ~ ; ~ e_2 ~ \} : \sigma \join \tau
+  }
+
+   &
+
+  \inference
+  {
+   \context \entails \{ ~ e_1 ~ ; ~ \cdots ~ ; ~ e_n ~ \} : \sigma \sep
+   \context \entails e_{n+1} : \tau
+  }{
+   \context \entails \{ ~ e_1 ~ ; ~ \cdots ~ ; ~ e_n ~ ; ~ e_{n+1} ~ \}
+   : \sigma \join \tau
+  }
+
+  \\\\
+ \end{array} \]
+
+\noindent
+\subsection{Handlers for effects}
+The next rule defines the type for each component of a handler.
+The rule following it defines the ``application'' of handlers on
+effectual computations in order to yield a pure(er) result.
+
+
+\[ \begin{array}{cc}
+
+  % handler introduction
+  \inference
+  {
+   \begin{array}{c}
+    \phi : \sigma \to \effect{\set{\phi}}{\tau}
+    \\
+    \context, x:\sigma, k:\tau \to \effect{\set\phi}{\rho}
+    \entails e_\phi:\sigma \to \effect{\set\phi}{\rho}
+   \end{array}
+   \sep
+   \begin{array}{c}
+    \context, x:\sigma \entails e_v:\sigma \to \effect{\set\phi}{\rho}
+    \\
+    \context, g:\sigma \to \effect{\set\phi}{\rho} \entails e_r:\effect{\set\phi}{\rho}
+   \end{array}
+  }{
+   \context \entails
+   \tsf{handler} ~ \{ ~
+   \tsf{effect} ~ (\phi ~ x) ~ k \mt e_\phi ~ | ~
+   \tsf{value} ~ x \mt e_v ~ | ~
+   \tsf{run} ~ g \mt e_r
+   ~ \} :
+   \handler{\set{\phi}}{\rho}
+  }
+
+  \\\\
+
+  \inference
+  {
+   \context \entails e:\effect{\Phi}{\rho}
+   \sep
+   \context \entails h:\handler{\Phi'}{\rho}
+  }{
+   \context \entails
+   \tsf{do} ~ e ~ \tsf{with} ~ h : \effect{(\Phi \setminus \Phi')}{\rho}
+  }
+ \end{array} \]
+
+\newpage
+\section{Rewriting}
+
+\[ \begin{array}{llcl}
+    \tit{application} &
+    (x \mt e) ~ v
+    &\rwto&
+    [v/x] e
+    \\
+
+    \tit{handle effect} &
+    \tsf{do}~\{~\phi~e_1~;~e_2~\}~\tsf{with} && \\ &
+    \tsf{handler}~\{~\tsf{effect}~(\phi~x)~k \mt e_\phi~\}
+    &\rwto&
+    TODO
+    \\
+
+    \tit{handle value} &
+    \tsf{do}~\{~e_1~;~\cdots~;~e_{n-1}~;~e_n~\}~\tsf{with} && \\ &
+    \tsf{handler} ~ \{~\tsf{value}~x \mt e_v~\}
+    &\rwto&
+    (\tsf{do}~\{~e_1~;~\cdots~;~e_{n-1}~\}~\tsf{with} \\ &&&
+    \tsf{handler} ~ \{~\tsf{value}~x \mt e_v~\})
+    \\
+
+    \tit{handle run} &
+    \tsf{do}~\{~e~\}~\tsf{with} && \\ &
+    \tsf{handler} ~ \{~\tsf{run}~g \mt e_r~\}
+    &\rwto&
+    e_r
+    \\
+
+\end{array} \]
+
+\end{document}
