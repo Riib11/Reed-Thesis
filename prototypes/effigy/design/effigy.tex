@@ -10,7 +10,7 @@
 
 \usepackage{effigy-definitions}
 
-\renewcommand{\baselinestretch}{1.5}
+\renewcommand{\baselinestretch}{1.25}
 
 \title{Effigy}
 \author{Henry Blanchette}
@@ -46,40 +46,54 @@
 \section{Grammar}
 
 \[ \begin{array}{rcl}
-  \tit{program}     & :=  & \list{\tit{declaration}} ~ \tsf{Main} ~ := ~ e ~ .
+  \tit{program} &::= &
+  \list{\tit{declaration}} \alt
+  \list{\tit{declaration}}~\tsf{Main} ~ := ~ e ~.
   \\
-  \tit{declaration} & ::= &
-  \tsf{Effect} ~ \phi:\tau. \alt
-  \tsf{Value} ~ x : \tau := e.
+  \tit{declaration} &::=&
+    \tsf{Effect} ~ \phi:\tau. \alt
+    \tsf{Definition}~ x : \tau := e ~.
   \\
-  e                 & ::= &
-  x \in \tit{Term-Names} \alt
-  v \alt
-  e ~ e \alt
-  \{ ~ \list{e ~ ;} ~ e ~ \} \alt
-  \tsf{do} ~ e ~ \tsf{with} ~ e
+  e &::=&
+    v \alt
+    e ~ e \alt
+    x ~:=~ e ~;~ e \alt
+    \tsf{do} ~ e ~ \tsf{with} ~ e
   \\
-  v                 & :=  &
-  v \in \tit{Primitive-Values} \alt
-  x \mt e \alt
-  h
+  v &:=&
+    x \alt
+    v \in \tit{Primitive-Values} \alt
+    x \mt e \alt
+    \phi ~ e \alt
+    \{~ s ~\} \alt
+    h
   \\
-  h                 & ::= &
-  \tsf{handler} ~ \{ ~
-  \tsf{effect} ~ (x ~ x) ~ x \mt e ~ | ~
-  \tsf{value} ~ x \mt e ~ | ~
-  \tsf{run} ~ x \mt e
-  ~ \}
+  s &::=&
+    e ~;~ s \alt
+    x ~\gets~ e ~;~ s \alt
+    e
   \\
-  \tau              & ::= &
-  \tau \in \tit{Types} \alt
-  \tau \to \tau \alt
-  \handler{\Phi}{\tau} \alt
-  \effect{\Phi}{\tau}
+  h &::=&
+    \tsf{handler} ~ \{~
+      \tsf{effect} ~ (x ~ x) ~ x \mt e ~ | ~
+      \tsf{value} ~ x \mt e ~ | ~
+      \tsf{run} ~ x \mt e
+    ~\}
   \\
-  \phi              & \in & \tit{Effect-Names}
+  \tau &::=&
+    \tau \in \tit{Primitive-Types} \alt
+    \tau \to \tau \alt
+    \handler{\Phi}{\tau} \alt
+    \effect{\Phi}{\tau}
   \\
-  \Phi              & \in & \mathcal{P}(\tit{Effect-Names})
+  x &\in& \tit{Term-Names}
+  \\
+  \phi &\in& \tit{Effect-Names}
+  \\
+  \Phi &\in& \mathcal{P}(\tit{Effect-Names})
+  \\
+  \tit{Primitive-Values} &:=&
+    \set{ () } \cup \set{ \tsf{true}, \tsf{false} } \cup \mathbb{Z}
  \end{array} \]
 
 % -------------------------------------------------------------------------------------
@@ -163,7 +177,7 @@ This first set of typing rules reflect a traditional functional-style type syste
  \end{array} \]
 
 \noindent
-\subsection{Sequences of effects}
+\subsection{Sequences of Effects}
 This next set of typing rules allow for the introduction of sequenced terms.
 In the usual pure context, such expressions are unneeded because the sequencing of terms
 must have no effect on computation.
@@ -206,7 +220,7 @@ effectual computations later in the sequence.
  \end{array} \]
 
 \noindent
-\subsection{Handlers for effects}
+\subsection{Handlers for Effects}
 The next rule defines the type for each component of a handler.
 The rule following it defines the ``application'' of handlers on
 effectual computations in order to yield a pure(er) result.
@@ -255,35 +269,74 @@ effectual computations in order to yield a pure(er) result.
 \newpage
 \section{Rewriting}
 
+Note that a $v$ is a \tit{value}
+i.e. a completely reduced term
+i.e. no rewrite rules apply to $v$.
+
+\subsection{Functional Foundations}
+
 \[ \begin{array}{llcl}
-    \tit{application} &
-    (x \mt e) ~ v
-    &\rwto&
-    [v/x] e
+    \tit{function application} &
+      (x \mt e)~v &\rwto& [v/x] e
     \\
+    \tit{pure binding} &
+      x~:=~e_1~;~e_2 &\rwto& (x~\mt~e_2)~e_1
+\end{array} \]
 
-    \tit{handle effect} &
-    \tsf{do}~\{~\phi~e_1~;~e_2~\}~\tsf{with} && \\ &
-    \tsf{handler}~\{~\tsf{effect}~(\phi~x)~k \mt e_\phi~\}
-    &\rwto&
-    TODO
-    \\
+\subsection{Sequences of Effects}
 
-    \tit{handle value} &
-    \tsf{do}~\{~e_1~;~\cdots~;~e_{n-1}~;~e_n~\}~\tsf{with} && \\ &
-    \tsf{handler} ~ \{~\tsf{value}~x \mt e_v~\}
-    &\rwto&
-    (\tsf{do}~\{~e_1~;~\cdots~;~e_{n-1}~\}~\tsf{with} \\ &&&
-    \tsf{handler} ~ \{~\tsf{value}~x \mt e_v~\})
-    \\
+\[ \begin{array}{llcl}
+  \tit{trivial sequence} &
+    \{~e~\} &\rwto& e
+  \\
+  \tit{effectful binding} &
+    \tsf{do}~\{~x~\gets~e_1~;~e_2~;~\cdots~;~e_n~\}~\tsf{with}~h &\rwto&
+      x~:=~\tsf{do}~e_1~\tsf{with}~h~;~
+      \tsf{do}~\{~e_2~;~\cdots~;~e_n~\}~\tsf{with}~h
+\end{array} \]
 
-    \tit{handle run} &
-    \tsf{do}~\{~e~\}~\tsf{with} && \\ &
-    \tsf{handler} ~ \{~\tsf{run}~g \mt e_r~\}
-    &\rwto&
-    e_r
-    \\
+\subsection{Handlers for Effects}
 
+Define
+\[
+  h :=
+  \tsf{handler}~\{~
+    \tsf{effect}~(\phi~x)~k \mt e_\phi~\mid~
+    \tsf{value}~x \mt e_v~\mid~
+    \tsf{run}~g \mt e_r
+  ~\}
+  .
+\]
+
+\noindent
+The following rewrite rules describe how to handled expressions and sequences of expressions into pure terms.
+
+\[ \begin{array}{llcl}
+  \tit{handle effect} &
+  \tsf{do}~\phi~e~\tsf{with}~h &\rwto&
+    (k~\mt~(x~\mt~e_\phi)~e_1)~
+    (g~\mt~e_r)
+  \\
+  \tit{handle sequenced effect} &
+  \tsf{do}~\{~\phi~e_1~;~e_2~;~\cdots~;~e_n~\}~\tsf{with}~h &\rwto&
+    (k~\mt~(x~\mt~e_\phi)~e_1)~
+    (\tsf{do}~\{~e_2~;~\cdots~;~e_n~\}~\tsf{with}~h)
+  \\
+
+  \tit{handle value} &
+  \tsf{do}~e~\tsf{with}~h &\rwto&
+    ((x \mt e_v)~e)~
+    (g~\mt~e_r)
+  \\
+  \tit{handle sequenced value} &
+  \tsf{do}~\{~e_1~;~\cdots~;~e_n~\}~\tsf{with}~h &\rwto&
+    ((x \mt e_v)~e_1)~
+    (\tsf{do}~\{~e_2~;~\cdots~;~e_n~\}~\tsf{with}~h)
+  \\
+
+  \tit{handle run} &
+  \tsf{do}~e~\tsf{with}~h &\rwto&
+    (g~\mt~e_r)~e
 \end{array} \]
 
 \end{document}

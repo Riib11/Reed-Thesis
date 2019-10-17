@@ -26,6 +26,6 @@ node[shape=box, fillcolor=white, color=lightgrey]
 "PG,PJ-AFA" [label="Plotkin G, Power J - Adequacy for Algebraic Effects", color=black, style=diagonals]
 "PG,PJ-AFA" -> { "PG,PJ-SFA" }
 
-"PG,PJ-SFA" [label="Plotkin G, Power J - Semantics for Algebraic Operations", color=black, style=diagonals]
+"PG,PJ-SFA" [label="Plotkin G, Power J - Semantics for Algebraic Operations", color=black, style=solid]
 "PG,PJ-SFA" -> {  }
 }

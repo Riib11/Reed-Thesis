@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.9)  10 OCT 2019 00:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.9)  17 OCT 2019 10:26
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -391,30 +391,40 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/usr/local/texlive/2019basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2
 ]
-[3] [4] (./effigy.aux) ) 
+[3]
+Overfull \hbox (24.22792pt too wide) detected at line 296
+[]
+ []
+
+
+Overfull \hbox (48.87239pt too wide) detected at line 340
+[]
+ []
+
+[4] (./effigy.aux) ) 
 Here is how much of TeX's memory you used:
- 5416 strings out of 494060
- 78271 string characters out of 6163036
- 158717 words of memory out of 5000000
- 9028 multiletter control sequences out of 15000+600000
+ 5418 strings out of 494060
+ 78283 string characters out of 6163036
+ 159734 words of memory out of 5000000
+ 9030 multiletter control sequences out of 15000+600000
  13144 words of font info for 50 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  55i,18n,32p,290b,247s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2019basic/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2019basic/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2019basic/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2019basic/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2019basic/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2019basic/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2019basic
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2019b
-asic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/20
-19basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texliv
-e/2019basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/loc
-al/texlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on effigy.pdf (4 pages, 133603 bytes).
+</usr/local/texlive/2019basic/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2019basic/texmf-dist/font
+s/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2019basic/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2019basic/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2019basic/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2019basic/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2019basic
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2019ba
+sic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
+19basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/t
+exlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on effigy.pdf (4 pages, 135523 bytes).
 PDF statistics:
  69 PDF objects out of 1000 (max. 8388607)
  49 compressed objects within 1 object stream
