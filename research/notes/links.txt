@@ -1,0 +1,2 @@
+- Polysemy Internals: The Effect-Interpreter Effect: http://reasonablypolymorphic.com/blog/tactics/
+- Polysemy Internals: Freer Interpretations of Higher-Order Effects: http://reasonablypolymorphic.com/blog/freer-higher-order-effects/

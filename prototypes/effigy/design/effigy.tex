@@ -45,21 +45,25 @@
 \newpage
 \section{Grammar}
 
-\[ \begin{array}{rcl}
-  \tit{program} &::= &
-  \list{\tit{declaration}} \alt
-  \list{\tit{declaration}}~\tsf{Main} ~ := ~ e ~.
+\[ \begin{array}{lrcl}
+  \tit{program} &
+  P &::= &
+    \list{D} \alt
+    \list{D}~\tsf{Main} ~ := ~ e ~.
   \\
-  \tit{declaration} &::=&
-    \tsf{Effect} ~ \phi:\tau. \alt
+  \tit{declaration} &
+  D &::=&
+    \tsf{Effect} ~ \phi : \tau \rightsquigarrow \tau. \alt
     \tsf{Definition}~ x : \tau := e ~.
   \\
+  \tit{expression} &
   e &::=&
     v \alt
     e ~ e \alt
     x ~:=~ e ~;~ e \alt
     \tsf{do} ~ e ~ \tsf{with} ~ e
   \\
+  \tit{value} &
   v &:=&
     x \alt
     v \in \tit{Primitive-Values} \alt
@@ -68,32 +72,38 @@
     \{~ s ~\} \alt
     h
   \\
+  \tit{sequence} &
   s &::=&
     e ~;~ s \alt
     x ~\gets~ e ~;~ s \alt
     e
   \\
+  \tit{handler} &
   h &::=&
     \tsf{handler} ~ \{~
       \tsf{effect} ~ (x ~ x) ~ x \mt e ~ | ~
-      \tsf{value} ~ x \mt e ~ | ~
+      \tsf{value} ~ x ~ k \mt e ~ | ~
       \tsf{run} ~ x \mt e
     ~\}
   \\
+  \tit{type} &
   \tau &::=&
     \tau \in \tit{Primitive-Types} \alt
     \tau \to \tau \alt
     \handler{\Phi}{\tau} \alt
     \effect{\Phi}{\tau}
   \\
-  x &\in& \tit{Term-Names}
+  & x &\in& \tit{Term-Names}
   \\
-  \phi &\in& \tit{Effect-Names}
+  & \phi &\in& \tit{Effect-Names}
   \\
-  \Phi &\in& \mathcal{P}(\tit{Effect-Names})
+  & \Phi &\in& \mathcal{P}(\tit{Effect-Names})
   \\
-  \tit{Primitive-Values} &:=&
-    \set{ () } \cup \set{ \tsf{true}, \tsf{false} } \cup \mathbb{Z}
+  & \tit{Primitive-Values} &:=&
+    \set{ () } \cup \mathbb{B} \cup \mathbb{N}
+  \\
+  & \tit{Primitive-Types} &:=&
+    \set{ \tsf{Unit}, \tsf{Boolean}, \tsf{Natural} }
  \end{array} \]
 
 % -------------------------------------------------------------------------------------
@@ -239,7 +249,8 @@ effectual computations in order to yield a pure(er) result.
    \end{array}
    \sep
    \begin{array}{c}
-    \context, x:\sigma \entails e_v:\sigma \to \effect{\set\phi}{\rho}
+    \context, x:\sigma, k:\tau \to \effect{\set\phi}{\rho}
+    \entails e_v:\effect{\set\phi}{\rho}
     \\
     \context, g:\sigma \to \effect{\set\phi}{\rho} \entails e_r:\effect{\set\phi}{\rho}
    \end{array}
@@ -247,7 +258,7 @@ effectual computations in order to yield a pure(er) result.
    \context \entails
    \tsf{handler} ~ \{ ~
    \tsf{effect} ~ (\phi ~ x) ~ k \mt e_\phi ~ | ~
-   \tsf{value} ~ x \mt e_v ~ | ~
+   \tsf{value} ~ x ~ k \mt e_v ~ | ~
    \tsf{run} ~ g \mt e_r
    ~ \} :
    \handler{\set{\phi}}{\rho}
@@ -301,15 +312,18 @@ Define
 \[
   h :=
   \tsf{handler}~\{~
-    \tsf{effect}~(\phi~x)~k \mt e_\phi~\mid~
-    \tsf{value}~x \mt e_v~\mid~
-    \tsf{run}~g \mt e_r
+    \tsf{effect} ~ (\phi ~ x) ~ k \mt e_\phi~\mid~
+    \tsf{value} ~ x ~ k \mt e_v~\mid~
+    \tsf{run} ~ g \mt e_r
   ~\}
   .
 \]
 
 \noindent
 The following rewrite rules describe how to handled expressions and sequences of expressions into pure terms.
+
+% TODO: these rewrites don't work with recursive handlers handlers
+% TODO: these rewrites don't work with mutually-recursive handlers
 
 \[ \begin{array}{llcl}
   \tit{handle effect} &
@@ -325,12 +339,12 @@ The following rewrite rules describe how to handled expressions and sequences of
 
   \tit{handle value} &
   \tsf{do}~e~\tsf{with}~h &\rwto&
-    ((x \mt e_v)~e)~
+    (k \mt (x \mt e_v) ~ e) ~
     (g~\mt~e_r)
   \\
   \tit{handle sequenced value} &
   \tsf{do}~\{~e_1~;~\cdots~;~e_n~\}~\tsf{with}~h &\rwto&
-    ((x \mt e_v)~e_1)~
+    (k \mt (x \mt e_v) ~ e_1) ~
     (\tsf{do}~\{~e_2~;~\cdots~;~e_n~\}~\tsf{with}~h)
   \\
 

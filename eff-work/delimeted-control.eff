@@ -1,0 +1,6 @@
+effect Shift : (('a -> 'b) -> 'b) -> 'a;;
+
+(*
+let rec reset d = handler
+  | d#shift f k -> with reset d handle (f k)
+*)

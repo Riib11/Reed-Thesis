@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.9)  17 OCT 2019 10:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.9)  17 OCT 2019 13:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -392,12 +392,12 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 {/usr/local/texlive/2019basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2
 ]
 [3]
-Overfull \hbox (24.22792pt too wide) detected at line 296
+Overfull \hbox (24.22792pt too wide) detected at line 307
 []
  []
 
 
-Overfull \hbox (48.87239pt too wide) detected at line 340
+Overfull \hbox (48.87239pt too wide) detected at line 354
 []
  []
 
@@ -405,7 +405,7 @@ Overfull \hbox (48.87239pt too wide) detected at line 340
 Here is how much of TeX's memory you used:
  5418 strings out of 494060
  78283 string characters out of 6163036
- 159734 words of memory out of 5000000
+ 160734 words of memory out of 5000000
  9030 multiletter control sequences out of 15000+600000
  13144 words of font info for 50 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
@@ -424,7 +424,7 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2019basic
 sic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
 19basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/t
 exlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on effigy.pdf (4 pages, 135523 bytes).
+Output written on effigy.pdf (4 pages, 137428 bytes).
 PDF statistics:
  69 PDF objects out of 1000 (max. 8388607)
  49 compressed objects within 1 object stream
