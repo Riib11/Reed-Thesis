@@ -6,3 +6,4 @@
 \contentsline {section}{\numberline {3.1}Outline}{4}{section.3.1}% 
 \contentsline {chapter}{\numberline {4}Freer Monadic Effects}{5}{chapter.4}% 
 \contentsline {section}{\numberline {4.1}Outline}{5}{section.4.1}% 
+\contentsline {chapter}{\numberline {5}Effigy}{6}{chapter.5}% 
