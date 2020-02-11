@@ -1,0 +1,78 @@
+DIGEST cef67da30b24e491f45048724ca86eb9
+FMonad
+R15:28 Coq.Program.Basics <> <> lib
+R66:72 Functor <> <> lib
+sec 112:116 <> Monad
+rec 126:126 <> t
+proj 161:167 <> functor
+proj 190:193 <> unit
+proj 222:225 <> bind
+R137:140 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R172:180 Functor <> t class
+R182:182 Monad <> M var
+R208:211 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R212:212 Monad <> M var
+R214:214 Monad <> A var
+R207:207 Monad <> A var
+R244:247 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R248:248 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R257:261 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R262:262 Monad <> M var
+R264:264 Monad <> B var
+R250:253 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R254:254 Monad <> M var
+R256:256 Monad <> B var
+R249:249 Monad <> A var
+R241:241 Monad <> M var
+R243:243 Monad <> A var
+R280:283 Monad <> unit meth
+R280:283 Monad <> unit meth
+R306:309 Monad <> bind meth
+R306:309 Monad <> bind meth
+R352:355 Monad <> bind meth
+not 336:336 Monad ::monad_scope:x_'>>='_x
+def 432:438 <> compose
+R452:452 Monad <> t class
+R454:454 Monad <> M var
+R461:461 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R470:474 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R475:475 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R484:489 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R498:498 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R491:494 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R495:495 Monad <> M var
+R497:497 Monad <> C var
+R490:490 Monad <> A var
+R477:480 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R481:481 Monad <> M var
+R483:483 Monad <> C var
+R476:476 Monad <> B var
+R463:466 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R467:467 Monad <> M var
+R469:469 Monad <> B var
+R462:462 Monad <> A var
+R516:516 Coq.Program.Basics <> ::program_scope:x_'∘'_x not
+R536:541 Coq.Program.Basics <> ::program_scope:x_'∘'_x not
+R527:530 Monad <> bind meth
+R535:535 Monad <> g var
+R532:533 Monad <> mb var
+R542:542 Monad <> f var
+R571:577 Monad <> compose def
+not 555:555 Monad ::monad_scope:x_'>=>'_x
+def 654:661 <> sequence
+R673:673 Monad <> t class
+R675:675 Monad <> M var
+R685:688 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R692:695 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R696:696 Monad <> M var
+R698:698 Monad <> B var
+R689:689 Monad <> M var
+R691:691 Monad <> B var
+R682:682 Monad <> M var
+R684:684 Monad <> A var
+R717:720 Monad <> bind meth
+R734:735 Monad <> m' var
+R722:722 Monad <> m var
+R765:772 Monad <> sequence def
+not 749:749 Monad ::monad_scope:x_'>>'_x
+R843:847 Monad Monad <> sec

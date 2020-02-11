@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.9)  4 DEC 2019 23:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.9)  10 FEB 2020 23:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -767,38 +767,35 @@ Chapter 2.
 
 ]
 Chapter 3.
-) (./freer-monadic-effects.tex [4
+) (./monad-transformers.tex [4
 
 ]
 Chapter 4.
-) (./effigy.tex [5
+) (./freer-monadic-effects.tex [5
 
 ]
 Chapter 5.
-) [6
+) (./effigy.tex [6
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 20.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 20.
+Chapter 6.
+) [7
+
+]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 21.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 21.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 20.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 20.
-
-
-Package rerunfilecheck Warning: File `main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: C36B8047D7CC8F945A4B102CEB046687;425
-(rerunfilecheck)             After:  05ABF6C1E1B60BF1D072C0F426E4F869;466.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 20.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 21.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 21.
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 2000EC6930E95C0871C4282EE22662F0;574.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 21.
  ) 
 Here is how much of TeX's memory you used:
- 18493 strings out of 494060
- 340583 string characters out of 6163036
- 592743 words of memory out of 5000000
- 21812 multiletter control sequences out of 15000+600000
+ 18540 strings out of 494060
+ 341016 string characters out of 6163036
+ 594743 words of memory out of 5000000
+ 21817 multiletter control sequences out of 15000+600000
  13743 words of font info for 55 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  62i,6n,50p,407b,347s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -809,10 +806,10 @@ cm/cmr10.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmr12.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmr17.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmti10.pfb>
-Output written on main.pdf (7 pages, 82640 bytes).
+Output written on main.pdf (8 pages, 93267 bytes).
 PDF statistics:
- 140 PDF objects out of 1000 (max. 8388607)
- 123 compressed objects within 2 object streams
- 39 named destinations out of 1000 (max. 500000)
- 77 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 203 PDF objects out of 1000 (max. 8388607)
+ 185 compressed objects within 2 object streams
+ 78 named destinations out of 1000 (max. 500000)
+ 101 words of extra memory for PDF output out of 10000 (max. 10000000)
 

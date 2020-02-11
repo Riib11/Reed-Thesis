@@ -1,8 +1,17 @@
 \chapter{Monadic Effects}
+\label{chapter:monadic-effects}
 
 \section{Outline}
 \begin{enumerate}
-  \item Definition of monads
+  \item Definition and context for monads in category theory and computer science
   \item Explanation of how monads can model effects in general
-  \item Demonstration of the stateful monad
+  \item Demonstration of constructing and using the stateful monad, building it up from scratch in Haskell or Haskell-like psuedocode
+  \begin{enumerate}
+    \item Explain the Functor, Applicative, and Monad typeclasses, and how they build up the mathematical definition of a monad
+  \end{enumerate}
+  \item Outline some problems with monadic effects
+  \begin{enumerate}
+    \item different effects are not composable
+    \item paper: \tit{The Awkward Squad}
+  \end{enumerate}
 \end{enumerate}

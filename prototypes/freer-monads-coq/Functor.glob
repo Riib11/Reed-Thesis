@@ -1,0 +1,19 @@
+DIGEST 59f88e983b894351e81dc0eee2d14672
+FFunctor
+sec 8:14 <> Functor
+rec 24:24 <> t
+proj 58:60 <> map
+R34:37 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R76:76 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R83:87 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R91:94 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R95:95 Functor <> F var
+R97:97 Functor <> B var
+R88:88 Functor <> F var
+R90:90 Functor <> A var
+R78:81 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R82:82 Functor <> B var
+R77:77 Functor <> A var
+R113:115 Functor <> map meth
+R113:115 Functor <> map meth
+R137:143 Functor Functor <> sec

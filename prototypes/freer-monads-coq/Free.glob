@@ -1,0 +1,59 @@
+DIGEST 1cb74960662fd03d76888c7bfeac580a
+FFree
+R15:28 Coq.Program.Basics <> <> lib
+R66:72 Functor <> <> lib
+R83:87 Monad <> <> lib
+sec 127:130 <> Free
+ind 144:144 <> t
+constr 188:191 <> pure
+constr 212:215 <> bind
+R155:158 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R200:203 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R204:204 Free <> t ind
+R208:208 Free <> A var
+R206:206 Free <> F var
+R199:199 Free <> A var
+R226:229 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R230:230 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R241:245 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R246:246 Free <> t ind
+R250:250 Free <> A var
+R248:248 Free <> F var
+R232:235 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R236:236 Free <> t ind
+R240:240 Free <> A var
+R238:238 Free <> F var
+R231:231 Free <> X var
+R223:223 Free <> F var
+R225:225 Free <> X var
+R264:267 Free <> pure constr
+R264:267 Free <> pure constr
+R290:293 Free <> bind constr
+R290:293 Free <> bind constr
+inst 318:324 <> functor
+R332:340 Functor <> t class
+R342:342 Free <> F var
+R347:355 Functor <> t class
+R358:358 Free <> t ind
+R360:360 Free <> F var
+R379:393 Functor <> Build_t constr
+R379:393 Functor <> Build_t constr
+R462:465 Free <> pure constr
+R462:465 Free <> pure constr
+R498:501 Free <> bind constr
+R498:501 Free <> bind constr
+inst 531:540 <> free_monad
+R548:556 Functor <> t class
+R558:558 Free <> F var
+R563:569 Monad <> t class
+R572:572 Free <> t ind
+R574:574 Free <> F var
+R593:605 Monad <> Build_t constr
+R593:605 Monad <> Build_t constr
+R616:622 Free <> functor prfax
+R616:622 Free <> functor prfax
+R654:657 Free <> pure constr
+R654:657 Free <> pure constr
+R716:719 Free <> bind constr
+R716:719 Free <> bind constr
+R760:763 Free Free <> sec

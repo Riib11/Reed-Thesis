@@ -2,15 +2,16 @@
 
 \section{Outline}
 \begin{enumerate}
-  \item Definition of algebraic effect handlers
-  \item example of implementation in Eff programming langauge
+  \item Definition and context for algebraic effect handlers
+  \item Explanation of the Eff programming languages approach to implementation
   \begin{enumerate}
     \item subset of semantics
     \item examples
   \end{enumerate}
-  \item comparison of effect handlers to the usual monadic approach
+  \item Comparison of algebraic effect handlers to monadic effects approach
   \begin{enumerate}
-    \item effect handlers allow for the effectual program and the implementations of the actual effects of the program to be defined separately
-    \item effect handlers directly allow for arbitrary compositions and stacking, given a certain framework for effect stacks, but monads to not generally compose or stack in this way
+    \item alebraic effect handlers allow for effects and handlers to be defined separately
+    \item algebraic effect handlers and generally composable, however they must be carefully handled to match their internal composition
+    \item Eff does not expressively type the effect system, and many features are untyped
   \end{enumerate}
 \end{enumerate}

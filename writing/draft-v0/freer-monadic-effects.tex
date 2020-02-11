@@ -1,10 +1,21 @@
 \chapter{Freer Monadic Effects}
+\label{chapter:freer-monadic-effects}
 
 \section{Outline}
 \begin{enumerate}
-  \item Consideration of the problem of \tit{composing monads}
-  \item Explanation of the monad-transformer approach, with pros and cons
-  \item Definition of freer monads
-  \item Explanation of how freer monads can model effects, by acting as a sort of monadic implementation of algebraic effects
-  \item Demonstration of stateful freer monad, paralleling monadic example
+  \item Consideration of the problem of \tit{composing monads}; no systems so far have facilitated this while maintaining type-checking
+  \item Definition and context for freer monads in category theory and computer science, in relation to monads as previously discussed in chapter~\ref{chapter:monadic-effects}
+  \item Explanation of how freer monads can model effects
+  \begin{enumerate}
+    \item left Kan extension (Lan)
+    \item act as a sort of monadic implementation of algebraic effect handlers
+  \end{enumerate}
+  \item Demonstration of stateful freer monad, paralleling monadic example from chapter~\ref{chapter:monadic-effects}
+  \item Discussion of advantages and disadvantages of freer monadic effects
+  \begin{enumerate}
+    \item fully-typed system for algebraic effect handlers; all the advantages of algebraic effect handlers
+    \item facilitates generally composable effects
+    \item not implementable in non-dependently typed languages like Haskell, OCaml, SML, etc. since it requires extensive type-level manipulation
+    \item potentially very user-unfriendly, incurring many of the original problems with monadic effects
+  \end{enumerate}
 \end{enumerate}

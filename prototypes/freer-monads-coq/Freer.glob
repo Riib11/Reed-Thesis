@@ -1,0 +1,67 @@
+DIGEST 4fcf6f4b44b0560c30983938f80b10c4
+FFreer
+R15:28 Coq.Program.Basics <> <> lib
+R66:72 Functor <> <> lib
+R83:87 Monad <> <> lib
+sec 515:519 <> Freer
+ind 533:533 <> t
+constr 577:580 <> pure
+constr 597:602 <> impure
+R544:547 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R544:547 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R585:588 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R589:589 Freer <> t ind
+R593:593 Freer <> A var
+R591:591 Freer <> G var
+R584:584 Freer <> A var
+R613:616 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R617:617 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R628:632 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R633:633 Freer <> t ind
+R637:637 Freer <> A var
+R635:635 Freer <> G var
+R619:622 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R623:623 Freer <> t ind
+R627:627 Freer <> A var
+R625:625 Freer <> G var
+R618:618 Freer <> X var
+R610:610 Freer <> G var
+R612:612 Freer <> X var
+R652:655 Freer <> pure constr
+R652:655 Freer <> pure constr
+R678:683 Freer <> impure constr
+R678:683 Freer <> impure constr
+def 710:711 <> η
+R724:727 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R728:728 Freer <> t ind
+R732:732 Freer <> A var
+R730:730 Freer <> G var
+R721:721 Freer <> G var
+R723:723 Freer <> A var
+R764:769 Freer <> impure constr
+R764:769 Freer <> impure constr
+R801:804 Freer <> pure constr
+R801:804 Freer <> pure constr
+inst 831:837 <> functor
+R845:853 Functor <> t class
+R856:856 Freer <> t ind
+R858:858 Freer <> G var
+R877:891 Functor <> Build_t constr
+R877:891 Functor <> Build_t constr
+R981:984 Freer <> pure constr
+R981:984 Freer <> pure constr
+R1005:1010 Freer <> impure constr
+R1005:1010 Freer <> impure constr
+inst 1050:1054 <> monad
+R1062:1068 Monad <> t class
+R1071:1071 Freer <> t ind
+R1073:1073 Freer <> G var
+R1092:1104 Monad <> Build_t constr
+R1092:1104 Monad <> Build_t constr
+R1115:1121 Freer <> functor inst
+R1115:1121 Freer <> functor inst
+R1170:1173 Freer <> pure constr
+R1170:1173 Freer <> pure constr
+R1293:1298 Freer <> impure constr
+R1293:1298 Freer <> impure constr
+R1342:1346 Freer Freer <> sec

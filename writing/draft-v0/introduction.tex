@@ -1,9 +1,29 @@
 \chapter{Introduction}
 
 \section{Outline}
+
 \begin{enumerate}
   \item Definition of a simple, typed lambda calculus
-  \item Context and definition of what \tit{effects}
-  \item Explanation of how effects are handle'd in ML's style i.e. the program is strictly evaluated and effectual functions are treated like normal functions
-  \item Explain how this style is not strictly functional, because it requires a globally-mutable and globall-accessible state that is carried along implicitly at run-time
+  \item Context and definition of \tit{effects} in programming languages
+  \item Examples of common effects
+  \begin{enumerate}
+    \item IO
+    \item mutable data, state
+    \item exception
+    \item nondeterminism
+    \item non-termination / non-totality
+    \item reader, writer, output
+    \item continuation
+  \end{enumerate}
+  \item Explanation of how effects are handled in ML's style
+  \begin{enumerate}
+    \item call-by-value at runtime
+    \item examples of effects: IO, exceptions
+    \item effects are untyped
+    \item simple exception-handling system (type/catch)
+  \end{enumerate}
+  \item Explain why this style is not purely functional
+  \begin{enumerate}
+    \item exposes \tit{side-effects}, which are implicit effects not accessible by the programming language
+  \end{enumerate}
 \end{enumerate}
