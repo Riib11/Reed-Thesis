@@ -1,0 +1,17 @@
+\begin{table}[H] \centering
+\captionof{table}{Typing in \LangD: Resource}
+\label{tab:LangD-typing-resource}
+\begin{tabular}{rp{25em}}
+  \rulename{Resource} &
+  \begin{tabular}{p{25em}}
+    \iforall \code`$Γ$ $⊢$ $α_i$ : Type` \\
+    \iforall \code`$Γ$ $⊢$ $β_i$ : Type` \\
+    \code`resource $ρ$ { $g_1$ : $α_1$ ↗ $β_1$ ; $\cdots$ ; $g_n$ : $α_n$ ↗ $β_n$ }.`
+    %
+  \\ \hline
+    %
+    \code`$Γ$ $⊢$ $ρ$ : Resource` \\
+    \iforall \code`$Γ$ $⊢$ $g_1$ : $α_1$ ↗ $β_1$`
+  \end{tabular}
+\end{tabular}
+\end{table}

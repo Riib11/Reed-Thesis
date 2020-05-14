@@ -1,0 +1,27 @@
+\begin{table}[H] \centering
+\captionof{table}{Reduction in \LangB: Mutability}
+\begin{tabular}{rp{30em}}
+  \rulename{Initialize} &
+  \begin{tabular}{p{20em}}
+    $\valprop{v}$ \iand
+    % $(\stctx', \UID)$ ≔ $\textsf{new}(\stctx)$
+    $\NewUID{\stctx}{\stctx'}{\UID}$
+    \\ \hline
+    \code`$\stctx$ $\|$ initialize $v$` $\rto$
+    \code`$\state{\stctx'}{\UID}{v}$` $\|$ $\UID$
+  \end{tabular}
+\\[2em]
+  \rulename{Get} &
+    \code`$\state{\stctx}{\UID}{v}$ $\|$ !$\UID$` $\rto$
+    \code`$\state{\stctx}{\UID}{v}$` $\|$ $v$
+\\[1em]
+  \rulename{Set} &
+  \begin{tabular}{p{20em}}
+    $\valprop{v'}$
+    \\ \hline
+    \code`$\state{\stctx}{\UID}{v}$ $\|$ $\UID$ ← $v'$` $\rto$
+    \code`$\state{\stctx}{\UID}{v'}$` $\|$ •
+  \end{tabular}
+\end{tabular}
+\label{tab:LangB-reduction-mutability}
+\end{table}

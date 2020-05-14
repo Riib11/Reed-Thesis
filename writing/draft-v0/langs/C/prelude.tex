@@ -1,0 +1,92 @@
+\chapter{\LangC}
+
+% ------------------------------------------------------------------------------
+\section{Type-Classes}
+
+% % ------------------------------------------------------------------------------
+% % ------------------------------------------------------------------------------
+% \subsection{Functor}
+
+% never use functors by themselves anymore
+% instance Functor list :=
+%   { map a f as
+%       ≔ cases as
+%           { []      ⇒ []
+%           ; a ∷ as' ⇒ f a ∷ map f as' } }.
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsection{Monad}
+
+\begin{program}[caption={Monad instances}]
+instance Monad list ≔
+  { lift   a  ≔ [a]
+  ; map  f m  ≔ cases m
+                  { []      ⇒ []
+                  | a ∷ m' ⇒ f a ∷ map f m' } }.
+  ; bind m fm ≔ concat (map fm m) }
+
+instance Monad optional
+  { lift   a  ≔ some a
+  ; map  f m  ≔ cases m
+                  { some a ⇒ some (f a)
+                  | none   ⇒ none }
+  ; bind m fm ≔ cases m
+                  { some a ⇒ fm a
+                  | none   ⇒ none } }.
+
+instance (α:kind) ⇒ Monad ((β:kind) ⇒ α → β)
+  { lift    b ≔ constant b
+  ; map  f  m ≔ f ○ m
+  ; bind m fm ≔ a ⇒ fm (m a) a }.
+
+instance (α:kind) ⇒ Monad ((β:kind) ⇒ α ⊕ β)
+  { lift   b  ≔ right b
+  ; map  f m  ≔ cases m
+                  { left  a ⇒ left a
+                  | right b ⇒ right (f b) }
+  ; bind m fm ≔ cases m
+                  { left  a ⇒ left a
+                  | right b ⇒ fm b } }.
+\end{program}
+
+\begin{program}
+term join : Monad M => M (M α) -> M α
+  ≔ mm ⇒ mm >>= identity
+\end{program}
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsection{Equalible}
+
+\begin{program}[caption={Equalible}]
+class Equalible (α : kind) : kind
+  { (==) : α → α → boolean }.
+\end{program}
+\begin{program}[caption={Equalible instances}]
+instance Equalible unit ≔ {$\cdots$}.
+instance Equalible boolean ≔ {$\cdots$}.
+instance Equalible natural ≔ {$\cdots$}.
+instance Equalible integer ≔ {$\cdots$}.
+instance Equalible rational ≔ {$\cdots$}.
+
+instance (α β : kind) {Equalible β} {Equalible α} ⇒ Equalible (α ⊕ β)
+  ≔ {$\cdots$}.
+instance (α β : kind) {Equalible β} {Equalible α} ⇒ Equalible (α ✕ β)
+  ≔ {$\cdots$}.
+instance (α:kind) {Equalible α} ⇒ Equalible (optional α) ≔ {$\cdots$}.
+instance (α:kind) {Equalible α} ⇒ Equalible (list α) ≔ {$\cdots$}.
+instance (α:kind) {Equalible α} ⇒ Equalible (tree α) ≔ {$\cdots$}.
+instance (α:kind) {Equalible α} ⇒ Equalible (forest α) ≔ {$\cdots$}.
+instance (α:kind) {Equalible α} ⇒ Equalible (mapping α) ≔ {$\cdots$}.
+\end{program}
+
+
+% \begin{program}[caption={Equal}]
+% type (=) : kind → Type → Type := a ⇒ a = a
+%
+% class (=) (α β : kind)
+%   { reflex : α ⇒ α = α }
+%
+% primitive term reflex (α : kind) : α = α.
+% \end{program}

@@ -1,0 +1,50 @@
+\begin{table}[h]
+\centering
+\begin{tabular}{rR{22em}L{20em}}
+  &
+  \code|$[]$ ; $[]$| \code|𝄁| &
+  \code|divide-safely 5 0 with h|
+  \\
+  $\ruleapp{H.}$ $↠$ &
+  \\ &
+  \code|$[$h$]$ ; $[]$|
+  \code|𝄁| &
+  \code|divide-safely 5 0|
+  \\
+  $\ruleapp{S.}$ $↠$
+  \\ &
+  \code|$[$h$]$ ; $[]$|
+  \code|𝄁| &
+  \code|division-by-0#throw •|
+  \\
+  $\ruleapp{P.}$ $↠$ &
+  \\ &
+  \code|$[$h$]$ ; $[($division-by-0#throw •$,$ $⚑_1$$)]$|
+  \code|𝄁| &
+  \code|$⚑_1$|
+  \\
+  $\ruleapp{H.V.}$ $↠$ &
+  \\ &
+  \code|$[\unvalued($h$)]$ ; $[($division-by-0#throw •$,$ $⚑_1$$)]$|
+  \code|𝄁| &
+  \code|some $⚑_1$|
+  \\
+  $\ruleapp{H.P.}$ $↠$ &
+  \\ &
+  \code|$[\unvalued($h$)]$ ; $[]$|
+  \code|𝄁| &
+  \code|(x k ⇒ none) • ($⚑_1$ ⇒ some $⚑_1$)|
+  \\
+  $\ruleapp{S.}$ $↠$ &
+  \\ &
+  \code|$[\unvalued($h$)]$ ; $[]$|
+  \code|𝄁| &
+  \code|none|
+  \\
+  $\ruleapp{H.F.}$ $↠$ &
+  \\ &
+  \code|$[]$ ; $[]$|
+  \code|𝄁| &
+  \code|none|
+\end{tabular}
+\end{table}

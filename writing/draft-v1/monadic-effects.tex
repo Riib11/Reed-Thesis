@@ -1,0 +1,1000 @@
+\chapter{Monadic Effects}
+\label{ch:ME}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Introduction to Monads}
+\label{sec:intro-monads}
+
+The concept of \ep{monad} was first introduced in category theory, but since been relevant to theoretical computer science as well (particularly to type theory).
+A notion of monads is presented as a novel way to introduce effects into declarative, \lc-inspired languages by \cite{MOGGI199155} and \cite{Plotkin2001}.
+It turns out that monads can be used as a general framework for internally implementing explicitly-typed effects in an extension of \LangA.
+This chapter will demonstrate by developing such a language, \LangC, in a relatively programmer-friendly way.
+
+To start, take the division of the implicit context from the explicit context so fundamental to \LangB's structure.
+We wrote \code|$\rctx$ 𝄁 $a$| to represent a term $a$ with implicit context $\rctx$.
+Suppose that $a$ has an effect that appeals to $\rctx$.
+From here on, refer to an impure term (such as $a$) as a \kw{computation}.
+A computation has two parts:
+the implicit context on which it relies (e.g. the left side of ``$𝄁$''), and
+the explicit context in which its result is evaluated (e.g. the right side of ``$𝄁$'').
+Call a computation that results in a term of type $α$ an \kw{$α$-computation},
+and call $α$ the \kw{result type} of the computation.
+For example, the \LangB term \code|coin-flip •| is a \code|boolean|-computation of the nondeterministic effect.
+
+% The concept of \ep{monad}, which originates in category theory, turns out to be a very convenient structure for formalizing implicit contexts within functional programming languages.
+% While at the top level, everything written in a program is explicit, monads create a certain kind of internal environment for which the structure of a monad is rendered \ep{relatively implicit} from ``within'' the monad;
+% the structure of a monad is a \ep{relatively implicit context}, relative to terms interfacing with the monad.
+% This section will follow a programmer-friendly introduction to monads and how they can be used to implement effects in a new extension to \LangA.
+
+As mentioned earlier, \LangC's effects are internal and explicitly-typed.
+In \LangB, the computation \code|coin-flip •| had type \code|boolean| just like a pure term such as \code|true| or \code|false| would.
+To make effects explicitly-typed, \LangC will introduce a typing scheme that yields a term such as \code|coin-flip •| to instead have a type like \code|nondeterministic boolean|, where the type \code|nondeterministic| indicates a computation using the nondeterministic effect and is parametrized by its result type.
+However, a result of this is that a term with a type of the form \code|nondeterministic $α$| cannot be treated just like any other term with type $α$.
+This raises a problem because we would like to write functions and other expressions that make use of these computations and their results.
+For example, we might want to apply a function \code|$f$ : $α$ → $β$| to the result of a \code|(nondeterministic $α$)|-term.
+But there are restrictions on the sorts of things we should be able to do, since the indication that \code|nondeterministic $α$| is a computation and not just a pure value must be preserved in order for the indication to consistently reflect the purity of impurity of terms.
+With the example, in applying $f$ to a term \code|$m$ : nondeterministic $α$|, we expect the result to be a $β$-computation that uses the nondeterminism effect in the way defined by $m$, and then applies $f$ to the result, which should have the type \code|nondeterministic $β$|.
+
+In other words, there is a selection of general \ep{capabilities} we expect to be provided by explicitly-typed computations, so that they can be used with other terms to write the same programs as able to be written in \LangB.
+In the example, a term that provides the capability of applying $f$ to the result of $m$ has type \code|($α$ → $β$) → nondeterministic $α$ → nondeterministic $β$|.
+By using explicit types to indicate effects, we can formalize the idea of ``capability'' in terms of types.
+\begin{blockdefinition}
+A \kw{capability} of a type is a term with a signature in which that type appears.
+\end{blockdefinition}
+The mentioned term with type \code|($α$ → $β$) → nondeterministic $α$ → nondeterministic $β$| provides a capability for the type \code|nondeterministic|.%
+\footnote{
+  Implicitly, the term is not considered to provide a capability for either $α$ or $β$ since they abstracted from the type.
+}
+We shall formulate a qualification for effects in \LangC in terms of capabilities required to be provided by \kw{effect types} (such as \code|nondeterminstic|).
+The qualification for monads provide just such a qualification for this implementation of effects.
+
+% ------------------------------------------------------------------------------
+\subsection{The Mutablility Monad}
+\label{sec:demo-monad}
+
+The mutability effect is particularly general, so we shall use it as a running example in introducing the details motivating and specifying monad.
+Mutability was implemented in \LangB by the introduction of a globally-accessible, store of mutable variables as the reduction context $\stctx$.
+This implementation heavily relied on the reduction context, along with the associated reduction rules, so manage this effect --- all of which is implicit and not directly-accessible to a programmer.
+The rules governing mutability are not expressed within \LangB code itself, and so are a source of potential danger.
+So, is there a way to implement mutability in a way more explicitly expressible within \LangA?
+
+This chapter explores a certain way to accomplish this.
+However, since \LangA is pure, such an implementation cannot provide \ep{true} mutability since \LangA terms are definitionally immutable.
+The abstraction necessary is to think of mutability in more expressively-typed terms.
+Refer to a computation that uses the mutability effect with \ep{state type} $σ$ and result type $α$ as a \kw{$σ$-stateful} $α$-computation.
+The \kw{state type} of a computation using mutability is the type of the implicit mutable state kept track of during its evaluation.
+
+We can model mutability in \LangA types as a function from the initial state to the modified state:
+\begin{program}
+type mutable (σ a : kind) : kind ≔ σ → σ ✕ α.
+\end{program}
+Relating to the description of the mutability effect, \code|mutable $σ$ $α$| is the type of functions from an initial $σ$-state to a pair of the affected (i.e. possibly-mutated) $σ$-state and the $α$-result.
+So if given a term \code|$m$ : mutable $σ$ $α$|,
+one can purely compute the affected state and result by providing $m$ with an initial state.
+
+To truly be an effect, there needs to be an internal context in which mutability is implicit.
+So let us see how we can construct terms that work with \code|mutable|.
+In \LangB's implementation of this effect, it posited two primitive terms: \code|get| and \code|set|.
+Using \code|mutable| we can define these terms in \LangA as:
+\begin{snippet}
+term get (σ : kind)       : mutable σ σ    ≔ s ⇒ (s, s).
+term set (σ : kind) (s:σ) : mutable σ unit ≔ _ ⇒ (s', •).
+\end{snippet}
+Observe that
+\code|get| is a $σ$-stateful $σ$-computation that does not modify the state and results in the the current value of the state.
+And, \code|set| is a $σ$-stateful computation that replaces the state with a given $s':σ$ and results in $\unitterm$.
+In these ways, using \code|get| and \code|set| in \LangA fills exactly the same role as a simple \LangB mutable effect where $σ$ is a type corresponding to a store of values (perhaps a named product).
+
+\newparagraph
+As for the capabilities expected of this type in order to consider it an effect, we shall consider \ep{sequencing}, \ep{binding}, \ep{lifting}, and \ep{mapping}.
+
+\paragraph{Sequencing.}
+Since the mutable effect is in fact an effect, we should also be able to \ep{sequence} stateful computations to produce one big stateful computation that does performs the computations in sequence.
+It is sufficient to define the \kw{sequence} of just two effects, since any number of effects can be sequenced one step at a time.
+So, given two $σ$-computations \code|$m$ : mutable $σ$ $α$| and \code|$m'$ : mutable $σ$ $β$| the sequenced $σ$-computation should first compute the $m$-affected state and then pass it to $m'$.
+
+\begin{snippet}
+term sequence (σ α β : kind)
+  : mutable σ α → mutable σ β → mutable σ β
+  ≔ m m' ⇒
+      s ⇒ let (s', _) ≔ m s in m' s'.
+\end{snippet}
+
+\paragraph{Binding.}
+However, in this form it becomes clear that \code|sequence| throws away some information --- the result of the first stateful computation.
+To avoid this amounts to allowing $m'$ to reference $m$'s result,
+which can be introduced by using the parameter \code|$fm$ : $α$ → mutable $σ$ $β$| in place fo $m'$.
+$fm$ is named such because it is a function (hence the $f$) to a monad term (hence the $m$).
+A sequence that allows this is called a \kw{monadic bind} (or just \kw{binding}),
+as it binds to the $α$-result of $m$ the $α$-parameter of $fm$.
+\begin{snippet}
+term bind (σ α β : kind)
+  : mutable σ α → (α → mutable σ β) → mutable σ β
+  ≔ m fm ⇒
+      s ⇒ let (s', a) ≔ m s in fm a s'.
+\end{snippet}
+Additionally, one may notice that one of \code|sequence| and \code|bind| is superfluous i.e. can be defined in terms of the other.
+Consider the following re-definition of \code|sequence|:
+\begin{snippet}
+term sequence (σ α β : kind)
+  : mutable σ α → mutable σ β → mutable σ β
+  ≔ m m' ⇒ bind m (_ ⇒ m').
+\end{snippet}
+This construction demonstrates how \code|sequence| can be thought of as a sort of trivial bind, where the bound result of $m$ is ignored by $m'$.
+
+\newparagraph
+
+So far, we have defined all of the state-relevant operations needed to express stateful computations in \LangA.
+The key difference between \LangB and our new \LangA-implementation of the mutable effect is that \LangB treats stateful computations just like any other kind of pure computation, whereas \LangA ``wraps'' $σ$-stateful $α$-computations using the type \code|mutable $σ$ $α$| rather than just an ``unwrapped'' type $α$.
+In this formulation, the stateful aspect of a computation must be handled in some way to extract the result.
+Otherwise, a monadic bind must be used to access the result, which propagates the \code|mutable| wrapper.
+
+However, what is still missing any ways to trivially treat pure values as computations and to interact with a result without accessing the computations implicit context.
+There are two kinds of such embeddings: \ep{lifting} and \ep{mapping}.
+
+\paragraph{Lifting.}
+A (relatively%
+\footnote{
+  Relative to the considered monad.
+  There is no restriction that the lifted value is not a monadic term itself, which yields nested monads.
+  These nested monads may be different, but if they are all of the same monad then they can be collapsed via the function \code`join` (see \prelude{\LangC}).
+}) pure value
+can be \ep{lifted} to a stateful computation by having it be the result of the computation and not interact with the state.
+Suppose we would like to write an impure function \code`reset` that sets the integer-state to \code`0` and results in the previous state value --- the function would have type \code`mutable integer integer`.
+With just \code`get`, \code`set`, and \code`bind`, there is no way to write this function as there is no way to combine them in such a way that sets the state but results in something other than \code`•`.
+The missing expression we need is a function that results in a value without touching the state at all.
+Call this function \code`lift`,
+which should have the type \code`$α$ → mutable $σ$ $α$`.
+%
+\begin{program}
+term lift (α : kind) : α → mutable σ α
+  ≔ a ⇒
+      s ⇒ (s, a)
+\end{program}
+%
+So, we can construct \code`reset` to first store the old state in a name \code`old`, set the state to \code`0`, and finally use \code`lift` to result in \code`old`.
+Given this description, the construction of \code`reset`, using \code`lift`, is the following:
+%
+\begin{snippet}
+term reset : mutable integer integer
+  ≔ bind get
+      (old ⇒ sequence
+        (set 0)
+        (lift old)).
+\end{snippet}
+
+\paragraph{Mapping.}
+A relatively pure function can be be \ep{mapped}%
+\footnote{
+  The terms \ep{map, mapped, mapping} are very much overloaded between computer science and mathematics terminology.
+  Here, to \kw{map} a function over a data structure is to apply the function to the contents (in some relevant way) of the data structure.
+  For example, mapping a function \code|f| over a list \code|[1, 2, 3]| reduces to \code|[f 1, f 2, f 3]|.
+}
+over stateful computation results by applying it to the result of the computation and then lifting.
+In other words, to lift%
+\footnote{
+  I use the term ``lift'' both for the previous paragraph on \ep{lifting} and this paragraph on \ep{mapping}.
+  The idea behind this more general concept of ``lift'' is the embedding of a simpler term into a more complex term in some trivial way.
+  In this case,
+  lifting values to stateful computation results is called \ep{lifting}, and
+  lifting functions to functions between stateful computation results is called \ep{mapping}.
+}
+a function of type \code`$α$ → $β$` to a function of type \code`mutable $σ$ $α$ → mutable $σ$ $β$`.
+Call this function \code`map`.
+\begin{program}
+term map (σ α β : kind) : (α → β) → mutable σ α → mutable σ β
+  ≔ f ⇒ bind get (lift ○ f).
+\end{program}
+As seen above, \code|mutable|'s \code`map` implementation  arises very straightforwardly from \code|mutable|'s \code`lift`.
+However, this is not the case in general.
+Each monad instance will have a particular set of implementations for lifting and mapping, as well as binding (as will be demonstrated in section~\ref{sec:LangC}).
+
+\paragraph{Example.}
+The following implements the \code|sort-two| program from section~\ref{sec:LangB-mutability}.
+%
+\begin{snippet}
+type state : kind { x:integer; y:integer }.
+
+term get-x : mutable state integer ≔ bind get x.
+term get-y : mutable state integer ≔ bind get y.
+
+term modify (f : σ → σ) : mutable σ α → mutable σ α
+  ≔ bind get (set ○ f).
+
+term set-x : integer → mutable state integer ≔ modify set-x.
+term set-y : integer → mutable state integer ≔ modify set-y.
+
+term sort-two : mutable state unit
+  ≔ bind get-x (x ⇒
+      bind get-y (y ⇒
+        if x > y
+          then sequence (set-x y) (set-y x)
+          else lift •)).
+\end{snippet}
+%
+The utility functions \code|get-x|, \code|get-y|, \code|set-x|, and \code|set-y| are declared in order to manage a state type with multiple components.
+As demonstrated, the state type \code|variables| is defined as a named product with two components \code|x| and \code|y|, corresponding to the two variables from \LangB's implementation of \code|sort-two|.
+This pattern can be generalized to host a mutable state with any number of named components by using a named product type \code|state| of the components, and additionally defining the matching \code|get-$name$| and \code|set-$name$| capabilities of \code|mutable state| for each component $name$.%
+\footnote{
+  The get and set functions defined for each component of \code|state| follow directly from the definition of the named product as functions that access or modify
+  There is clearly a lot of redundancy in this pattern, which suggests that there is some more general way of deriving get, set, and other similar functions from named products.
+  A common generalization is that of \ep{lenses}, which can be neatly made to work for both the immutable context (e.g. for named products in \LangA) and generically lifted to the mutable context as implemented by the monadic mutability effect.
+  In the Haskell programming language, such lenses are implemented in both contexts (including for the mutable context by using what Haskell calls the \code|State| monad) by the \code|lens| package: https://hackage.haskell.org/package/lens.
+}
+
+Considering such an example as this, another question becomes apparent: how would a term of type \code|mutable $σ$ $α$| be ``run'' in order to extract its final state and result?
+The way that \code|mutable| is defined, as \code|mutable $σ$ $α$ $=$ ($σ$ → $σ$ ✕ $α$)|, contains the answer: a term of type \code|mutable $σ$ $α$| is a function waiting for an initial state of type $σ$ in order to produce the desired final state and result.
+So, to ``run'' a term using the mutability effect is just to provide the initial state.
+The following function implements an intuitive interface for this.
+%
+\begin{program}
+term initialize (σ α : kind) (s:σ) (m : mutable σ α) : α
+  ≔ m s.
+\end{program}
+%
+With the \code|sort-two| example, we can use \code|initialize| to run the effect on an initial state.
+%
+\begin{snippet}
+initialize (2, 1) sort-two   $↠$   (1, 2)
+\end{snippet}
+
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Formalization of Monad}
+\label{sec:formalization-of-monad}
+
+In section~\ref{sec:demo-monad}, we implemented a variety of terms specifically for the mutability monad.
+To summarize, they were:
+\code`get`, \code`set`, \code`sequence`, \code`bind`, \code`lift`, and \code`map`.
+A selection of these are essential to being a monad,
+but as they were implemented they will only work with one particular monad.
+We would like to extract the essentially-monadic capabilities that some of these terms provide for the mutability monad, and describe them generally as applying to all monad instances.
+
+Firstly, the terms \code`get` and \code`set` were exclusively implemented for the structure of \code`mutable`.
+So they must not be monad-essential, since to be a monad must not depend on the structure of \code`mutable`.
+Secondly, the term \code`sequence` provides the monad-essential capability of sequencing, but was later discovered to be expressible in terms of \code`bind` without reference to the particular structure of \code`mutable`.
+Both sequencing and binding are monad essential, but to be minimal we need only explicitly require binding.
+
+Thirdly, the terms \code`lift` and \code`map` provide the monad--essential capabilities of lifting and mapping.
+Though \code`map` was implemented using \code`lift`, this implementation required reference to the particular structure of \code`mutable` so this does not collapse lifting and mapping in the way that sequencing and binding collapsed.
+
+So, minimally, there are three essential capabilities required of a structure to be a monad: binding, lifting, and mapping.
+Since mapping is covered by being a functor, we can rephrase this as a definition of ``monad'':
+\begin{blockdefinition}
+A \kw{monad} is a functor with binding and lifting capabilities i.e.
+in a sequence of two monads the result of the first term can be bound in the second term, and
+relatively pure values can be lifted to monad terms.
+\end{blockdefinition}
+
+% Not all of these are essential to being a monad, but as they are w
+%
+% However, not all of these are essential to being a monad.
+% For example, \code`get` and \code`set` are exclusively
+%
+% However, only the \code|get| and \code|set| terms were meant for exclusive use with \code|mutable|.
+% The other necessary terms, as they correspond to use the impure implementation in \LangB, are intended to interoperate with all effects and interchangeably.
+% To summarize, the capabilities the terms implement are
+% \begin{itemize}
+%   \item \kw{map}
+%   \item \kw{lift}
+%   \item \kw{binding-sequence}
+% \end{itemize}
+% With these in mind, the definition of monad is as follows:
+%
+% \begin{definition}
+%   A type $M : kind → kind$ is a \kw{monad} if there exist terms of the following types:
+%   \begin{itemize}
+%     \item \code|map : (α → β) → M α → M β|
+%     \item \code|lift : α → M α|
+%     \item \code|bind : M α → (α → M β) → M β|
+%   \end{itemize}
+% \end{definition}
+
+However, within \LangA we currently have no type-oriented way to assert that a type $M$ is associated with the expected constructions for qualifying as a monad.
+How could the property of ``being a monad'' be represented in \LangA?
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Type-classes}
+\label{sec:type-classes}
+
+It turns out that \ep{type-classes} are a particularly clean way of representing that terms of particular types have certain properties.
+So before fully extending \LangA with monads, let us first take a detour on \ep{type-classes}, of which monad is just one sort.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Object-Oriented Classes}
+
+The concept of having a \ep{class} of structures is used in many different forms among many different programming languages.
+In object-oriented programming languages, \kw{object-classes} define ``blueprints'' for creating objects which are \kw{object-instances} of the class.
+Such an object-class defines an \ep{interface} that each instance of the class must implement.
+In this way, an object-class specifies an interface to a class of object-instances.
+We shall use Java to demonstrate the object-oriented implementation of classes, and the following is an example of a simple object-class that specifies an interface to lists of integers.
+\begin{snippet-Java}
+class IntegerList {
+  public int head;
+  public IntegerList tail;
+
+  // nil, when given no arguments
+  public IntegerList() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  // cons, when given two arguments
+  public IntegerList(int head, IntegerList tail) {
+    this.head = head;
+    this.tail = tail;
+  }
+}
+\end{snippet-Java}
+Observe how \code`IntegerList` is structured similarly to \code`list` in \LangA (see \prelude{\LangA}), though \code`IntegerList` appears relatively clunky in Java.
+
+
+% The following example will demonstrate this concept in a way that maps onto \ep{type-classes} which will be demonstrated in the next section.
+
+In relating object-classes to \LangA's framework, we use the following analogy:
+\ep{object-instances are to terms as object-classes are to types}.
+For example,
+the object-instance \code`new IntegerList(1, IntegerList())` is to
+the object-class \code`IntegerList` as
+the term \code`[1]` is to
+the type \code`list integer`.
+This is all fine and intuitive as we are familiar with the term-type relationship from working with \LangA and strictly-typed languages in general.
+But what about classes of object-classes?
+In other words, how would we define a higher-order object-class-like that specifies behavior for a class of object-classes?
+Note that we ask this question in order to approach the question of representing classes of types in \LangA.
+
+In object-oriented programming, these higher-order structures are called abstract object-classes.
+An abstract object-class specifies the types of a selection of methods so,
+for an object-class to be an instance%
+\footnote{
+  I am stretching terminology a little here.
+  In normal object-oriented lingo, what I am calling an instance of an abstract object-class would rather be called a sub-class of the abstract object-class.
+  Hence the Java code's use of \code`extends` to instantiate an abtract object-class.
+}
+of the abstract object-class
+So then, in order for an object-class to be an instance of an abstract object-class, the object-class must implement methods and fields of the correct names and types that are specified by the abstract object-class.
+This analogizes to the requirements, to provide certain capabilities, of a type in order to be a monad.
+For an example of an abstract object-class, the following defines an abstract class \code|Animal| as the class of object-classes that have two methods that take no arguments and return \code`String` called \code|eat| and \code|sleep|.
+\begin{snippet-Java}
+abstract class Animal {
+
+  abstract public String eat();
+  abstract public String sleep();
+
+}
+\end{snippet-Java}
+% The motivation for the classes is to allow a parameter to range over a collection of different types of structures given that all of these structures meet some requirements. Then the parameter can be assumed to meet those requirements, regardless of the specific argument structure ends up being provided.
+As is commonly known, both cat and dog are examples of species of animals, so we can create respective object-classes that are instances of the \code|Animal|, which is indicated by the \code|extends Animal| clause:
+\newpage
+\begin{snippet-Java}
+class Cat extends Animal {
+
+  String name;
+  public Cat(String name) { this.name = name; }
+
+  public String eat()   { return this.name + " eats kibble."); }
+  public String sleep() { return this.name + " naps."); }
+  public String hunt()  { return this.name + " hunts for mice."); }
+
+}
+\end{snippet-Java}
+\begin{snippet-Java}
+class Dog extends Animal {
+
+  String name;
+  public Dog(String name) { this.name = name; }
+
+  public String eat()   { return this.name + " eats steak."); }
+  public String sleep() { return this.name + " sleeps wrestlessly."); }
+  public String walk()  { return this.name + " is walked by human."); }
+
+}
+\end{snippet-Java}
+
+Note that while \code|Cat| and \code|Dog| do not share all the same methods and fields, the fact that they are both instances of \code|Animal| guarantees that they at least meet the specification defined by \code|Animal|.
+Since \code|Animal| abstracts over a class of object-classes, we can write functions that work on any object-instance of an object-class instance of \code|Animal|.
+In this example, one can write functions that can work with both \code|Cat| and \code|Dog| instances by only assuming an interface specified by \code|Animal|.
+\begin{snippet-Java}
+String simulate_Animal(Animal a, int steps) {
+  String simulation = "";           // gathers a description of
+                                    // the animal's behavior.
+  for (int i = 0; i < 10; i += 1) { // loop for the number of steps.
+    simulation += a.eat();          // each step, the animal eats
+    simulation += a.sleep();        // and sleeps.
+  }
+  return simulation;
+}
+\end{snippet-Java}
+
+
+This example gives a simple demonstration of how the concept of classes can be introduced into programming semantics.
+Recall the analogy of object-instances, terms, object-classes, and types.
+Where do abstract object-classes fit into this analogy?
+In the next section, \ep{type-classes} are introduced to the \LangA framework to parallel how abstract object-classes behave in object-oriented programming.
+So the analogy completes as \ep{object-instances are to terms as object-classes are to types as abstract object-classes are to type-classes}.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Type-classes}
+
+A \kw{type-class}, with a parameter type, is defined by a selection of capabilities that involve the parameter type.
+A capability takes the form of a name with a type, indicating that a term with the name and of the type must be implemented for each instance.
+There are two parts to introducing classes in code: class definition and class instantiation.
+
+The most straightforward representation of a type-class as a type is as an $n$-ary product type, with a component for each capability.
+For example, the following is a translation of the abstract object-class \code|Animal| into \LangA:
+\begin{snippet}
+// type-class
+type Animal (α : kind)
+  ≔ α → unit → unit // eat
+  ✕ α → unit → unit // sleep
+\end{snippet}
+A term of type \code|Animal $α$| for some type $α$ is a sort of container (as a product) implementation for these capabilities defined for \code|Animal|.
+More generally, another way to think of this is that a term of type \code|$C$ $A$| for some type-class $C$ and type $A$ is a \ep{proof} that $A$ is an instance of $C$.
+This is because the term itself contains the implementation of each of the capabilities required for type-class membership of the type.
+Going forward, this term for a type-class instance will be called \code|impl|, as the implementation of the type-class instance.
+To extract a particular capability, the $i$-th part of \code|impl| is taken where $i$ is the index of the capability in the product.
+We name the class \code`cat`, with instance parameter \code`α`, and name the class capabilities \code`name`, \code`eat`, and \code`sleep`.
+\begin{snippet}
+type Animal (α : kind) : kind
+  ≔ (α → string)  // name
+  ✕ (α → string)  // eat
+  ✕ (α → string). // sleep
+
+term name  (α : kind) (impl : Animal α) ≔ part-1 impl.
+term eat   (α : kind) (impl : Animal α) ≔ part-2 impl.
+term sleep (α : kind) (impl : Animal α) ≔ part-3 impl.
+\end{snippet}
+Likewise instantiating the types \code|cat| and \code|dog| as instances of the class \code|Animal| is written as the following:
+\begin{snippet}
+// definition of cat
+type cat ≔ string.
+term cat-name  (c : cat) ≔ c.
+term cat-eat   (c : cat) ≔ cat-name c ⧺ " eats kibble."
+term cat-sleep (c : cat) ≔ cat-name c ⧺ " naps."
+term cat-hunt  (c : cat) ≔ cat-name c ⧺ " hunts for mice."
+
+// instantiate cat as an instance of class Animal
+term Animal-cat : Animal cat ≔ (cat-eat, cat-sleep).
+\end{snippet}
+\begin{snippet}
+// definition of dog
+type dog ≔ string.
+term dog-name  (d : dog) ≔ d.
+term dog-eat   (d : dog) ≔ dog-name d ⧺ " eats steak.".
+term dog-sleep (d : dog) ≔ dog-name d ⧺ " sleeps wrestlessly.".
+term dog-walk  (d : dog) ≔ dog-name d ⧺ " is walked by human.".
+
+// instantiate dog as an instance of class Animal
+term Animal-dog : Animal dog ≔ (dog-eat, dog-sleep).
+\end{snippet}
+
+Given the type-class \code|Animal| with its instances \code|cat| and \code|dog|, we can write a translation of the Java function \code|simulate_Animal|:
+\begin{snippet}
+term simulate-Animal (α : kind)
+      (impl : Animal α) (a : α) (steps : natural)
+  : string
+  ≔ (string-concat ○ repeat steps)
+      (eat impl a ⧺ sleep impl a).
+\end{snippet}
+
+\subsubsection{Notations for type-classes}
+
+Notice how in the previous section, the style of specification of \code|Animal|, instantiation of \code|Animal|, and requirement of the \code|impl| parameter to use capabilities of \code|Animal| are particularly clunky and unintuitive.
+They look more like a raw, underlying implementation full of details that don't relate simply to the idea of classes of types.
+It would be nice to not have to define the terms \code|$animal$-name|, \code|$animal$-eat|, etc. for each instance $animal$ of \code|Animal|, since the general terms \code|eat|, \code|sleep| are already defined to work on all \code|Animal|s.
+There should be a more simple way of expressing type-class specifications and instantiations than requiring all this boilerplate.
+It turns out that there are some handy notations we can use to capture and simplify the expression of type-classes.
+
+\paragraph{Type-class Specification.}
+A type-class is defined by the specification is gives for its instances.
+The specification consists of a collection of capabilities which are the types of terms that each type-class instance must implement.
+Given this construction, it is possible to write a generalized term for each capability that works for any type-class instance.
+The following notation allows the concise specification of a type-class by just its capabilities, and additionally automatically generates the generalized terms for each capability.
+\begin{notational}[caption={Notation for type-class specification},  label={lst:notation-type-class-def}]
+class $\mvar{class-name}$ ($\mvar{type-param}_*$:$\mvar{kind}_*$) : $\mvar{kind}_c$
+  { $\mvar{term-name}_1$:$\mvar{type}_1$ ; $\cdots$ ; $\mvar{term-name}_n$:$\mvar{type}_n$ }.
+
+$\syneq$
+
+type $\mvar{class-name}$ ($\mvar{type-param}_*$:$\mvar{kind}_*$) : $\mvar{kind}_c$
+  ≔ $\mvar{type}_1$ ✕ $\cdots$ ✕ $\mvar{type}_n$.
+
+term $\mvar{term-name}_1$ ($\mvar{type-param}_*$:$\mvar{kind}_*$) $〚$ ($\mvar{type-param}_i$:$\mvar{kind}_i$) $〛$
+      (impl : $\mvar{class-name}$ $\mvar{type-param}_*$)
+  : $\mvar{type}_j$
+  ≔ part-1 impl.
+$\vdots$
+term $\mvar{term-name}_n$ ($\mvar{type-param}_*$:$\mvar{kind}_*$) $〚$ ($\mvar{type-param}_i$:$\mvar{kind}_i$) $〛$
+      (impl : $\mvar{class-name}$ $\mvar{type-param}_*$)
+  : $\mvar{type}_n$
+  ≔ part-$n$ impl.
+\end{notational}
+Note that is is a little cumbersome to have to provide the \code|impl| argument each time one of the generalized terms is used.
+To avoid this, we shall adopt the convention that the \code|impl| argument is passed implicitly if the type being used has previously been instantiated of the type-class.
+
+\paragraph{Type-class Instantiation.}
+Instantiating the a type $α$ as an instance of a type-class $C$ requires implementing the terms specified by $C$ where $A$ is supplied as the argument to $C$'s first type parameter.
+The following notation conveniently names this implementation and makes explicit $C$'s intended names for each component.
+\begin{notational}[caption={Notation for type-class instantiation}, label={lst:notation-type-class-inst}]
+instance $〚$ ($\mvar{type-param}_i$:$\mvar{kind}_i$) $〛$ ⇒ $\mvar{class-name}$ $\mvar{type}_*$
+  { $\mvar{term-name}_1$:$\mvar{type}_1$ ≔ $\mvar{term}_1$ ; $\cdots$ ; $\mvar{term-name}_n$:$\mvar{type}_n$ ≔ $\mvar{term}_n$ }.
+
+$\syneq$
+
+term $\mvar{class-name}$-$\mvar{type}$
+  : $〚$ ($\mvar{type-param}_i$:$\mvar{kind}_i$) $〛$ ⇒ $\mvar{class-name}$ $\mvar{type}_*$
+  ≔ ($\mvar{term}_1$, $\dots$, $\mvar{term}_n$).
+\end{notational}
+The notation expands to constructing a term with the name \code|$\mvar{class-name}$-$\mvar{type}$|, where $\mvar{type}$ is the instance.
+This convention for naming is adopted so that when an argument \code|impl| for the implementation of $\mvar{type}$'s instantiation of $\mvar{class-name}$, the term \code|$\mvar{class-name}$-$\mvar{type}$| may be implicitly passed.
+Note that as type classes are given here (which is how they are typically given in the real-world programming languages that offer type-classes), a term can be instantiated of a type class only once.
+
+Bringing it all together, we can rewrite the previous program with the type-class \code|Animal|, its instances \code|cat| and \code|dog|, and the function that uses type-class \code|Animal| membership as follows:
+%
+\begin{snippet}
+type Animal (α:kind) : kind
+  { name  : α → string
+  ; eat   : α → string
+  ; sleep : α → string }.
+
+type cat ≔ string.
+
+instance Animal cat
+  { name  c ≔ "cat"
+  ; eat   c ≔ name c ⧺ " eats kibble."
+  ; sleep c ≔ name c ⧺ " naps." }.
+
+type dog ≔ string.
+
+instance Animal dog
+  { name  d ≔ "dog"
+  ; eat   d ≔ name d ⧺ " eats steak."
+  ; sleep d ≔ name d ⧺ " sleeps wrestlessly." }
+
+term simulate-Animal (α:kind) {Animal α} (a:α) (steps:natural) : string
+  ≔ (string-concat ○ repeat steps)
+      (eat a ⧺ " " ⧺ sleep a ⧺ " ").
+\end{snippet}
+%
+Notice that the function \code|simulate-Animal| requires that \code|$α$| is an instance of the type-class \code|Animal| via the argument \code|{Animal $α$}|.
+This is special kind of \kw{implicit argument}, which need not be provided when applying \code|simulate-Animal| but is type-checked by looking for the appropriate \code|instance Animal $α$| declaration somewhere is the program.
+We can apply \code|simulate-Animal| as simply as the following,
+%
+\begin{snippet}
+simulate-Animal ("Labby":dog) 3
+$↠$ $\cdots$ $↠$
+"Labby eats steak. Labby sleeps wrestlessly. Labby eats steak. Labby sleeps wrestlessly. Labby eats steak. Labby sleeps wrestlessly. "
+\end{snippet}
+where the \code|Animal|-instance of \code|dog| is passed implicitly.
+
+% -----------------------------------------------------------------------------
+\section{Monad}
+\label{sec:constructing-monads}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Monad Type-Class}
+\label{sec:monad-type-class}
+
+It turns out that we can model the Monad type-class as a parametrized type, with the type \code|Monad ($M$ : kind → kind) : kind| of terms that implement the monad requirements for $M$.
+In other words, a term of type \code|Monad $M$| ``contains'' in some way (i.e. \ep{implements}) terms with the types of \code|bind|, \code|map|, \code|lift| as defined in section \ref{sec:formalization-of-monad}.
+
+It turns out that we can model the type-class monad as a parametrized type using the intuition established in the previous section.
+In section~\ref{sec:formalization-of-monad}, we extracted that the essential capabilities to being a monad are binding, lifting and mapping.
+So, in the style of type-classes, we can specify a type-class called \code|Monad| that is the class of types that implement such capabilities:
+\begin{program}
+class Monad (M : kind → kind) : kind
+  { lift : (α : kind)   ⇒ α → M α
+  ; map  : (α β : kind) ⇒ (α → β) → M α → M β
+  ; bind : (α β : kind) ⇒ M α → (α → M β) → M β }.
+\end{program}
+Recall that this defines a type \code|Monad| that represents the type-class monad and also the generalized terms \code|map|, \code|lift| and \code|bind| that work for any type-instance of \code|Monad|.
+The following are convenient notations for the generalized terms \code|bind| and \code|sequence| (which is implemented in terms of \code|bind| in the same way explained in section~\ref{sec:demo-monad}).
+\begin{notational}[caption={Notations for binding.}]
+($\mvar{term}_1$:$\mvar{type}_1$) >>= ($\mvar{term}_2$:$\mvar{type}_2$)
+  $\syneq$
+    bind $\mvar{type}_1$ $\mvar{type}_2$ $\mvar{term}_1$ $\mvar{term}_2$
+
+let ($\mvar{term-param}_*$:$\mvar{type}_*$) ← ($\mvar{term}_1$:$\mvar{type}_1$) in ($\mvar{term}_2$:$\mvar{type}_2$)
+  $\syneq$
+    bind $\mvar{type}_1$ ($\mvar{type}_*$ → $\mvar{type}_2$) $\mvar{term}_1$ ($\mvar{term-param}_*$ ⇒ $\mvar{term}_2$)
+\end{notational}
+The operator \code`>>=` is right-associative.
+
+\begin{notational}[caption={Notations for sequencing}]
+$\mvar{term}_1$ >> $\mvar{term}_2$   $\syneq$   sequence $\mvar{term}_1$ $\mvar{term}_2$
+
+do{ $\mvar{term}_1$ ; $\cdots$ ; $\mvar{term}_n$ }   $\syneq$   $\mvar{term}_1$ >> $\cdots$ >> $\mvar{term}_n$
+\end{notational}
+The operator \code`>>` is right-associative.
+
+\begin{notational}[caption={Notation for binding within \code|do| block}]
+do{ $〚$ $\mvar{term}$ ; $〛_1$ ; let $\mvar{term-param}_*$ ← $\mvar{term}_*$ ; $〚$ $\mvar{term}$ ; $〛_2$ }
+  $\syneq$
+    do{ $〚$ $\mvar{term}$ ; $〛_1$ ; let $\mvar{term-param}_*$ ← $\mvar{term}_*$ in do{ $〚$ $\mvar{term}$ ; $〛_2$ } }
+\end{notational}
+
+Finally, in order to use these functions with \code|mutable $σ$|, we need to construct a term of type \code|Monad (mutable $σ$)|.
+This term is the \code|Monad| type-class instantiation for \code|mutable $σ$|.
+\begin{program}[caption={Instance of the mutable monad}]
+instance (σ : kind) ⇒ Monad (mutable σ)
+  { map (α β : kind) (f : α → β) (m : mutable σ α) : mutable σ β
+      ≔ (s : σ) ⇒
+          let (s', a) ≔ m s in
+          (s', f a)
+  ; lift (α : kind) (a : α) : mutable σ α
+      ≔ (s : σ) ⇒ (s, a)
+  ; bind (α β : kind) (m : mutable σ α) (fm : α → mutable σ β)
+      : mutable σ β
+      ≔ (s : σ) ⇒
+          let (s', a) ≔ m s in
+          fm a s' }.
+\end{program}
+Observe that the constructions of \code|map|, \code|lift|, and \code|bind| are the same as those of \code|map|, \code|lift| and \code|bind| in section~\ref{sec:demo-monad}.
+In this concise way, however, we have instantiated the mutability monad without having to name that bunch of \code|mutable|-specific terms when we actually exclusively want the \code|Monad|-general terms.
+
+\newpage
+\paragraph{Example.}
+The following implements the \code|sort-two| program, which was already adapted to \LangC via the Example paragraph in section~\ref{sec:demo-monad}, but here makes use of the new monadic notation.
+%
+\begin{snippet}
+type state : kind { x:integer; y:integer }.
+
+term get-x : mutable state integer ≔ get >>= (lift ○ x).
+term get-y : mutable state integer ≔ get >>= (lift ○ y).
+
+term modify (f : σ → σ) : mutable σ α → mutable σ α
+  ≔ get >>= (set ○ f).
+
+term set-x : integer → mutable state integer ≔ modify set-x.
+term set-y : integer → mutable state integer ≔ modify set-y.
+
+term sort-two : mutable state unit
+  ≔ do
+      { vx ← get-x
+      ; vy ← get-y
+      ; if vx > vy
+          then set-x y >> set-y x
+          else lift • }.
+\end{snippet}
+%
+The expected \code|initialize| function implemented exactly as before in section~\ref{sec:demo-monad}.
+
+Here, in particular,
+the \code|>>=| infixed notation for \code|bind| and
+the \code|do| notation for sequencing make the code much more readable.
+The \code|do| block is very reminiscent of an imperative style.
+
+
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\newpage
+\subsection{Mondad Properties}
+
+We have described a type-class for monad that requires a selection of capabilities in order to be instantiated for particular monads.
+However, there is more to being a monad than just implementing these capabilities --- in particular the implementations must satisfy what are called the \ep{coherence conditions} for monad capabilities.%
+\footnote{
+  The conditions presented here for monads are in a form more directly related to what are called Kleisli triples.
+  However the resulting structures are equivalent.
+}
+
+\begin{table}[h]
+\captionof{table}{Coherence conditions for \code|Monad|}
+\begin{itemize}
+\item[]
+Let $M$ be a monad instance and $α, β$ be types.
+\begin{itemize}
+  \item
+    Extending lift yields the identity on \code|$M$ $α$|, written as \\
+    \code|extend lift $=$ identity|.
+  \item
+    For any functions \code|$f$ : $α$ → $M$ $β$| and \code|$g$ : $β$ → $M$ $γ$|, we have \\
+    \code|extend $g$ ○ extend $f$ $=$ extend (extend $g$ ○ $f$)|
+  \item
+    For any function \code|$f$ : $α$ → $M$ $β$|, we have \\
+    \code|extend $f$ ○ lift $=$ $f$|
+\end{itemize}
+\end{itemize}
+\end{table}%
+\footnote{
+  These conditions make use of a meta-level equivalence relation $=$, which is not expressible withing \LangC (nor any other language presented in this work).
+  Two terms are considered equal under this relation if and only if they are the same value or, if they are functions, the reduce to the same value when given the same inputs (this concept becomes more complicated when implicit contexts are involved, which \LangC mostly avoids).
+  This is the basic idea of \ep{functional extensionality}, where the proposition $f = g$ claims that $f$ and $g$ are \ep{functionally equivalent}.
+  See \cite{Awodey2004} and the later \cite{Wadler2015} for an introduction to the type-theoretic treatment of this subject.
+}
+
+The conditions make use of the following functions:
+\begin{program}
+term join {Monad M} (α:Type) (mm : M (M α)) : M α
+  ≔ mm >>= identity.
+
+term extend {Monad M} (f : α → M β) : M α → M β
+  ≔ join ○ (lift ○ f)
+\end{program}
+In fact, we could have defined \code|lift| and \code|map| in terms of \code|join| and \code|extend|, but it turns out that \code|lift| and \code|map| are much more intuitive from a programing-languages perspective and the conditions presented are from a category-theoretic perspective.
+Note that the coherence conditions are not enforced by \LangC, but they are assumed checked throughout the rest of this work whenever a monad is instantiated.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Language \LangC}
+\label{sec:LangC}
+
+So far we have seen the mutability effect represented as a monad, which is entirely representable in \LangA code.
+We shall define a new language, \LangC, that uses the monadic strategy for implementing the mutability effect to implement effects in general.
+This is very similar to how monadic effects are implemented in the Haskell programming language.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Monadic Internal Effects}
+
+Constructively-instantiated monads (as apposed to primtively-instantiated) explicitly define the behavior of their corresponding effects, and so these are internal effects.
+Recall how in \LangB, each internal effect had a fully-mathematically specified reduction context.
+In \LangC, the monad instance for each internal effect will play the role that each \LangB reduction context played.
+
+% -----------------------------------------------------------------------------
+\subsubsection{Exception}
+
+In \LangB, the exception effect was implemented using a reduction context that indicated whether or not there was an exception.
+Additionally if there was an exception, then the context contained an associated term (the \ep{throw term}).
+The following definitions inspire a parallel construction in terms of a type \code|exceptional| that we will soon instantiate as a monad:
+\begin{program}[caption={Definition of \code|exceptional|}, label={lst:def-exceptional}]
+type exceptional (ε α : kind) : kind
+  ≔ valid : α → exceptional ε α
+  | throw : ε → exceptional ε α.
+\end{program}
+Here, \code|ε| is the \ep{throw type} --- the type of throw terms.
+And, \code|α| is the \ep{valid type} ---  the normal type of the expression should no exceptions be thrown.
+For a fixed exception type \code|ε|, the type \code|exceptional ε| (equivalently written \code|α ⇒ exceptional ε α|) is a monad, parametrized by the valid type.
+
+\newpage
+\begin{program}[caption={Instance of the exception monad}, label={lst:inst-exception-monad}]
+instance (ε : kind) ⇒ Monad (exceptional ε)
+  { map (α β : kind)
+      (f : α → β) (m : exceptional ε α)
+      : exceptional ε β
+      ≔ cases m
+          { throw e ⇒ throw e
+          | valid a ⇒ valid (f a) }
+  ; lift (α : kind)
+      (a : α)
+      : exceptional ε α
+      ≔ valid a
+  ; bind (α β : kind)
+      (m : exceptional ε α) (fm : α → exceptional ε β)
+      : exceptional ε β
+      ≔ cases m
+          { throw e ⇒ throw e
+          | valid a ⇒ fm a } }.
+\end{program}
+
+\paragraph{Catching exceptions.}
+For terms of type \code|exceptional $ε$|, we would like a catching-capability such as appeared in \LangB's syntax for exception.
+Such a capability takes an input \code|(exceptional $ε$ $α$)|-term and outputs a pure $α$-term, given a exception-continuation of type \code|$ε$ → $α$|.
+The term \code|catching| implements this capability, and the notation following it allows catching to be written in a way reminiscent of \LangB but now explicitly typed.
+\begin{program}[caption={Definition of catching for exceptions}]
+term catching (ε α : kind) (k : ε → α) (m : exceptional ε α) : α
+  ≔ cases m
+      { throw e ⇒ k e
+      | valid a ⇒ a }.
+\end{program}
+%
+\begin{notational}[caption={Notation of catching for exceptions}]
+catch{ ($\mvar{term-param}_1$:$\mvar{type}_1$) ⇒ ($\mvar{term}_2$:$\mvar{type}_2$) } in $\mvar{term}_3$
+  $\syneq$
+    catching $\mvar{type}_1$ $\mvar{type}_2$ (($\mvar{term-param}_1$:$\mvar{type}_1$) ⇒ ($\mvar{term}_2$:$\mvar{type}_2$))
+      $\mvar{term}_3$
+\end{notational}
+%
+Notice that we don't need to specify anything analogous to $\mvar{exception-name}$ from \LangB's implementation of the exception effect.
+This is because correctly matching throws and catches is managed explicitly by the types of the terms involved.
+A term of type \code|exceptional int boolean| cannot be managed by a \code|catch| for \code|exceptional string boolean| --- it wouldn't even type-check!
+Nested exceptions must be explicitly written as such.
+For example, an expression that two \code|string|-exceptions and result type $α$ would have the type \code|exceptional string (exceptional string $α$)|.
+
+\paragraph{Example.}
+Revisiting the safe division example, the code should look very similar to \LangB, except for the more verbose type signature.
+%
+\begin{snippet}
+term divide-safely (i j : integer)
+  : exceptional integer integer
+  ≔ if j == 0
+      then throw i
+      else valid (i/j)
+\end{snippet}
+%
+In addition to \code|throw i| needing to have type \code|exceptional integer integer|,
+the other branch of the \code|if| needs to have the matching type and thus \code|(i/j)| must be lifted into having type \code|exceptional integer integer|.
+The \code|lift| capability of monads in general achieves this, since \code|(i,j)| is indeed what we want to result in, and this turns out to be equivalent to \code|valid| as per the instantiation of the exception monad in listing~\ref{lst:inst-exception-monad}.
+
+
+% -----------------------------------------------------------------------------
+\subsubsection{Nondeterminism}
+
+To implement nondeterminism monadically, we have a couple different options.
+The option closest to \LangB's implementation is to a version of the \code|mutability| monad that statefully keeps track of a \ep{seed} that acts as a source of nondeterminism.
+The random seed can be represented as a list, and to produce a random value the head of the list is removed.
+The following implements this scheme for nondeterminism:
+%
+\begin{snippet}
+type seeded-nondeterministic (θ α : kind) ≔ mutable (list θ) α.
+
+term seeded-select (θ:Type) : seeded-nondeterministic θ θ
+  ≔ do
+      { let l ← get
+      ; set (tail l)
+      ; lift (head l) }.
+
+term seed (θ α : kind) : list θ → seeded-nondeterministic θ α → α
+  ≔ initialize.
+\end{snippet}
+%
+Note that \code|seeded-nondeterministic| inherits its monad instance from \code|mutable|.
+
+There is a more interesting possibility though.
+Suppose we would like to collect all the possible results of a nondeterministic computation.
+A useful structure for this is in fact the simple \code|list| data type, and we can use it directly as our monad of choice.
+%
+\begin{program}[caption={The nondeterminisic monad}]
+type nondeterministic : kind → kind ≔ list.
+
+instance Monad nondeterministic
+  { map f m   ≔ cases m
+                  { [] ⇒ []
+                  | a ∷ m' ⇒ f a ∷ map f m' }
+  ; lift a    ≔ [a]
+  ; bind m fm ≔ concat (map fm m) }.
+\end{program}
+%
+Note that \code|map| is defined recursively, but is guaranteed to terminate because lists are constructed and thus are finite.
+
+\paragraph{Example.}
+Recall the \code|coin-flip| function presented in \LangB.
+Using the \code|nondeterministic| monad we can implement the safe function in \LangC:
+%
+\begin{snippet}
+term coin-flip : nondeterministic boolean ≔ [true, false].
+
+term lucky : nondeterministic boolean
+  ≔ do
+      { let a ← coin-flip
+      ; let b ← coin-flip
+      ; lift (a ∧ b) }.
+\end{snippet}
+%
+The term \code|lucky| flips two coins and results in \code|true| only if both flips were ``heads.''
+The following reduction demonstrates the monadic computation of each of the four computational pathways:
+\begin{snippet}
+do{ let a ← coin-flip; let b ← coin-flip; lift (a ∧ b) }
+$\rto$
+coin-flip >>= (a ⇒ coin-flip >>= (b ⇒ lift (a ∧ b)))
+$\rto$
+coin-flip >>= (a ⇒ coin-flip >>= (b ⇒ [a ∧ b]))
+$\rto$
+coin-flip >>= (a ⇒ concat (map (b ⇒ [a ∧ b]) [true, false]))
+$\rto$
+coin-flip >>= (a ⇒ [[a ∧ true], [a ∧ false]])
+$\rto$
+concat (map (a ⇒ [[a ∧ true], [a ∧ false]]) [true, false])
+$\rto$
+[true ∧ true, true ∧ false, false ∧ true, false ∧ false]
+$\rto$
+[true, false, false, false]
+\end{snippet}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Monadic External Effects}
+
+For external effects, the implicit context is an interface to some external implementation that handles the effect.
+In this way, it is impossible to provide a constructively-instantiated monad instance for external effects.
+So, external monadic effects are introduced in \LangC via primitively-declared types that are primitively-instantiated as monads.
+This introduces potential danger because even though the external implementation may not behave as expected or even meet the requirements of \code|Monad|,
+the specifications and behavior are not expressible within \LangC and thus \LangC must assume a correct interface regardless.
+
+% -----------------------------------------------------------------------------
+\subsubsection{\IO}
+
+We use \IO as a canonical example of an external effect.
+In \LangB, the \IO effect was facilitated by an implicit reduction context $\ioctx$ that responded to commands of the form \code|$\ioctx($input •$)$| or \code|$\ioctx($output $s$$)$|, where \code|$s$:string|.
+Here we declare a primitive type \code|io|, the monad for the \IO effect, that acts as an explicit version of $\ioctx$.
+And, we declare primitive terms \code|input| and \code|output| that provide the input and output capabilities of \IO and have the appropriate types making use of \code|io|.
+%
+\begin{program}[caption={Definitions for the monadic \IO effect}]
+primitive type io : kind → kind.
+primitive instance Monad io.
+
+primitive term input  (α : kind) : IO α.
+primitive term output (α : kind) : α → IO unit.
+\end{program}
+
+We still must include $\ioctx$ in the implicit reduction context for \LangC, but its usage is now explicitly typed by \code|io| and so no longer hides whether or not a term uses the \IO effect.
+As the terms \code|input|, \code|output| and the terms defined by the \code|Monad io| instance are declared primitively, we must provide additional reduction rules to describe how they interact with $\ioctx$.
+%
+\input{langs/C/reduction-io}
+%
+\noindent
+(The specification of $\ioctx$ is inherited from \LangB.)
+Here, a term of the form $\ioval{a}$ indicates that the term was produced by a computation using the \IO effect.
+There is no way to reduce from a $\ioval{a}$ to a pure $a$ since the results of using the \IO effect cannot be removed.
+Making use of this, it is common for programming languages using monadic effects, such as Haskell, to require a top-level term \ep{main} of type \code|io unit| that is evaluated when the program file is run.
+
+%
+The following implements the familiar greeting example using the monadic \IO effect.
+\begin{program}
+term greetings : unit
+  ≔ do
+      { let name ← input
+      ; output ("Hello, " ⧺ name) }.
+\end{program}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Considerations for Monadic Effects}
+\label{sec:ME-considerations}
+
+% justify
+%
+Monadic effects offer a strategy for implementing effects that preserves many of the advantages of \LangA over \LangB.
+Individual effect monads --- instances of the \code|Monad| type-class --- tag terms that use their effects.
+In so doing, the use of effects is considered explicitly in the writing of \LangC programs, allowing better reasoning about effects than implicit, imperative effects do.
+Additionally, the monadic structure captured the idea of and specification for ``effect'' in terms of \LangC code, rather than having to rely on an unenforced, external definition.
+Altogether, these features count well towards the safety of \LangC's effects.
+Justifications like these have been forwarded by the likes of \cite{MOGGI199155} and \cite{Plotkin2001} in order to propose the use of monadic effects in industry programming languages.
+The most popular result of this movement is use of monadic effects as the core effect framework in the Haskell programming language.
+
+% problems
+%
+However, these benefits do not come without costs.
+In \cite{peytonjones2001tackling}, some drawbacks to monadic effects are detailed (relating to Haskell in particular, and along with some suggested extensions).
+The main problem is that monadic effects are difficult to use for real-world applications, which stems from two sources:
+managing monads is difficult for a programmer, and
+monadic effects do not compose.
+
+In regards the first source:
+while the explicit typing of effects is useful for reasoning
+it also makes programs more complicated to write.
+In \LangB, a programmer need only consider result types and computations were handled implicitly.
+In \LangC, a programmer must consider both the result types and any monads being worked within.
+The \code|do| notation assists this, but there is still the complication of always needing to explicitly lift pure terms into trivial computations (via \code|lift|) and likewise for pure mappings (via \code|map|).
+
+In regards to the second source:
+the problem of composing monadic effects is the problem of
+monads not playing well together.
+To compose monadic effects is to use different monadic effects in sequence.
+For example, suppose we want to write an integer-stateful computation \code|safely-divide-state| with parameter \code|$i$ : integer| that divides $i$ safely by the state and (only if the quotient is defined) then sets the new state to be the result of this.
+In \LangC this function must be look something like the following:
+\begin{snippet}
+term safely-divide-state (i:integer) : mutable integer unit
+  ≔ do
+      { let j ← get
+      ; let q ≔ catch{ i ⇒ j } in safely-divide i j
+      ; set q }.
+\end{snippet}
+But notice, however, that we would not have been able to write it with the \code|catch| statement on the outside of the \code|mutable|'s do block, like so:
+\begin{snippet}
+term safely-divide-state (i:integer) : mutable integer unit
+  ≔ catch{ i ⇒ j } in
+    do
+      { let j ← get
+      ; let q ≔ safely-divide i j
+      ; set q }.
+\end{snippet}
+This term is not well-formed because the type of \code|q| is \code|exceptional integer integer| but the next line's \code|set q| expects \code|q| to instead have type \code|integer|.
+The \code|catch| statement is intended to resolve this, but since it occurs outside of the mutable effect it cannot apply before the mutability effect.
+
+% inspirations
+%
+The inability to compose monadic effects imposes a strict, hierarchical structure to using them.
+As demonstrated by \code|safely-divide-state|, the effects are forced to be done at different levels rather than sequenced in parallel (i.e. composed).
+Moving forward, an inspiration is to implement effects in a way that maintains the advantages of \LangC but also allows for composable effects.
+In the next chapter, \LangD's algebraic effect handlers take a different approach to implementing effects, which achieves composability of effects and simpler types, but sacrifices some of the expressivity and type-safety of \LangC.

@@ -1,0 +1,57 @@
+\begin{snippet}
+term h ≔ initialize store (1, 2, false).
+
+$[]$ ; $[]$ ‖ experiment with initialize h
+
+$↠$ (Handle)
+$[$h$]$ ; $[]$
+  ‖ do{ s ← store#get •
+      ; x ← part-1 s
+      ; y ← part-2 s
+      ; store#set (x, y, x < y) }
+$↠$ (Perform)
+$[$h$]$ ; $[$$($store#get •$,$ a1$)$$]$
+  ‖ do{ s ← a1
+      ; x ← part-1 s
+      ; y ← part-2 s
+      ; store#set (x, y, x < y) }
+$↠$ (Simplify)
+$[$h$]$ ; $[$$($store#get •$,$ a1$)$$]$
+  ‖ do{ x ← part-1 a1
+      ; y ← part-2 a1
+      ; store#set (x, y, x < y) }
+$↠$ (Simplify)
+$[$h$]$ ; $[$$($store#get •$,$ a1$)$$]$
+  ‖ store#set (part-1 a1, part-2 a1, part-1 a1 < part-2 a1)
+$↠$ (Perform)
+$[$h$]$
+; $[$$($store#set (part-1 a1, part-2 a1, part-1 a1 < part-2 a1)$,$ a2$)$
+$ $▷ $($store#get •$,$ a1$)$$]$
+  ‖ a2
+$↠$ (Handle-Value)
+$[$$\unvalued($h$)$$]$
+; $[$$($store#set (part-1 a1, part-2 a1, part-1 a1 < part-2 a1)$,$ a2$)$
+$ $▷ $($store#get •$,$ a1$)$$]$
+  ‖ a ⇒ a2
+$↠$ (Handle-Performance)
+$[$$\unvalued($h$)$$]$ ; $[$$($store#get •$,$ a1$)$$]$
+  ‖ (a k ⇒ (_ ⇒ k • a))
+      (store#set (part-1 a1, part-2 a1, part-1 a1 < part-2 a1))
+      (a2 ⇒ (a' ⇒ a2))
+$↠$ (Simplify)
+$[$$\unvalued($h$)$$]$ ; $[$$($store#get •$,$ a1$)$$]$
+  ‖ a' ⇒ (part-1 a1, part-2 a1, part-1 a1 < part-2 a1))
+$↠$ (Handle-Performance)
+$[$$\unvalued($h$)$$]$ ; $[]$
+  ‖ (_ k ⇒ (a ⇒ k a a))
+      •
+      (a1 ⇒ (a' ⇒ (part-1 a1, part-2 a1, part-1 a1 < part-2 a1)))
+$↠$ (Simplify)
+$[$$\unvalued($h$)$$]$ ; $[]$ ‖ a ⇒ (part-1 a, part-2 a, part-1 a < part-2 a)
+$↠$ (Handle-Final)
+$[]$ ; $[]$ ‖ (a ⇒ (part-1 a, part-2 a, part-1 a < part-2 a)) (1, 2, false)
+$↠$ (Simplify)
+$[]$ ; $[]$ ‖ (1, 2, 1 < 2)
+$↠$ (Simplify)
+$[]$ ; $[]$ ‖ (1, 2, true)
+\end{snippet}

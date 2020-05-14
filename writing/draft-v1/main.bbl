@@ -1,0 +1,76 @@
+\begin{thebibliography}{10}
+
+\bibitem{Awodey2004}
+Steven Awodey and Andrej Bauer.
+\newblock Propositions as [types].
+\newblock {\em Journal of Logic and Computation}, 14:447--471, 08 2004.
+
+\bibitem{Bauer2013}
+Andrej Bauer and Matija Pretnar.
+\newblock An effect system for algebraic effects and handlers.
+\newblock volume~10, 06 2013.
+
+\bibitem{Bauer2015ProgrammingWA}
+Andrej Bauer and Matija Pretnar.
+\newblock Programming with algebraic effects and handlers.
+\newblock {\em J. Log. Algebraic Methods Program.}, 84:108--123, 2015.
+
+\bibitem{Church1936}
+Alonzo Church.
+\newblock An unsolvable problem of elementary number theory.
+\newblock {\em American Journal of Mathematics}, 58(2):345--363, 1936.
+
+\bibitem{Church1940}
+Alonzo Church.
+\newblock A formulation of the simple theory of types.
+\newblock {\em The Journal of Symbolic Logic}, 5(2):56--68, 1940.
+
+\bibitem{KiselyovIshii2015}
+Ishii~H Kiselyov~O.
+\newblock Freer monads, more extensible effects.
+\newblock volume~50, 03 2015.
+
+\bibitem{Milner1999}
+Robin Milner.
+\newblock Communicating and mobile systems: the pi-calculus.
+\newblock 1999.
+
+\bibitem{MOGGI199155}
+Eugenio Moggi.
+\newblock Notions of computation and monads.
+\newblock {\em Information and Computation}, 93(1):55 -- 92, 1991.
+\newblock Selections from 1989 IEEE Symposium on Logic in Computer Science.
+
+\bibitem{peytonjones2001tackling}
+Simon Peyton~Jones.
+\newblock {\em Tackling the awkward squad: monadic input/output, concurrency,
+  exceptions, and foreign-language calls in Haskell}, pages 47--96.
+\newblock IOS Press, January 2001.
+
+\bibitem{Plotkin200101}
+Gordon Plotkin and John Power.
+\newblock Adequacy for algebraic effects.
+\newblock volume 2030, 01 2001.
+
+\bibitem{Plotkin2001}
+Gordon Plotkin and John Power.
+\newblock Notions of computation determine monads.
+\newblock volume 2303, 12 2001.
+
+\bibitem{Plotkin2009}
+Gordon Plotkin and Matija Pretnar.
+\newblock Handlers of algebraic effects.
+\newblock pages 80--94, 08 2009.
+
+\bibitem{Turing1936}
+Alan Turing.
+\newblock On computable numbers, with an application to the
+  entscheidungsproblem.
+\newblock 1936.
+
+\bibitem{Wadler2015}
+Philip Wadler.
+\newblock Propositions as types.
+\newblock {\em Communications of the ACM}, 58:75--84, 11 2015.
+
+\end{thebibliography}

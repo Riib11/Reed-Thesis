@@ -1,0 +1,57 @@
+\begin{table}[H]
+  \centering
+  \captionof{table}{Syntax for \LangA}
+  \begin{tabular}{r|L{21.5em}|l}
+    \tbf{metavariable} &
+    \tbf{generator} &
+    \tbf{name}
+  \\ \hline \hline && \\
+    \mvar{program}
+      & $〚$ \mvar{declaration} $〛$
+      & program
+  \\[1em] \hline && \\
+    \mvar{declaration}
+      & \code|type $\mvar{type-name}$ : $\mvar{kind}$ ≔ $\mvar{kind}$.|
+      & constructed type
+    \\[1em]
+      & \code|primitive type $\mvar{type-name}$ : $\mvar{kind}$.|
+      & primitive type
+    \\[1em]
+      & \code|term $\mvar{term-name}$ : $\mvar{type}$ ≔ $\mvar{term}$.|
+      & constructed term
+    \\[1em]
+      & \code|basic term $\mvar{term-name}$ : $\mvar{type}$ ≔ $\mvar{term}$.|
+      & basic term
+    \\[1em]
+      & \code|primitive term $\mvar{term-name}$ : $\mvar{type}$.|
+      & primitive term
+  \\[1em] \hline && \\
+    \mvar{kind}
+      & \code|kind|
+      & atom
+    \\[1em]
+      & \code|kind → $\mvar{kind}$|
+      & arrow
+  \\[1em] \hline && \\
+    \mvar{type}
+      & \mvar{type-name}
+      & atom
+    \\[1em]
+      & \code|($\mvar{type-param}$:$\mvar{kind}$) ⇒ $\mvar{kind}$|
+      & function
+    \\[1em]
+      & \code|$\mvar{kind}$ $\mvar{kind}$|
+      & application
+  \\[1em] \hline && \\
+    \mvar{term}
+      & \mvar{term-name}
+      & atom
+    \\[1em]
+      & \code|($\mvar{term-param}$:$\mvar{type}$) ⇒ $\mvar{term}$|
+      & function
+    \\[1em]
+      & \code|$\mvar{term}$ $\mvar{term}$|
+      & application
+  \end{tabular}
+  \label{tab:LangA-syntax}
+\end{table}

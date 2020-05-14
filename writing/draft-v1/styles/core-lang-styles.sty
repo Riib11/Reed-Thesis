@@ -1,0 +1,57 @@
+\RequirePackage{styles/base}
+\RequirePackage{styles/font-styles}
+
+% ------------------------------------------------------------------------------
+
+\lstdefinelanguage{core}{%
+  %
+  % specials
+  %
+    alsoletter={-}
+  %
+  % vernaculars
+  %
+  , emph = {let, in, to, cases, if, then, else, while, loop, done, catch, do, with, handler, for, value, final}
+  , emphstyle = {\codevernstyle}
+  %
+  % keywords
+  %
+  , morekeywords = {basic, primitive, term, type, exception, class, instance, resource, channel, of, effect, lifts}
+  % , morekeywords = {primitive-term}
+  , keywordstyle = {\codekeystyle}
+  %
+  % strings
+  %
+  , stringstyle = {\codestringstyle}
+  , morestring = [b]"
+  , showstringspaces = false
+  %
+  % comments
+  %
+  , commentstyle = {\codecommentstyle}
+  , morecomment = [s]{/*}{*/}
+  , morecomment = [l]{//}
+}
+
+\lstdefinelanguage{pseudocode}{%
+  %
+  % specials
+  %
+    alsoletter={-}
+  %
+  % vernaculars
+  %
+  % , emph = {let, in, to, case, catch, of, do, with, handler, value, final}
+  % , emphstyle = {\codevernstyle}
+  %
+  % keywords
+  %
+  % , morekeywords = {primitive, term, type, class, instance}
+  % , morekeywords = {primitive-term}
+  % , keywordstyle = {\codekeystyle}
+}
+
+
+% ------------------------------------------------------------------------------
+\endinput
+% ------------------------------------------------------------------------------

@@ -1,0 +1,38 @@
+\RequirePackage{styles/base}
+
+% ------------------------------------------------------------------------------
+% styles
+
+% \newcommand{\codekeystyle}{\bfseries\color{brown}}
+\newcommand{\codekeystyle}{\bfseries\color{Violet}}
+\newcommand{\codekey}[1]{{\codekeystyle #1}}
+
+% \newcommand{\codevernstyle}{\bfseries\color{blue}}
+% \newcommand{\codevernstyle}{\bfseries\color{Tan}}
+\newcommand{\codevernstyle}{\bfseries\color{gray}}
+\newcommand{\codevern}[1]{{\codevernstyle #1}}
+
+\newcommand{\codecommentstyle}{\CMUSerif\itshape\color{Periwinkle}}
+\newcommand{\codecomment}[1]{{\codecommentstyle #1}}
+
+\newcommand{\codestringstyle}{\color{CadetBlue}}
+\newcommand{\codestring}[1]{{\codestringstyle #1}}
+
+
+
+% ------------------------------------------------------------------------------
+% commands
+
+% \newcommand{\code}[1]{\lstinline[]|#1|} % code
+% \newcommand{\codem}[1]{\mbox{\lstinline[]|#1|}} % code in math
+
+\newcommand{\codem}[1]{\ttt{#1}} % code in math
+
+% \newcommand{\code}[1]{\lstinline[mathescape = false, escapechar = {$}, escapebegin = {\(}, escapeend = {\)}]|#1|}
+% \newcommand{\codem}[1]{\mbox{\lstinline[mathescape = false, escapechar = {$}, escapebegin = {\(}, escapeend = {\)}]|#1|}}
+\newcommand{\code}
+  {\lstinline[mathescape = false, escapechar = {$}, escapebegin = {\(}, escapeend = {\)}]}
+
+% ------------------------------------------------------------------------------
+\endinput
+% ------------------------------------------------------------------------------

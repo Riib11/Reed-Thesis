@@ -1,0 +1,33 @@
+\begin{snippet}
+greetings with h
+
+io#output ("Hello, "⧺(io#input •)) with h
+
+io#output ("Hello, "⧺(io#input •))
+
+io#output ("Hello, "⧺a1)
+
+a2
+
+
+
+is os ⇒ (os, a2)
+
+
+
+(x k is os k • is (os ◇ [x]))
+  ("Hello, "⧺a1) (a2 is os ⇒ (os, a2))
+
+is os ⇒ (os ◇ ["Hello, "⧺a1], •)
+
+
+(_ k is os ⇒ k (head is) (tail is) os)
+  • (a1 is os ⇒ (os ◇ ["Hello, "⧺a1], •))
+
+is os ⇒ (os ◇ ["Hello, "⧺head is], •)
+
+(is os ⇒ (os ◇ ["Hello, "⧺head is], •))
+  ["Henry", "Blanchette"] []
+
+(["Hello, Henry"], •)
+\end{snippet}

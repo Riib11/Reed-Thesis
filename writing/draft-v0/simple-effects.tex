@@ -1,0 +1,817 @@
+\chapter{Imperative Effects}
+\label{ch:simple-effects}
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\section{Declarative and Imperative Languages}
+\label{sec:declarative-and-imperative-languages}
+
+Previously in section~\ref{sec:LangA}, we defined \LangA as a basic variant of the $λ$-calculus and contrasted it to a Turing-machine inspiration for programming languages.
+This distinction arises in programming languages in general as between \ep{declarative} (generally \lc-like) and \ep{imperative} (generally TM-inspired sequentially-instructional) languages.
+\ep{Declaratived} programming languages have a style focussed on \ep{mathematically defining the result of computations} i.e. the logic rather that execution flow.
+\ep{Imperative} programming languages, in contrast, have a style focussed on \ep{instructing how computations should be carried out} i.e. the execution flow rather than logic.
+The differences between these kinds arise only in high-level programming languages, because low-level languages (assembly and C-level languages) are by definition instructing the computer what to do roughly step-by-step.
+% And of course, programs written in any language, no matter how abstract, are eventually compiled into low-level code.
+Additionally, many languages implement features from both of these categories.
+
+\begin{blockdefinition}
+  \kw{Declarative} programming language treat computation as the evaluation of stateless mathematical functions considered within a stateless mathematical context.
+  Such languages often assume immutable names and explicit delineations between (unsafe) stateful and stateless expressions.
+  Examples: Scheme, Lisp, Standard ML, Clojure, Scala, Haskell, Agda, Gallina, Coq, Scala.
+\end{blockdefinition}
+
+\begin{blockdefinition}
+  \kw{Imperative} programming languages treat computation as a sequence of instructions carried out within a stateful execution context.
+  Such languages typically assume mutable names and other stateful structures.
+  Example: Smalltalk, Simula, Algol, Bash, Java, C, C++, Python.
+\end{blockdefinition}
+
+As an example, consider the familiar task of summing a list of integers.
+A declarative algorithm to solve this task is the following.
+\begin{descgram}{The sum of a list of integers (declaratively)}
+Let $l$ be a given list of integers.
+If $l$ is empty, then the sum is $0$.
+Otherwise $l$ is not empty, so the sum is $h$ plus the sum of $t$,
+where $h$ is the head of $l$ and $t$ is the tail of $l$.
+\end{descgram}
+%
+On the other hand, an imperative algorithm for the same task is the next.
+\begin{descgram}{The sum of a list of integers (imperatively)}
+Let $l$ be a given list of integers.
+Declare $s$ to be an integer variable,%
+\footnote{
+  It is an unfortunate convention, outside this work, that all programmer-introduced names are referred to as \ep{variables}.
+  While it is true that the same name $x$ may be bound to different values in different algorithms, it is not necessarily true that $x$ may be mutated within the same algorithm.
+  This is especially relevant to the declarative programming style where, in this terminology, typically \ep{no variables are mutable} --- an unfortunate and entirely avoidable clash of terms.
+  A more consistent terminology defines
+  a \kw{name} to be reference to a value,
+  an \kw{immutable} name (or \kw{constant}) to be a name who's value cannot be mutated, and
+  a \kw{mutable} name (or \kw{variable}) to be a name who's value can be mutated.
+  (Note that I am using ``value'' in a more generalized sense here than I use in the definition of reduction rules.)
+  In order to set an example in this work, it shall use this terminology.
+}
+and initialize $s$ to be $0$.
+Declare $i$ to be an natural-number variable, and initialize $i$ to be $0$.
+If $i$ is less than the length of $l$, then declare $x$ to be the $i$-th element of $l$ and set $s$ to $s + x$, then set $i$ to $i + 1$, then repeat this sentence;
+  otherwise, the sum is $s$.
+\end{descgram}
+%
+
+In the declarative style, the algorithm describes what the sum of a list of integers in terms of an inductive understanding of a list as either empty or a head integer and a tail list.
+Such an inductive structuring of a list naturally yields a recursive definition.
+On the other hand, in the imperative style, the algorithm describes how to keep track of the partial sum while stepping through the list.
+This naturally yields a definition with a conditional loop (via the ``repeat this sentence'' clause) that repeats for each list element and a variable to store the partial sum.
+
+
+
+However, the categories of imperative and declarative are not so strict --- many languages borrow styles from both.
+For the most part, these categories are stylistic rather than strict.
+For example, many declarative languages have special support for mutable variables and other stateful structures.
+And, many high-level%
+\footnote{High-level in terms of abstraction from directly interfacing with the computer, which always executes in an way paralleling an imperative description.}
+imperative languages provide certain structures that mimic declarative definitions that may be translated to imperative definitions at a lower level.
+
+% The perspective on effects is not the only way in which these groups differ, but nevertheless it is an important one.
+% Among declarative programming languages, we shall consider two in particular: Standard ML and Haskell. Standard ML takes a very relaxed approach to effects, and Haskell takes a more restrictive approach.
+
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\section{Computation with Effects}
+\label{sec:computation-with-effects}
+
+It turns out that the well-known distinction between declarative and imperative programming languages maps onto a lesser-known distinction between effectual and pure programming languages.
+For terms in \LangA, reductions are \kw{context independent} --- the evaluation of a term relies only on information contained explicitly within the term.
+% A function $f$ applied to a term $a$ is defined entirely
+% Fundamentally, terms in \LangA are either values or function applications of the form \code|($x$ ⇒ $b$) $a$|.
+% And since $a,b$ are explicit \LangA-terms and the application merely substitutes them,
+% NOTE: convincing example of how \LangA terms are context independent}
+
+In imperative languages, and so almost all used languages, it is rarely the case that evaluation is context independent.
+The real state of programming is full of stateful and contextualized structures, such as variables, pointers, object instances, and many more.
+As a simple example, just consider mutability.
+This Java program defines a class with two methods%
+\footnote{
+  In object-oriented programming lingo, the functions defined in an object class are called \kw{methods}, which the class implements for each instance of the class.},
+\code`increment` and \code`triple`,
+that each perform a different mutation of the class's variable field%
+\footnote{
+  In object-oriented programming lingo, the non-function names defined in an object are called \kw{fields}, which each class instance gets its own unique of.},
+\code`x`.
+
+\begin{snippet-Java}
+class A {
+  int x;
+
+  // creates a new instance of A
+  // with a field x set to the given x value
+  public A(int x) {
+    this.x = x;
+  }
+
+  // adds 1 to this A instance's field x
+  public void increment() {
+    this.x = this.x + 1;
+  }
+
+  // triples this A instance's field x
+  public void triple() {
+    this.x = this.x * 3;
+  }
+}
+\end{snippet-Java}
+Given this setup, consider the following two functions that call \code|A|'s methods in different orders.
+\begin{snippet-Java}
+public int f1() {
+  A a = new A(0); // create a new A instance with its x field set to 0
+  a.increment();  // increment firstly, then
+  a.triple();     // triple secondly
+  return a.x;     // return the value of a's x field
+}
+
+public int f1() {
+  A a = new A(0); // create a new A instance with its x field set to 0
+  a.triple();     // triple firstly, then
+  a.increment();  // increment secondly
+  return a.x;     // return the value of a's x field
+}
+\end{snippet-Java}
+
+Running \code|f1()| returns \code|3|, but
+running \code|f2()| returns \code|0|.
+This is because there is a background state being managed as the program is running --- a state that is passed from execution step to execution step but not explicitly encapsulated by each step's programmatic expression.
+This state is an example of an \ep{implicit context}.
+In general, an \kw{implicit context} is an implicit set of information maintained during computation that
+is carried along from step to step,
+can be interacted indirectly by code using a special interface, and
+can affect the results of computation.
+The adjective ``implicit'' is important because it removes such a context from the usual computational contexts of set of names and value that can be directly referenced by code.
+
+% NOTE: make bridge here, between talking about these examples to effects in general. Describe how implicit contexts extend to how the computer is actually behaving in the background - the physical context is the most fundamental implicit context.
+In more simple terms, implicit contexts are the execution-relevant contexts that are not directly accessible from within a program.
+In this way, we can say that the characteristic implicit contexts of declarative languages include execution order.
+Of course, all programming languages have many implicit contexts, many of them shared by most languages.
+For example, assembly languages explicitly keep track of registers and memory pointers, so they are among the explicit contexts.
+But most higher-level languages, though they ultimately compile to assembly code, do not allow reference to specific registers or memory pointers, so in higher-level languages they are among the implicit contexts.
+
+In the early days of computer engineering, often a program was written to be run by a single, unique physical machine.
+Still today, a program is written as a code to be run on a physical machine.%
+\footnote{
+  The languages of these kinds of programs are usually referred to as \kw{machine codes} because, in the modern era of computing, they are not meant to be written or read by programmers (or any humans for that matter).
+}
+The unique aspects of that machine still have an impact on how that running actually happens of course, but the development has been to increase the level of abstraction of the program, for example so that a program can be written in as a code to be run on many very different computers.
+This first level of abstraction --- the step from working on one computer to working on many computers --- is another example of a programming language making a context implicit;
+since the specifics of the computer that a program's code is run on is abstracted away from the program but can still influence evaluation,
+the specifics of the computer are a part of the program's implicit context.
+
+However practically beneficial this abstraction using implicit contexts is, it does not come for free.
+In the definition of \LangA, there appear to be no implicit contexts at all --- every term can be fully evaluated with only rules defined by the language\footnote{It could be argued that there are in fact implicit contexts involved in specific implementations of \LangA, since those implementations have to use computer memory to keep track of the data used in a \LangA program. However, this does in fact not count as an implicit context relative the \ep{definition} of language A since }.
+In fact, \LangA is defined such that the execution of its programs is completely independent from the physical state of the world.
+This is very useful for formal analyses, since \LangA programs exist purely as mathematical structures.
+However, this aspect also yields a language that is inert relative to the physical world;
+\LangA cannot \ep{do} anything that requires reference to an implicit context.
+For example, it is definitionally impossible to write the standard ``hello world''%
+\footnote{This program that comes in many forms, but is used as a standard first program for learners of a new programming language. In general, executing a ``hello world'' program will print the string ``hello world'' to the console, screen, or some other visible output
+}
+program in \LangA, since printing to the screen requires the implicit context of all the mechanisms involved in the action of making a few pixels change color.
+As can be seen from this lacking, there are a lot of things that people, including professional programmers, would like to be able to do in a language that something as purely-mathematical as \LangA is unable to facilitate.
+
+Throughout much of the history of computer engineering, this perspective has reigned so dominant that the thought of using something like \LangA (or an untyped but similarly-pure language, Lisp) for anything useful was rarely entertained.
+The rise of object-oriented programming has also proliferated the use of implicit contexts, since each object instance acts as a new user-specified (via object-classes) implicit context.
+
+Today, most of the most popular programming languages are imperative:
+Java, C, Python, C++, C\#, JavaScript, Go, R%
+\footnote{\textit{10 Most Popular Programming Languages In 2020: Learn To Code}. https://fossbytes.com/most-popular-programming-languages/}.
+So why has this work introduced \LangA at all if it is so practically irrelevant?
+
+From however unpopular origins, the benefits of some features from more purely-mathematical, declarative languages have started making their way into popular programming language design.
+These adoptions have primarily taken two forms:
+(1) Convenient semantic structures, such as \ep{$λ$-expressions} (a.k.a. \ep{anonymous functions}) which were introduced into standard Java, JavaScript, and C++ in the early 2010's.
+(2) Abstraction-friendly and safer type systems, such as \ep{generics} which were introduced into Java and C++\footnote{Generics are implemented in C++ using \ep{templates}.} in the early 2000's, and the development of Scala, a functional language that compiles to Java virtual machine byte code.
+It turns out that having more easily-analyzable code is very useful for building effective, large-scale software.
+There is a lot to discuss in this direction, especially the topic of formal specification and verification, but that is beyond the scope of this work.
+
+Though there are certain benefits to mathematically-inspired languages, this meshing of programming paradigms is still fiercely wresting with how to deal with implicit contexts.
+It is the following dilemma:
+
+\begin{itemize}
+\item[] \kw{The Dilemma of Implicit Contexts}
+\begin{enumerate}
+\item[(I)]
+Require fully explicit terms and reductions.
+This grants reasoning about programs to be fully formalized and abstracted from the annoyances of hardware and lower-level-implementations,
+but restricts such programs' use in applications that rely on implicit contexts.
+\item[(II)]
+Allow implicit contexts that affect reductions.
+This grants many useful program applications and maintains some formal nature to the language's behavior,
+but reasoning about programs is now rife with considerations of implicit contexts.
+\end{enumerate}
+\end{itemize}
+
+The current state of affairs among popular programming languages is to choose horn II because of its pragmatic features, such as easy interaction with language-external peripheries, are so integral to software development.
+In fact, as the dilemma is presented it would seem that no real-world application could be feasibly written under horn I.
+The Dilemma of Implicit Contexts presents a good intuition for what is at stake in each case, but it relies on the concept of ``implicit contexts'' for meaning --- a concept that is very fluidly used in programming language design.
+So, in the interest of specifying a place for the desired formalism of the horn I, the next section presents the concept of ``effects.''
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsection{Effects}
+\label{sec:effects}
+
+Effects are the interfaces to implicit contexts that exist syntactically as well as semantically in programming languages.
+In this way, implicit contexts can also be embedded among syntactical contexts (e.g. scopes) as well as non-syntactical contexts (e.g. execution state);
+what is \ep{implicit} from the point of view of a piece of code depends both on its context in the program in which its embedded and its context in the execution state in which it's evaluated.
+For a given expression with a given scope,
+the \ep{explicit} factors (i.e. factors that can be referenced from within the expression) that affect the expression's evaluation are called \ep{in-scope}, and
+the \ep{implicit} factors (i.e. factors that cannot be referenced from within the expression) that affect the expression's evaluation are called \ep{out-of-scope}.
+
+\begin{blockdefinition}
+  For an expression, a computational \kw{effect} is a factor that affects the expression's evaluation but is outside the expression's normal scope.
+\end{blockdefinition}
+
+An expression's \ep{normal scope} is defined by the expression's used language, where ``normal'' indicates that some languages may have exceptional, abnormal scope-rules for certain circumstances that still yield effects.
+For example, many languages have \ep{built-in} functions that, while appearing to be normal functions written in the language, actually directly interface with lower-level code not expressible in the language.
+Some of these built-in functions has exceptional rules that allow it to refer to special factors that are indeed outside of a normal expression's scope.
+For example, a built-in function common to most programming languages is the $print$ function, which sends some data to a peripheral output (such as you're computer's screen).
+Since $print$ is an interface to the implicit context of the mechanics behind handling that peripheral, it is effectual.
+
+\begin{blockdefinition}
+  An expression is \kw{pure} if it has no effects.
+\end{blockdefinition}
+
+\begin{blockdefinition}
+  An expression is \kw{impure} if it has effects.
+\end{blockdefinition}
+
+There are a variety of effects that are available in almost every programming language.
+Interfaces to these effects are usually implemented as impure built-in functions (e.g. $print$) that are, within the language, indistinguishable from pure functions.%
+\footnote{
+  These interfaces can sometimes be non-obvious.
+  For example, in most declarative languages, mutability is so fundamental that it is not syntactically distinguished from normal assignment --- almost all names are mutable saving marked exceptions.
+}
+I shall use four common effects as running examples throughout the rest of this work: \ep{mutability}, \ep{exception}, \ep{nondeterminism}, and \ep{input/ouput}.
+They are detailed in the following paragraphs.
+
+\paragraph{Mutability.}
+This is the effect of maintaining execution state that keeps track of variables' values over time and allows them to be changed.
+A languages's interface to mutability has three components: creating new variables, getting the value of a variable, and setting the new value of a variable.
+In this way, a variable can be thought of as a reference to some memory that stores a value, where the memory can be read for its current value or set to a different value without changing the reference itself.
+The setting of a variable's stored value to a new value is called \kw{mutating} the variable.
+
+\paragraph{Exception.}
+This is the effect of an expression yielding an invalid value according to its specification.
+A language's interface to exception has two components: throwing an exception and catching an exception.
+Throwing an exception indicates that the expected sort of result of an expression would be invalid, according to the specification of that expression.
+Catching an exception in an expression is the structure of anticipating a throw of the exception during the evaluation of an expression, and having a pre-defined way of responding to such a throw should it occur.
+Examples of instances where exceptions are thrown: division by $0$, out-of-bounds indexing of an array, the head element of an empty list, calling a method of a null object-instance.
+
+\paragraph{Nondeterminism.}
+This is the effect of an expression having multiple ways to evaluate.
+Three main strategies of implementing nondeterminism are
+(1) a deterministic model that accumulates and propagates all possible results,
+(2) a deterministic model that uses an initialized seed to produce nondeterminism for an unfixed seed, and
+(3) using \IO to produce a nondeterministic result.
+Examples of nondeterminism are: flipping a coin, generating a random number, selecting from a random distribution, probabilistic programming in general.
+
+\paragraph{Input/Output (\IO).}
+Any effect that involves interfacing with a context peripheral to the program's logic is called an \IO effect.
+Typically, these effects involve querying for information (input) or sending information (output).
+% Most \IO effects are implemented in higher-level languages through built-in functions that, when the expression is executed, trigger some lower-level code that
+Examples include: printing to the console, accepting user input, reading or writing specific memory, displaying graphics, calling foreign (i.e. language-external) functions, reading from and writing to files.
+
+\newparagraph
+In addition to the above effects, \kw{sequencing} is a control-flow structure specifically for effects.
+It is the effect of dictating the order in which other effects are performed.
+Sequencing is a very simple effect and is useful especially in declarative programing languages that aren't structured to be executed in a particular order.
+In imperative programming languages, sequencing is automatic since explicit execution order is required inherently.
+
+However, many expressions both in declarative and imperative languages do not have effects.
+For example, suppose we have a function \code`max` that takes two integers as input and returns that larger one.
+If \code`max` is designed and implemented exactly to this specification, then \code`max` has no effects; the evaluation of \code`max` given some integers is not influenced by any factors outside of its normal scope, since the result is completely determined by its two explicit integer parameters.
+
+So now the sides of the Dilemma of Implicit Contexts can be considered more specifically given the concept of ``effect''.
+As is made clear by the previous definition of ``effect,'' there is an easy method for transforming an impure expression into a pure expression: add the implicit factors depended upon by the expression's effects to the program's scope --- now they are explicit and thus no longer effects!
+This reveals a more formal way of reasoning about effects in the terminology of programming language design.
+Still there is a dilemma of course, so using this intuition we can reformulate the Dilemma of Implicit Contexts in the terminology of effects:
+
+\begin{itemize}
+\item[] \kw{The Dilemma of Purity and Effect}
+\begin{enumerate}
+  \item[(1)]
+  Require purity.
+  This grants reasoning to depend only on normal scopes, which is very localized and explicit.
+  This sacrifices convenience in and sometimes the possiblity of writing many pragmatic applciations.
+
+  \item[(2)]
+  Freely mix purity and impurity.
+  This grants many useful applications where the behavior of the programs depends on factors not entirely encapsulated by the program's normal scope.
+  This sacrifices the benefits of explicit and localized reasoning that depends only on normal scopes.
+\end{enumerate}
+\end{itemize}
+
+A concept important to the consideration of this dilemma is that of ``safety.''
+The \kw{safety} of a programming language is a measure of how much and in what  ways it allows and promotes a correspondence between the \ep{intended}, \ep{apparent} behavior and the \ep{actual} behavior of its programs.
+In other words,
+a language is \kw{safe} if it is \ep{easy} to accurately and precisely predict the behavior of its programs by analyzing code source code, and
+a language is \kw{dangerous} if it is \ep{hard} to accurately and precisely predict the behavior of its programs by analyzing their source code.%
+\footnote{
+  Difficulty can be measured on a scale from \ep{easiest} to \ep{hardest} based on some accepted constraints (which generally all correlate very positively).
+  For example: allowed computational power, weighting of accuracy, weighting of precision, allowed length of program's code, allowed time for program to work, etc.
+}
+The Dilemma of Purity and Effect highlights how effects can be a source of danger.
+Many proponents of horn 1 claim that purity allows significantly improves the safety of a language, since the factors relevant to a program's execution are kept explicit and thus are easier to reason about.
+A main form of this is referred to as \kw{type-safety};
+an expressive type system can require programs to make explicit and handle potential dangers in order to type-check (part of the process of analyzing code).
+
+Almost all languages fall decisively on the side of horn 1, but are there ways to salvage some of the safety from horn 2 (in particular, type-safety)?
+In this and the following chapters, we will follow an arc of declarative language design that incrementally builds the a middle way between the two horns, by introducing structures and type-systems that extend a horn 1 perspective to allowing some horn-2-looking behavior.
+First we shall start with a language, \LangB, that in a simple way extends the declarative language \LangA with imperative-style forms of the previously-described example effects.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Language \LangB}
+
+Language \LangB is a first example of implementing effects by extending \LangA.
+Its approach is inspired by the language Standard ML, which is commonly used in teaching programming languages theory (especially the declarative style).
+The strategy is to realize the implicit/explicit context distinction very strictly --- a selection of primitive terms are introduced that are designated to interact with the implicit context in a way not able to be referenced within \LangB code.
+Since the resulting language style closely mimics imperative languages' usual look, call this effect implementation \kw{imperative effects}.
+Note importantly, though, that these dubbed imperative effects are implemented within a declarative language (namely, \LangB).
+
+This section introducing \LangB describes its implementation of the example effects given in the section~\ref{sec:effects}, but keep in mind that the implementation strategy is meant to apply to effects in general.
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsection{Imperative Effects}
+
+As imperative effects mimic imperative languages, we would like to write code that executes sequentially and with state.
+Recall the task of summing a list of integers from section~\ref{sec:declarative-and-imperative-languages}.
+A function that does this task can be written in \LangA as the following:
+%
+\begin{snippet}[caption={Sum a list of integers (declaratively)}]
+term sum-list-integer (l : list integer) : integer
+  ≔ cases l
+      { []     ⇒ 0
+      ; i ∷ l' ⇒ i + sum-list-integer l' }.
+\end{snippet}
+%
+In the imperative language Java,
+a function that does this task can be written as the following:
+%
+\begin{snippet-Java}[caption={Sum a list of integers (imperatively in Java)}]
+int sumListInt(List<int> l)
+  {
+    int s = 0;
+    int i = 0;
+    while i < l.length()
+      {
+        x = l[i];
+        s = s + x;
+        i = i + 1;
+      }
+    return s;
+  }
+\end{snippet-Java}
+So how might this same, imperative function be written in the declarative language \LangB?
+Consider the following:
+% NOTE: I don't explicitly define while... is that ok?
+\begin{snippet}[caption={Sum a list of integers (imperatively in \LangB)}]
+term sum-list-integer (l : list integer) : integer
+  ≔ do
+      { let s : mutable integer ≔ initialize 0 in
+        let i : mutable natural ≔ initialize zero in
+        while !i < length is
+          loop do
+            { let x : integer ≔ index l !i in
+              s ← !s + x
+            ; i ← !i + 1
+            ; iterate • }
+          done !s }
+\end{snippet}
+% % version without `while`
+% \begin{snippet}
+% term sum-list-integer (l : list integer) : integer
+%   ≔ do
+%       { let s : mutable integer ≔ initialize 0 in
+%         let i : mutable natural ≔ initialize zero in
+%         let iterate (_:unit) : unit
+%               ≔ if !i < length is
+%                   then do
+%                          { let x : integer ≔ index l !i in
+%                            s ← !s + x
+%                          ; i ← !i + 1
+%                          ; iterate • }
+%                   else • in
+%         do{ iterate •; !s }
+% \end{snippet}
+Notice the parallels between this function and the Java function.
+This example makes use of the sequencing and mutability effects, all of which and more will be detailed in the following sections.
+
+\paragraph{Reduction contexts.}
+The central concept introduced for \LangB is the \kw{reduction context} --- an implicit context present during the reduction of terms.
+We symbolize a reduction context with $\rctx$, and the presence of $\rctx$ during the reduction of a term $a$ is written
+\begin{display}
+  \code|$\rctx$ 𝄁 $a$|,
+\end{display}
+where the \code|𝄁| separates the implicit context on the left-side from the explicit context on the right side.
+We modify the \rulename{Simplify} rules for \LangB to account for the reduction context as follows:
+\input{langs/B/reduction-simplify}
+By these rules, impure reductions in sub-terms also affect the implicit context of the outer terms, and so $\rctx$ is treated as globally-accessible.
+The $\rctx$ is carried around as the state of the program during reduction, yielding the stateful programming characteristic of the imperative style.
+
+The strategy of \LangB's implementation of effects is introduce a reduction context particular to each effect, and then have reduction rules that use each reduction context to perform the effect.
+The $\rctx$ used above stands in for the total of all these reduction contexts considered together.
+
+% ------------------------------------------------------------------------------
+\subsubsection{Sequencing}
+
+% Since effects are context-sensitive in a way visible from within \LangA, we'd like \LangB to allow express, explicitly, the order in which effects are to be performed.
+% Such an expression is an application of the \tit{sequencing} effect.
+
+The sequencing effect directs a sequence of terms to have their effects performed in a the sequence's order.
+To provide this effect, \LangB declares a primitive term \code|sequence| parametrized by two terms and encodes the sequencing of their effects.
+%
+\begin{program}[caption={Primitive for sequencing}]
+primitive term sequence (α β : kind) : α → β → β.
+\end{program}
+%
+\begin{notational}[caption={Notations for sequencing}]
+($\mvar{term}_1$:$\mvar{type}_1$) >> ($\mvar{term}_2$:$\mvar{type}_2$)
+  $\syneq$
+    sequence $\mvar{type}_1$ $\mvar{type}_2$ $\mvar{term}_1$ $\mvar{term}_2$
+
+do{ $\mvar{term}_1$ ; $\cdots$ ; $\mvar{term}_n$ }
+  $\syneq$
+    $\mvar{term}_1$ >> $\cdots$ >> $\mvar{term}_n$
+
+do{ $〚$ $\mvar{term}$ ; $〛_1$ let $\mvar{term-param}_*$ ≔ $\mvar{term}_*$ ; $〚$ $\mvar{term}$ ; $〛_2$ }
+  $\syneq$
+    do{ $〚$ $\mvar{term}$ ; $〛_1$ ; let $\mvar{term-param}_i$ ≔ $\mvar{term}_i$ in do{ $〚$ $\mvar{term}$ ; $〛_2$ } }
+\end{notational}
+%
+(The operator \code`>>` is right-associative i.e.
+\code`$a$ >> $b$ >> $c$` associates to \code`$a$ >> ($b$ >> $c$)`)
+
+A term of the form \code|sequence $a$ $b$| encodes the performance of the effects of $a$, and then the performance of the effects of $b$.
+As a default, the total term reduces to the result of $b$.
+The following reduction rules specify this behavior.
+%
+\input{langs/B/reduction-sequencing}
+
+% ------------------------------------------------------------------------------
+\subsubsection{Mutability}
+\label{sec:LangB-mutability}
+
+A simple way of introducing mutability to a declarative language like \LangA is to posit a primitive type \code`mutable`, which is parametrized by a type $α$, as the type of mutable $α$-terms.
+
+The term \code`initialize` is the single constructor for terms of type \code`mutable`.
+It takes an initial value \code`$a$:$α$` and evaluates to a new \code`mutable $α$` that stores $a$.
+The term \code`get` gets the value stored by a given mutable.
+The term \code`set` sets the value stored by a given mutable to a new given value.
+
+\begin{program}[caption={Primitives for mutablility}]
+primitive type mutable : kind → kind.
+
+primitive term initialize (α : kind) : α → mutable α.
+primitive term get (α : kind) : mutable α → α.
+primitive term set (α : kind) : mutable α → α → unit.
+\end{program}
+%
+\begin{notational}[caption={Notations for mutability.}]
+!($\mvar{term}$ : $\mvar{type}$)   $\syneq$   get $\mvar{type}$ $\mvar{term}$
+
+$\mvar{term}_1$ ← ($\mvar{term}_2$ : $\mvar{type}$)   $\syneq$   set $\mvar{type}$ $\mvar{term}_1$ $\mvar{term}_2$
+\end{notational}
+
+A term of type \code|mutable $α$| is a sort of reference to a store where the an $α$-term is stored.
+We introduce a reduction context $\stctx$ that contains such stores, and write $\state{\stctx}{\UID}{v}$ to indicate that $\stctx$ contains a store referenced by $\UID$ and currently stores $v$.
+Additionally, in order to create fresh stores, write $\NewUID{\stctx}{\stctx'}{\UID}$ to indicate that $\stctx$ can create a fresh store that is referenced by $\UID$ in the new context $\stctx$.
+From this setup of $\stctx$, the following result as the reductions for performing the mutability effect.
+%
+\input{langs/B/reduction-mutability}
+%
+Note that the omission of other reduction contexts --- such as $\rctx$ and the contexts to be introduced in the following sections --- implies that they are unchanged by the reduction rule.
+
+% NOTE: rename sort-two to something else like: sort-update, sort-in-place, etc. to reflect that its updating the values and not just producing a sorted result. also change in following chapters if change name here}
+
+\paragraph{Example.}
+Suppose we want to update the values of two integer variables so their values are ordered.
+The following function implements this using the mutability effect.
+%
+\begin{snippet}
+term sort-two (x y : mutable integer) : unit
+  ≔ if !x > !y
+      then do
+        { let i ≔ !x in
+          x ← !y
+        ; y ← i  }
+      else •.
+\end{snippet}
+%
+The following demonstrates how an application of this function reduces.
+The integer variables give are initialized such that $id_x \mt 4$ and $id_y \mt 2$, and after applying \code|sort-two| they are modified such that $id_x \mt 2$ and $id_y \mt 4$.
+%
+\begin{snippet}
+$\stctx[]$ 𝄁 sort-two (initialize 2) (initialize 4)
+$\ruleapp{Initialize x2}$
+$↠$ $\stctx[id_x \mt 4, id_y \mt 2]$ 𝄁 sort-two $id_x$ $id_y$
+$\ruleapp{Definition}$
+$↠$ $\stctx[id_x \mt 4, id_y \mt 2]$ 𝄁 if !$id_x$ > !$id_y$
+                        then let i ≔ !$id_x$ in ($id_x$ ← !$id_y$ >> $id_y$ ← i)
+                        else •
+$\ruleapp{Get}$
+$↠$ $\stctx[id_x \mt 4, id_y \mt 2]$ 𝄁 if 4 > 2
+                        then let i ≔ !$id_x$ in ($id_x$ ← !$id_y$ >> $id_y$ ← i)
+                        else •
+$\ruleapp{Simplify}$
+$↠$ $\stctx[id_x \mt 4, id_y \mt 2]$ 𝄁 let i ≔ !$id_x$ in ($id_x$ ← !$id_y$ >> $id_y$ ← i)
+$\ruleapp{Get}$
+$↠$ $\stctx[id_x \mt 4, id_y \mt 2]$ 𝄁 $id_x$ ← !$id_y$ >> $id_y$ ← 4
+$\ruleapp{Get}$
+$↠$ $\stctx[id_x \mt 4, id_y \mt 2]$ 𝄁 $id_x$ ← 2 >> $id_y$ ← 4
+$\ruleapp{Set}$
+$↠$ $\stctx[id_x \mt 4, id_y \mt 2]$ 𝄁 • >> $id_y$ ← 4
+$\ruleapp{Next}$
+$↠$ $\stctx[id_x \mt 2, id_y \mt 2]$ 𝄁 $id_y$ ← 4
+$\ruleapp{Set}$
+$↠$ $\stctx[id_x \mt 2, id_y \mt 4]$ 𝄁 •
+\end{snippet}
+
+% ------------------------------------------------------------------------------
+\subsubsection{Exception}
+
+When a program reaches a step where a lower-level procedure fails or no steps further steps forward are defined, the program fails. A general way of describing this phenomenon is \tit{partiality} --- programs that are undefined on certain inputs (in certain contexts, if effectual). For example, division is partial on the domain of integers, since if the second input is 0 then division is undefined.
+
+One common way of anticipating partiality is to introduce \tit{exceptions},
+which are specially-defined ways for an expression to evaluate when it is not valid according to its specification.
+The immediate issue with extending \LangA with naive exceptions is that it requires exceptions to be of the same type as the expected result.
+Schematically, our safe division function example looks like this:
+\begin{snippet}
+term divide-safely (i j : integer) : integer
+  ≔ if j == 0
+      then $\normtextit{(throw an exception)}$
+      else i/j
+\end{snippet}
+Suppose that we do not have exceptions, like in \LangA.
+Then in the definition of \code`divide-safely`, the result of whatever is implemented in place of \ep{(throw exception)} must yield an integer.
+This amounts to, however, the delegating a somewhat-arbitrary result in place of undefined results.%
+\footnote{
+  Though I deride it here, sometimes this strategy is actually used in practice. In Python 3.6, the string class's \code`find` method returns either the index of an input string in the string instance if the string is found, or a \code`-1` if the the input string is not found. However, the list class's \code`index` method yields a runtime error when the input is not found in the list instance.
+}
+
+A simple declarative-friendly way to allow implicitly-exceptional results is to introduce a term that uses an exception instance to produce an \ep{excepted} term of any type.
+We posit a type \code`exception-of $α$` of which terms are each a label for exceptions parametrized by $α$.
+Such exception-labels should only be constructed primitively, so for the creating of new terms of type \code`exception-of $α$` we introduce a new declaration \code|exception $e$ of $α$|,
+which declares an exception term $e$ of type \code|exception-of $α$|.
+These structures are captured by the following syntax rules:
+\input{langs/B/syntax-exception}
+
+Instances of \code`exception-of $α$` (which must be introduced primitively) are specific exceptions that are parametrized by a term of type $α$. This allows exceptions to store some data, perhaps about the input that caused their throw.
+The term \code`throw` throws an exception, requiring its $α$-input, and evaluating to any $β$-result.
+The term \code`catching` takes a continuation of type \code`(exception-of $α$ → $α$ → $β$)` for handling any $α$-exceptions while evaluating a given term of type $β$.
+If an exception is thrown while evaluating a $b:β$, then \code`catching` results in the continuation, supplied with the specific thrown exception and its argument, instead of continuing to evaluate $b$.
+Note that a \kw{continuation} is an expression that is triggered to ``continue on'' the evaluation of some larger expression when one of its sub-expression ``escapes out.''
+The primitive declarations for \code|throw| and \code|catching| are given, along with a useful notation for \code|catching|.
+%
+\begin{program}[caption={Definitions for exception}]
+primitive term throw    (α β : kind) : exception-of α → α → β.
+primitive term catching (α β : kind) : (exception-of α → α → β) → β → β.
+\end{program}
+%
+\begin{notational}[caption={Notation for exception}]
+catch { $\mvar{exception-name}$ $(\mvar{term-param}_1$:$\mvar{type}_1)$ ⇒ ($\mvar{term}_2$:$\mvar{type}_2$) }
+  in $\mvar{term}_3$
+
+$\syneq$
+
+catching $\mvar{type}_1$ $\mvar{type}_2$
+  $\mvar{exception-name}$
+  (($\mvar{term-param}_1$:$\mvar{type}_1$) ⇒ $\mvar{term}_2$)
+  $\mvar{term}_3$
+\end{notational}
+
+Finally, for the reduction rules for exception.
+Let us introduce a new reduction context $\exctx$ to manage exception.
+If no exception has been raised, then write $\noexception$.
+If an exception $e$ has been thrown with argument $x$, then write $\exception{e, x}$.
+Additionally, since the result of throwing an exception is an invalid value, we shall denote it by ✪.
+Then the reduction rules are as follows.
+%
+\input{langs/B/reduction-exception}
+%
+\paragraph{Example.}
+With this exception framework, we can concretely write the divide-safely function via the following.
+\begin{snippet}[numbers=left]
+exception divide-safely-by-0 of integer.
+
+term divide-safely (x y) : float
+  ≔ if y == 0
+      then throw division-by-0 x
+      else i/j
+\end{snippet}
+First, line 1 declares a new term \code`division-by-0 : exception-of integer`.
+Then, the definition of \code`divide-safely` on line 5 can evaluate to \code`throw division-by-0 x` to indicate that an attempt to divide by $0$ has occurred.
+
+Notice how the term \code`throw division-by-0 x` on line 5 is typed as an \code`integer`, yet it is not an integer.
+% This is where the impure nature of exceptions is clear.
+The throwing of an exception depends on the implicit context of some surrounding \code`catch` structure in order to behave as if \code`divide-safely` meets the specification of returning a quotient.
+In the case that there is no surrounding \code`catch`, an implicit default catching mechanism will be triggered --- usually a language-external error.
+
+% ------------------------------------------------------------------------------
+\subsubsection{Nondeterminism}
+
+% In \LangB, nondeterminism is simply implemented via a special interface similar to how \IO is implemented.
+% The following functions define that interface to the language.
+
+For our consideration here, a basic nondeterministic computation is defined to have a range of values, given by a list, from which a random result is chosen.
+The primitive term \code|sample| encodes this effect.
+\begin{program}[caption={Primitive for nondeterminism}]
+primitive term sample (α : Type) : list α → α.
+\end{program}
+% \begin{program}[caption={Primitives for nondeterminism}]
+% primitive term random-float : unit → float.
+%
+% term random-range-float
+%       (min : float) (max : float) (_ : unit) : float
+%   ≔ min + (max - min) * (random-float •).
+%
+% term random-range-integer
+%       (min : integer) (max : integer) (_ : unit) : integer
+%   ≔ min + (max - min) * floor (random-float •).
+%
+% term random-bool : unit → boolean
+%   ≔ (x ⇒ x < 0.5) ○ random-float.
+% \end{program}
+%
+For reduction, \code|sample| will simply appeal to an external interface $\ndctx$ to pick on of the options to result in.
+Such an appeal is written \code|$\ndctx$(sample $l$)| where $l$ is the list of options.
+\input{langs/B/reduction-nondeterminism}
+
+\paragraph{Specification of $\ndctx$.}
+%
+Of course, what an appeal \code|$\ndctx$(sample $l$)| results in is dictated by the specific implementation of $\ndctx$.
+The type requirement is that \code|$\ndctx$(sample $l$)| yields a value of the type of the elements of $l$.
+But other than this, the specification of $\ndctx$ is left external to \LangB.
+
+\paragraph{Example.}
+%
+Suppose we would like to flip a coin.
+We can use the \code|boolean| type as the type of results, where \code|true| corresponds to ``heads'' and \code|false| corresponds to ``tails.''
+Then a function that flips a coin nondeterministically can be written as follows:
+\begin{snippet}
+term flip-coin (_:unit) : boolean ≔ sample [true, false].
+\end{snippet}
+
+% ------------------------------------------------------------------------------
+\subsubsection{\IO}
+
+\IO is a relatively generic effect since it offloads most of its details to an external interface.
+In other words: in order to capture all the capabilities of this interface, the representation of \IO within our language must be very general.
+As an easy setup, we shall use an \IO interface that just deals with \code`string`s.
+However, it is easy to imagine other specific \IO functions that would work in a similar manner (e.g. \code`input-integer`, \code`input-time`, \code`output-image`, etc.).
+
+\begin{program}[caption={Definitions for \IO}]
+primitive term input  : unit   → string.
+primitive term output : string → unit.
+\end{program}
+
+The term \code`input` receives a string from the \IO interface, and
+the term \code`output` sends a string to the \IO interface.
+Note that \code`input` is of type \code`unit → string` rather than just \code`string`.
+This is because if we had \code`input : string` then it would refer to just one particular string value rather than possibly being reevaluated (receiving another input via \IO) by using a dummy parameter \code`unit`.
+
+\input{langs/B/reduction-io}
+
+These rules interact with the \IO context, $\ioctx$, by using it as an interface to an external \IO-environment that handles the \IO effects.
+This organization makes semantically explicit the division between \LangB's model and an external world of effectual computations.
+For example, though $\ioctx$ is an interface to a stateful context, the state cannot be directly represented in \LangB's semantics; $\ioctx$ is a black box from the point of view within \LangB.
+An external implementation of $\ioctx$ that could be compatible with \LangB must satisfy the following specifications:
+%
+\paragraph{Specification of $\ioctx$}
+\begin{itemize}
+\item \code|$\ioctx$(input •)| resolves as a value of type \code|string|,
+\item \code|$\ioctx$(output s)| resolves as \code|•|.
+\end{itemize}
+%
+I use the term ``resolve'' here to emphasize that $\ioctx$'s capabilities are operating outside of the usual semantics of \LangB in order to evaluate.
+
+At this point, we can express the a friendly greeting program.
+\begin{snippet}
+term greetings (_:unit) : unit
+  ≔ do
+      { let name ≔ input •
+      ; output ("Hello, " ⧺ name) }.
+\end{snippet}
+But as far as the definition of \LangB is concerned, this term is treated just like any other term that evaluates to $•$.
+The implementation for $\ioctx$ used for running this program decides its effectual behavior (within the constraints of the specification of $\ioctx$ of course).
+An informal but satisfactory implementation is the following:
+
+\paragraph{Implementation 1 of $\ioctx$:}
+\begin{itemize}
+  \item \code|$\ioctx$(input •)|:
+  \begin{enumerate}
+    \item Prompt the console for user text input.
+    \item Interpret the user text input as a string, then resolve as the string.
+  \end{enumerate}
+  %
+  \item \code|$\ioctx$(output $s$)|:
+  \begin{enumerate}
+    \item Write $s$ to the console.
+    \item Resolve as \code|•|.
+  \end{enumerate}
+\end{itemize}
+As intended by \LangB's design, this implementation will facilitate \code|greetings| appropriately: the user will be prompted and then a greeting to their input will be printed.
+Beyond the requirements enumerated by the specification of $\ioctx$ however, \LangB does not guarantee anything about how $\ioctx$ behaves.
+For example consider the following alternative implementation 2 of $\ioctx$ that still meets the specification.
+
+\paragraph{Implementation 2 of $\ioctx$:}
+\begin{itemize}
+  \item \code|$\ioctx$(input •)|:
+  \begin{enumerate}
+    \item Set the toaster periphery's mode to \ep{currently toasting}.
+    \item Resolve as a string representation of the toaster's current temperature.
+  \end{enumerate}
+  %
+  \item \code|$\ioctx$(output $s$)|:
+  \begin{enumerate}
+    \item Interpret $s$ as a ABH routing number, and route \$1000 from the user's bank account to 123456789.
+    \item Set the toaster periphery's mode to \ep{done toasting}.
+    \item Resolve as $•$.
+  \end{enumerate}
+\end{itemize}
+This implementation does not seem to reflect the intent of \LangB, though unfortunately it is still compatible with $\ioctx$'s specification.
+In the way that \LangB is defined, it is difficult to formally specify any more detail about the behavior of \IO-like effects, since its semantics all but ignore the workings of $\ioctx$.
+The \IO effect is very dangerous (to use the dichotomy between \ep{safe} and \ep{dangerous} from~\ref{sec:effects}).
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\section{Motivations}
+
+This chapter has introduced the concept of effects in programming languages, and presented \LangB as a simple way to extend a basic lambda calculus, \LangA, with a sample of effects.
+For each effect, the implementation strategy used is to introduce a facilitating reduction context: $\stctx, \exctx, \ioctx, \ndctx$.
+Each these reduction contexts are examples of implicit contexts since they are not directly able to be referenced from within \LangB --- they can only be interacted with via the primitive terms introduced for each effect.
+
+Among these reduction contexts, there are two groups that naturally emerge:
+(1) $\stctx$ and $\exctx$, and (2) $\ioctx$ and $\ndctx$.
+Considering group (1), $\stctx$ and $\exctx$ are treated purely-mathematical structures uniquely defined (up to affecting reduction behavior) by their specification.
+Call these sorts of effects \kw{internal effects}, as are fully specified by the language-internal semantics.
+The context $\stctx$ is a mapping between unique identifiers and \LangB-values, and
+the context $\exctx$ is either empty or contains a pair of an \LangB-exception-name and a \LangB-value.
+While these reduction contexts may be implemented in a variety of ways while still meeting \LangB's specification for them, each of these implementations will have the same behavior from the point of view of reduction in \LangB.
+
+Considering group (2), $\ioctx$ and $\ndctx$ are treated as interfaces to a vaguely-specified external context that is implicit relative to the reduction rules.
+Call these sorts of effects \kw{external effects}, as they are not fully specified by the language-internal semantics and must rely on language-external implementation.
+The context $\ioctx$ is a black-box interface that can either get input or receive output, and
+the context $\ndctx$ is a black-box interface that can produce a random float.
+
+A reason external effects are introduced to \LangB this way is because it is infeasible to introduce an entire model of their \LangB-implicit behaviors.
+For example, the \code`print $s$` capability of $\ioctx$ could involve running some low-level code to send data to a peripheral console, the details of which could not be written in \LangB.
+Internal effects, on the other hand, are easy to introduce completely-explicitly since its effects only involve simple structures that are easily and uniquely modeled as the mathematical structures described before.
+
+While one would like to imagine that $\ioctx$ behaves in an intuitive way, the example of Implementation 2 of $\ioctx$ demonstrates that $\ioctx$ can behave very unexpectedly while still meeting \LangB's specification for it.
+The same applies to $\ndctx$.
+This situation arises because, as a black-box, these contexts are hiding a lot of implicit activity that is ultimately relevant for their influence on reduction.
+So, differences in implementation, which govern the implicit activity, \ep{are} relevant to reduction.
+
+This is clearly a serious complication for any formal analysis of programs with $\ioctx$ or $\ndctx$ effects in them.
+And, even if the top-level expression does not appear to have any such effects in it, it could be that names it references, which are defined somewhere else far away, could have such effects.
+It seems like almost anything could happen, but \LangB treats expressions with these effects exactly the same as expressions that don't!
+
+In the following chapters, we shall consider a few alternative ways to introduce effects to \LangA.
+The goal in doing so it to find strategies for representing effects that inherit the most advantage from the declarative style as well as sacrifice the fewest capabilities of the imperative style.
+Learning from this chapter's consideration of \LangB, there are a couple inspirations for such improvement to take away.
+
+\paragraph{Generalized context for effects.}
+In \LangB, each effect has a unique reduction context.
+So, in order to facilitate more effects, the reduction rules of the language must be changed.
+There are are many more useful effects than the examples introduced in this chapter, so this requirement proves especially cumbersome to the goal of posing \LangB as an implementation of effects \ep{in general}.
+This observation begs for an abstract structure for effects in general, which could be handled in a language's reduction rules and instantiated as particular effects in code.
+
+\paragraph{Explicitly-typed effects.}
+In \LangB, impure expressions are indistinguishable from pure expressions before reduction.
+Because of this is difficult for a programmer to identify the purity of parts of a program, which is useful for the formal analysis of expected behavior.%
+\footnote{
+  A pragmatic result of this design desicion is to promote programs to segregate their code by purity, as making sure that types match between pure and impure expressions is annoying to handle when it is intermingled.
+  This organization by purity presents opportunities for formal analyses such as verification (pure code can be verified at \ep{compile-time}), modularity (pure code can be used anywhere and have the same behavior, impure code can be sometimes be combined), and optimization (impure activities that take more resources to do sporadically can be reorganized around pure code to improve efficiency, without changing behavior).
+  These considerations are beyond the scope of this work, but provide a context for why these formal analyzability is desirable.
+
+  For example, suppose we are programming a chat bot.
+  The chat bot should recieve input from the user (an impure activity),
+  then run some computation with the input (a pure activity), and
+  then finally display a result to the user (another impure acitivty).
+  This program should natually be divided up into three functions, \code`get-user-input`, \code`compute-output`, and \code`display-output`, where the first and third are impure and the second is strictly pure.
+}
+A common way of addressing this is to introduce a typing-structure that indicates when a value is produced effectually.
+Such a typing-structure ensures that the purity of expressions is handled explicitly within code, though it also introduces an extra layer of complexity.
+
+\paragraph{Programmable internal effects.}
+In \LangB, internal and external effects are introduced in the same way --- appealing to a reduction context.
+However, since internal effects can be fully specified language-internally, it seems possible to have a syntax structure for instantiating internal effects rather than relying on special reduction rules.
+In this way, a programmer could implement their own internal effects in code.
+Note that under this extension, expressions with internal effects and expressions with external effects need not behave differently at compile-time.
+
+\newparagraph
+In the next chapter, we shall consider a new structure for modeling effects, the \ep{monad}.
+Monadic effects will address these inspirations and, in doing so, refine our goals for implementing effects.

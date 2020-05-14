@@ -1,0 +1,29 @@
+\begin{table}[H] \centering
+\captionof{table}{Typing in \LangD: Handler}
+\label{tab:LangD-typing-handler}
+\begin{tabular}{rl}
+  \rulename{Handler} &
+  \begin{tabular}{p{25em}}
+    \code`$Γ$ $⊢$ $ρ$ : Resource`
+    \\
+    \iforall $\provprop{ρ}{g_i}$
+    \\
+    \iforall \code`$Γ$ $⊢$ $g_i$ : $χ_i$ ↗ $υ_i$`
+    \\
+    \iforall \code`$Γ$, $x_i$:$χ_i$, $k_i$:$υ_i$ → $β$ $⊢$ $b_i$:$β$`
+    \\
+    \code`$Γ$ $⊢$ $a_v$:$α$` \iand
+    \code`$Γ$ $⊢$ $b_v$:$β$`
+    \\
+    \code`$Γ$ $⊢$ $b_f$:$β$` \iand
+    \code`$Γ$ $⊢$ $c_f$:$γ$`
+    \\
+  \hline
+    \code`$Γ$ $⊢$ handler` \\
+    \code`      { #$g_1$ $x_1$ $k_1$ ⇒ $b_1$ ; $\cdots$ ; #$g_n$ $x_n$ $b_n$ ⇒ $y_n$` \\
+    \code`      ; value $a_v$ ⇒ $b_v$` \\
+    \code`      ; final $b_f$ ⇒ $c_f$ }` \\
+    \code`      : $ρ$ → $α$ ↘ $γ$`
+  \end{tabular}
+\end{tabular}
+\end{table}

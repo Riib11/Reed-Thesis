@@ -1,0 +1,63 @@
+\documentclass[12pt,twoside]{reedthesis}
+\usepackage{main}
+
+\addto\captionsenglish{% Replace "english" with the language you use
+  \renewcommand{\contentsname}%
+    {Whatever}%
+}
+
+\addto\captionsgreek{% Replace "english" with the language you use
+  \renewcommand{\contentsname}{Table of Contents}
+  \renewcommand{\chaptername}{Chapter}
+  \renewcommand{\tablename}{Table}
+}
+
+% -----------------------------------------------------------------------------
+% HEAD
+% -----------------------------------------------------------------------------
+\title{Purity and Effect}
+\author{Henry Blanchette}
+\date{May 4, 2020}
+\division{Mathematics and Natural Sciences}
+\department{Computer Science}
+\advisor{Jim Fix}
+\setlength{\parskip}{0pt}
+% -----------------------------------------------------------------------------
+% TITLE
+% -----------------------------------------------------------------------------
+\begin{document}
+
+\maketitle
+\frontmatter
+\pagestyle{empty}
+
+\tableofcontents
+
+\input{abstract}
+
+% -----------------------------------------------------------------------------
+% MAIN
+% -----------------------------------------------------------------------------
+
+\mainmatter
+\pagestyle{fancyplain}
+
+\input{introduction}
+\input{simple-effects}
+\input{monadic-effects}
+\input{algebraic-effect-handlers}
+\input{freer-monadic-effects}
+
+\input{appendices}
+
+% -----------------------------------------------------------------------------
+% BACK
+% -----------------------------------------------------------------------------
+
+\backmatter
+\renewcommand{\bibname}{Bibliography}
+% \bibliographystyle{APA/apa-good}
+\bibliographystyle{plain}
+\bibliography{main.bib}
+
+\end{document}

@@ -1,0 +1,88 @@
+\begin{snippet}[caption={Handle greetings with internal \IO}]
+h ≔ internal ["Henry", "Blanchette"] io.
+
+$[]$ ; $[]$ ‖ greetings with h
+$↠$ $\ruleapp{Handle}$
+$[$h$]$ ; $[]$ ‖ greetings
+$↠$ $\ruleapp{Definition}$
+$[$h$]$ ; $[]$ ‖ io#output ("Hello, " ⧺ (io#input •))
+$↠$ $\ruleapp{Perform}$
+$[$h$]$ ; $[$$($io#input •$,$ @1$)$$]$ ‖ io#output ("Hello, " ⧺ @1)
+$↠$ $\ruleapp{Perform}$
+$[$h$]$ ; $[$$($io#output ("Hello, " ⧺ @1)$,$ @2$)$$,$ $($io#input •$,$ @1$)$$]$ ‖ @2
+$↠$ $\ruleapp{Handle-Value}$
+$[$$\unvalued($h$)$$]$ ; $[$$($io#output ("Hello, " ⧺ @1)$,$ @2$)$$,$ $($io#input •$,$ @1$)$$]$ $ $
+  $ $‖ is os ⇒ (@2, os)
+$↠$ $\ruleapp{Handle-Performance}$
+$[$$\unvalued($h$)$$]$ ; $[$$($io#input •$,$ @1$)$$]$ $ $
+  $ $‖ (x k is os ⇒ k • is (os ◇ [x]))
+      ("Hello, " ⧺ @1) (@2 is os ⇒ (@2, os))
+$↠$ $\ruleapp{Simplify}$
+$[$$\unvalued($h$)$$]$ ; $[$$($io#input •$,$ @1$)$$]$ $ $
+  $ $‖ is os ⇒ (•, os ◇ ["Hello, " ⧺ @1])
+$↠$ $\ruleapp{Handle-Performance}$
+$[$$\unvalued($h$)$$]$ ; $[]$ $ $
+  $ $‖ (_ k is os ⇒ k (head is) (tail is) os)
+      • (@1 is os ⇒ (•, os ◇ ["Hello, " ⧺ @1]))
+$↠$ $\ruleapp{Simplify}$
+$[$$\unvalued($h$)$$]$ ; $[]$ ‖ is os ⇒ (•, os ◇ ["Hello, " ⧺ head is])
+$↠$ $\ruleapp{Handle-Final}$
+$[]$ ; $[]$ $ $
+  $ $‖ (is os ⇒ (•, os ◇ ["Hello, " ⧺ head is]))
+      ["Henry", "Blanchette"] []
+$↠$ $\ruleapp{Simplify}$
+$[]$ ; $[]$ ‖ (•, ["Hello, Henry"])
+\end{snippet}
+
+% \begin{snippet}[caption={Handle greetings with pure \IO}]
+% h ≔ pure-io ["Henry", "Blanchette"] io.
+%
+% $[]$ ; $[]$ ‖ greetings with h
+%
+% (Simplify)
+% $[]$ ; $[]$ ‖ io#output ("Hello, " ⧺ (io#input •)) with h
+%
+% (Handle)
+% $[$h$]$ ; $[]$ ‖ io#output ("Hello, " ⧺ (io#input •))
+%
+% (Perform)
+% $[$h$]$ ; $[$$($io#input •$,$ a1$)$$]$ ‖ io#output ("Hello, " ⧺ a1)
+%
+% (Perform)
+% $[$h$]$ ; $[$$($io#output ("Hello, " ⧺ a1)$,$ a2$)$ ▷ $($io#input •$,$ a1$)$$]$ ‖ a2
+%
+% (Handle-Value)
+% $[\unvalued($h$)]$ ; $[$$($io#output ("Hello, " ⧺ a1)$,$ a2$)$ ▷ $($io#input •$,$ a1$)$$]$ $ $
+%   $ $‖ inputs outputs ⇒ (outputs, a2)
+%
+% (Handle-Performance)
+% $[\unvalued($h$)]$ ; $[$$($io#output ("Hello, " ⧺ a1)$,$ a2$)$$]$ $ $
+%   $ $‖ (_ k inputs outputs ⇒ k (head inputs) (tail inputs) outputs)
+%       •
+%       (a1 inputs outputs ⇒ (outputs, a2))
+%
+% (Handle-Performance)
+% $[\unvalued($h$)]$ ; $[]$ $ $
+%   $ $‖ (x k inputs outputs ⇒ k • inputs (outputs ◇ [x]))
+%       ("Hello, " ⧺ a1)
+%       (a2 ⇒
+%         (_ k inputs outputs ⇒ k (head inputs) (tail inputs) outputs)
+%           •
+%           (a1 inputs outputs ⇒ (outputs, a2)))
+%
+% (Handle-Final)
+% $[]$ ; $[]$ $ $
+%   $ $‖ (x k inputs outputs ⇒ k • inputs (outputs ◇ [x]))
+%       ("Hello, " ⧺ a1)
+%       (a2 ⇒
+%         (_ k inputs outputs ⇒ k (head inputs) (tail inputs) outputs)
+%           •
+%           (a1 inputs outputs ⇒ (outputs, a2)))
+%       ["Henry", "Blanchette"]
+%       []
+%
+% (Simplify)
+% $[]$ ; $[]$ $ $
+%   $ $‖ (["Hello, Henry"], •)
+%
+% \end{snippet}

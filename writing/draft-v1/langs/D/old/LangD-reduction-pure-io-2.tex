@@ -1,0 +1,57 @@
+\begin{snippet}[caption={Handle greetings with pure \IO}]
+h ≔ pure-io ["Henry", "Blanchette"] io.
+
+greetings with h
+
+(Simplify)
+
+io#output ("Hello, " ⧺ (io#input •)) with h
+
+(Handle)
+
+(io#output ("Hello, " ⧺ (io#input •)) with unfinaled(h))
+  ["Henry", "Blanchette"] []
+
+(Perform)
+
+((_ k inputs outputs ⇒ k (head inputs) (tail inputs) outputs)
+  •
+  (a1 ⇒ io#output ("Hello, " ⧺ a1) with h))
+  ["Henry", "Blanchette"] []
+
+(Perform)
+
+((_ k inputs outputs ⇒ k (head inputs) (tail inputs) outputs)
+  •
+  (a1 ⇒
+    (x k inputs outputs ⇒ k • inputs (outputs ◇ [x]))
+    ("Hello, " ⧺ a1)
+    (a2 ⇒ a2 with h)))
+  ["Henry", "Blanchette"] []
+
+(Handle-Value)
+
+((_ k inputs outputs ⇒ k (head inputs) (tail inputs) outputs)
+  •
+  (a1 ⇒
+    (x k inputs outputs ⇒ k • inputs (outputs ◇ [x]))
+      ("Hello, " ⧺ a1)
+      (a2 ⇒
+        (inputs outputs ⇒ (a2, outputs)))))
+  ["Henry", "Blanchette"] []
+
+(Simplify)
+
+(inputs outputs ⇒
+  (•, (outputs ◇ [("Hello, " ⧺ (head inputs))])))
+  ["Henry", "Blanchette"] []
+
+(Simplify)
+
+(•, [("Hello, " ⧺ (head ["Henry", "Blanchette"]))
+
+(Simplify)
+
+(•, [("Hello, Henry")]))
+
+\end{snippet}

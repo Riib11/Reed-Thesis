@@ -1,0 +1,46 @@
+\begin{snippet}[caption={Handle greetings with standard \IO}]
+h ≔ external io.
+
+$[]$ ; $[]$ ‖ greetings with h
+(Simplify)
+$[]$ ; $[]$ $ $
+  $ $‖ do { name ← io#input •
+       ; io#output ("Hello, " ⧺ name) } with h
+(Handle)
+$[$h$]$ ; $[]$ $ $
+  $ $‖ do { name ← io#input •
+       ; io#output ("Hello, " ⧺ name) }
+(Perform)
+$[$h$]$ ; $[$$($io#input •$,$ a1$)$$]$ $ $
+$ $‖ do { name ← a1
+     ; io#output ("Hello, " ⧺ name) }
+(Simplify)
+$[$h$]$ ; $[$$($io#input •$,$ a1$)$$]$ ‖ io#output ("Hello, " ⧺ a1)
+(Perform)
+$[$h$]$ ; $[$$($io#output ("Hello, " ⧺ a1)$,$, a2$)$
+    ▷ $($io#input •$,$ a1$)$$]$ $ $
+  $ $‖ a2
+(Handle-Value)
+$[$$\unvalued($h$)$$]$ ; $[$$($io#output ("Hello, " ⧺ a1)$,$, a2$)$
+            ▷ $($io#input •$,$ a1$)$$]$ $ $
+  $ $‖ a2
+(Handle-Performance)
+$[$$\unvalued($h$)$$]$ ; $[$$($io#output ("Hello, " ⧺ a1)$,$, a2$)$$]$ $ $
+  $ $‖ (x k ⇒ k $\ioctx_1$(input x)) • (a1 ⇒ a2)
+(Simplify)
+$[$$\unvalued($h$)$$]$ ; $[$$($io#output ("Hello, " ⧺ a1)$,$, a2$)$$]$ $ $
+  $ $‖ (a1 ⇒ a2) $\ioctx_1$(input •)
+(Handle-Performance)
+$[$$\unvalued($h$)$$]$ ; $[]$ $ $
+  $ $‖ (x k ⇒ k $\ioctx_2$(output x)) ("Hello, " ⧺ a1) (a2 ⇒ (a1 ⇒ a2) $\ioctx_1$(input •))
+(Simplify)
+$[$$\unvalued($h$)$$]$ ; $[]$ ‖ (a2 ⇒ (a1 ⇒ a2) $\ioctx_1$(input •)) $\ioctx_2$(output ("Hello, " ⧺ a1))
+(Simplify)
+$[$$\unvalued($h$)$$]$ ; $[]$ ‖ (a1 ⇒ $\ioctx_2$(output ("Hello, " ⧺ a1))) $\ioctx_1$(input •)
+(Simplify)
+$[$$\unvalued($h$)$$]$ ; $[]$ ‖ $\ioctx_2$(output ("Hello, " ⧺ $\ioctx_1$(input •)))
+(Handle-Final)
+$[]$ ; $[]$ ‖ $\ioctx_2$(output ("Hello, " ⧺ $\ioctx_1$(input •)))
+(Simplify)
+$[]$ ; $[]$ ‖ •
+\end{snippet}

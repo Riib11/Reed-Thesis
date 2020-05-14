@@ -1,0 +1,184 @@
+\RequirePackage{styles/base}
+\RequirePackage{styles/core-lang-styles}
+\RequirePackage{styles/font-styles}
+
+% ------------------------------------------------------------------------------
+
+% defaults
+\lstset{
+  %
+  % text encoding
+  %
+    % extendedchars=true
+  %
+  % placement
+  %
+    float=h
+  %
+  % typesetting
+  %
+  , linewidth = 1.0\textwidth
+  , keepspaces = true
+  % , columns = fixed
+  % , tabsize=2
+  % , basewidth=0.5em
+  , keepspaces = true
+  , breakatwhitespace = false
+  , breaklines = true
+  , showspaces = false
+  , showstringspaces = false
+  , showtabs = false
+  %
+  % escapes
+  %
+  % , mathescape
+  , mathescape = false
+  , escapechar = {$}
+  , escapebegin = {\(}
+  , escapeend = {\)}
+  %
+  % style: basic
+  %
+  , basicstyle = \ttfamily
+  %
+  % captions
+  %
+  , captionpos = t
+  %
+  % language
+  %
+  , language = core
+}
+
+\lstdefinestyle{program-style}{%
+  %
+  % formatting
+  %
+  % , columns=fixed
+    xleftmargin=8pt
+  , framexleftmargin=8pt
+  , xrightmargin=8pt
+  , framexrightmargin=8pt
+  , framextopmargin=8pt
+  , framexbottommargin=8pt
+  , rulesep=0pt
+  % , frame=lrtb
+  , frameshape={nnn yyy yyy}{nyn}{nyn}{nnn yyy yyy}
+  , rulesep=0.2em
+  %
+  % captioning
+  %
+  % , captionpos=t
+  %
+  % numbers
+  %
+  % , numbers=none
+  % , numbersep=5pt
+  % , numberstyle=\tiny\color{codegray}
+}
+
+\lstdefinestyle{notational-style}{%
+  %
+  % formatting
+  %
+    xleftmargin=8pt
+  , framexleftmargin=8pt
+  , xrightmargin=8pt
+  , framexrightmargin=8pt
+  , framextopmargin=8pt
+  , framexbottommargin=8pt
+  %
+  % , frameshape={ynn ynn ynn}{yyy}{nnn}{ynn ynn ynn}
+  % , frameshape={rnr ryr nnn}{nyy}{yyn}{rnr ryr nnn}
+  , frameshape={nnn ryr rnr}{yyn}{nyy}{nnn ryr rnr}
+  , rulesep=0.2em
+  % , frameshape={rnr nnn yyy}{yny}{yny}{rnr nnn yyy}
+  % , frameshape={yny nnn yny}{yny}{yny}{yny nnn yny}
+  % , frame=tblr
+  % , frameround=ftft
+  % , framesep=0.5em
+  %
+  % , framesep=0pt
+  % , frame=shadowbox
+  % , framesep=1em
+  % , rulesepcolor = \color{blue}
+  % , columns = fixed
+  %
+  % captioning
+  %
+  % , captionpos=t
+  %
+  % numbers
+  %
+  % , numbers=none
+  % , numbersep=5pt
+  % , numberstyle=\tiny\color{codegray}
+}
+
+\lstdefinestyle{snippet-style}{%
+  %
+  % formatting
+  %
+    xleftmargin=8pt
+  % , framexleftmargin=8pt
+  , xrightmargin=8pt
+  % , framexrightmargin=8pt
+  % , framextopmargin=8pt
+  % , framexbottommargin=8pt
+  %
+  % , frameshape={ynn ynn ynn}{yyy}{nnn}{ynn ynn ynn}
+  % , frameshape={rnr ryr nnn}{nyy}{yyn}{rnr ryr nnn}
+  % , frameshape={nnn ryr rnr}{yyn}{nyy}{nnn ryr rnr}
+  % , rulesep=0.2em
+  % , frameshape={rnr nnn yyy}{yny}{yny}{rnr nnn yyy}
+  % , frameshape={yny nnn yny}{yny}{yny}{yny nnn yny}
+  % , frame=tblr
+  % , frameround=ftft
+  % , framesep=0.5em
+  %
+  % , framesep=0pt
+  % , frame=shadowbox
+  % , framesep=1em
+  % , rulesepcolor = \color{blue}
+  % , columns = fixed
+  %
+  % captioning
+  %
+  % , captionpos=t
+  %
+  % numbers
+  %
+  % , numbers=none
+  % , numbersep=5pt
+  % , numberstyle=\tiny\color{codegray}
+}
+
+% \lstdefinestyle{inline-style-style}{}
+
+%
+% environments
+%
+
+\lstnewenvironment{program}[1][]
+  {\lstset{style=program-style, #1}}{}
+
+\lstnewenvironment{notational}[1][]
+  {\lstset{style=notational-style, #1}}{}
+
+\lstnewenvironment{snippet}[1][]
+  {\lstset{style=snippet-style, #1}}{}
+
+\lstnewenvironment{snippet-Java}[1][]
+  {\lstset{language=Java, commentstyle={\codecommentstyle}, #1}}{}
+
+%
+% commands
+%
+
+% NOTE: doesn't work
+% \newcommand{\codeil}[1]{\lstinline[language=core, style=inline-style]$#1$}
+% \lstMakeShortInline[language=core, style=inline-style]{!}
+
+% ------------------------------------------------------------------------------
+\endinput
+% ------------------------------------------------------------------------------

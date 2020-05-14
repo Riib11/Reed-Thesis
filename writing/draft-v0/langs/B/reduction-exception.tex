@@ -1,0 +1,42 @@
+\begin{table}[H] \centering
+\captionof{table}{Reduction in \LangB: Exception}
+\begin{tabular}{rp{26em}}
+  \rulename{Throw} &
+  \begin{tabular}{p{16em}}
+    $\valprop{x}$
+    \\ \hline
+    \code|$\noexception$ $\|$ throw $e$ $x$|
+    $\rto$
+    \code|$\exception{e, x}$ $\|$ ✪|
+  \end{tabular}
+\\[2em]
+  \rulename{Catch} &
+  \code|$\exception{e, x}$ $\|$ catch { $e$ $a$ ⇒ $b$ } in ✪|
+  $\rto$
+  \code|$\noexception$ $\|$ ($a$ ⇒ $b$) $x$|
+\\[1em]
+  \rulename{Valid} &
+  \begin{tabular}{p{22em}}
+    $\valprop{v}$
+    \\ \hline
+    \code|$\noexception$ $\|$ catch { $e$ $a$ ⇒ $b$ } in $v$|
+    $\rto$
+    \code|$\noexception$ $\|$ $v$|
+  \end{tabular}
+\\[2em]
+  \rulename{Raise} &
+  \begin{tabular}{p{15em}}
+    \code|$\exception{e, x}$ $\|$ a ✪|
+    $\rto$
+    \code|$\exception{e, x}$ $\|$ ✪|
+  \end{tabular}
+\\[1em]
+  \rulename{Raise} &
+  \begin{tabular}{p{15em}}
+    \code|$\exception{e, x}$ $\|$ ✪ b|
+    $\rto$
+    \code|$\exception{e, x}$ $\|$ ✪|
+  \end{tabular}
+\end{tabular}
+\label{tab:LangB-reduction-exception}
+\end{table}

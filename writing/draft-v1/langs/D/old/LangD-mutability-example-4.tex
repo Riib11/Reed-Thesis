@@ -1,0 +1,32 @@
+\begin{snippet}
+term hx ≔ initialize 0 vx.
+term hy ≔ initialize 0 vy.
+
+$[]$ ; $[]$
+answer with hx, hy
+
+(Handle x2)
+$[$hy, hx$]$ ; $[]$
+do{ vx#set 4; vy#set ((vx#get •) - 2); 10 * (vx#get •) + (vy#get •) }
+
+(Perform x5)
+$[$hy, hx$]$ ; $[$(vx#set 4, @1), ((vx#get •), @2), (vy#set (@2 - 2), @3), ((vx#get •), @4), ((vy#get •), @5)$]$
+do{ @1; @3; 10 * @4 + @5 }
+
+(Handle-Value x2)
+$[$hy, hx$]$ ; $[$(vx#set 4, @1), ((vx#get •), @2), (vy#set (@2 - 2), @3), ((vx#get •), @4), ((vy#get •), @5)$]$
+(sx sy ⇒ do{ @1; @3; 10 * @4 + @5 })
+
+(Handle-Performance)
+$[$hy, hx$]$ ; $[]$
+sx sy ⇒ do{ •; @3; 10 * @4 + @5 }
+
+(_ k sx ⇒ k sx sx)
+  (@2 sx sy ⇒ do{ •; @3; 10 * @4 + @5 })
+
+% (vx#set 4, @1)
+((vx#get •), @2)
+(vy#set (@2 - 2), @3)
+((vx#get •), @4)
+((vy#get •), @5)
+\end{snippet}

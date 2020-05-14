@@ -1,0 +1,49 @@
+\chapter{Appendix: Conventions}
+\label{app:conventions}
+
+\section{Languages}
+
+The discussion of formal languages requires the use of several different languages simultaneously.
+The following is a list of the languages used in this work:
+\begin{itemize}
+  \item \tbf{narrative (informal) language}:
+    The top-level language used to narrate this work in an intuitive prose;
+    English.
+  \item \tbf{logical meta-language}:
+    Formalized expressions that make no extra-logical assumptions.
+    Contains expressions such as ``The proposition $A$ implies the proposition $A$.''
+  \item \tbf{mathematical meta-language}:
+    Mathematical expressions of generalized programs, where terms range more freely than in actual valid programs in the programming language.
+    Relies on a mathematical context not explicit in this work.
+    Contains expressions such as ``$f : α \to β \to γ$.''
+  \item \tbf{programming language}:
+    Programs that are fully defined by the contents of this work, relying on no external context.
+    Necessarily conforms to the given syntax, and its expressions have no meaning beyond the given rules that apply to them.
+    Contains expressions such as ``\code|term id (α:Type) (a:α) : α ≔ a.|.''
+\end{itemize}
+
+\section{Fonts}
+
+The use of many different languages simultaneously, as described by the previous section, has the unfortunate consequence of certain expressions seeming ambiguous to the reader.
+In order to mitigate this problem, each language and certain kinds of phrases are designated a font.
+The following fonts are designated in this way:
+\begin{itemize}
+  \item \tbf{normal font}: narrative language. E.g. ``the usual.''
+  \item \tbf{italic font}: emphasis in narrative language, especially of new and important words. E.g. ``\ep{emphasize this}.''
+  \item \tbf{bold font}: indicating the definition of new terms keywords in narrative language. E.g. ``\kw{important definition}.''
+  \item \tbf{small-caps font}: names in logical meta-language. E.g. ``\rulename{The-Golden-Rule}.''
+  \item \tbf{sans-serif font}: mathematical meta-language. E.g. ``$f(x) = (f \circ f)(x)$.''
+  \item \tbf{monospace font}: programming language. E.g. ``\code|this is some code|.''
+\end{itemize}
+
+\section{Names}
+
+Naming conventions in programs:
+\begin{itemize}
+  \item \tbf{terms}: lower-case english word/phrase in kabob-case. E.g. \code|this-is-a-term|, \code|this-is-not-a-term|, \code|map|.
+  \item \tbf{term variables}: lower-case english letter. E.g. \code|a| \code|b| \code|c|.
+  \item \tbf{types}: lower-case english word/phrase. E.g. \code|list|, \code|optional|, \code|unit|.
+  \item \tbf{type-classes}: capitalized english word/phrase. E.g. \code|Monad|, \code|Animal|, \code|Functor|.
+  \item \tbf{type variables}: lower-case greek letter. E.g. \code|α|, \code|β|, \code|φ|, \code|υ|.
+  \item \tbf{type variables of higher order}: capital english letter. E.g \code|M|, \code|A|, \code|L|.
+\end{itemize}

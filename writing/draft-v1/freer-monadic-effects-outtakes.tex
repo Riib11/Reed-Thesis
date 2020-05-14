@@ -1,0 +1,105 @@
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Functor}
+\label{sec:definition-of-functor}
+
+In section~\ref{sec:demo-monad}, we described the mapping capability of a the mutability monad.
+Though they are not necessarily monads, it turns out that the class of structures with at least the mapping capability are interesting on their own as well.
+We shall formalize this class here as part of the process of formalizing monad, and also for useful future reference.
+\begin{blockdefinition}
+A \kw{functor} is a structure with a mapping capability i.e. functors can be mapped over.
+\end{blockdefinition}
+Since monads must also have such a mapping capability, all monads are also functors.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{The Functor Type-class}
+\label{sec:functor-type-class}
+
+Functors are data structures that can be mapped over.
+In more type-oriented terminology, a functor is a type \code`$Φ$ : Type → Type` that has a capability \code`$map$ : α β ⇒ (α → β) → (Φ α → Φ β)`.
+The following definition of \code`Functor` captures this specification in the type-class notation.
+\begin{program}[caption={Definition of the type-class \code|Functor|}]
+class Functor (Φ : Type → Type) : Type
+  { map (α β : Type) : (α → β) → (Φ α → Φ β) }.
+\end{program}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Free Monad}
+
+\TODO{do I actuallly want to include this section? Maybe I can just describe it without going into detail... can mention issues.}
+
+\TODO{use standardized type-class instance parameter notation, defined in monadic-effects chapter}
+
+\begin{program}[caption={free monad}]
+type Free (φ : Type → Type) (α : Type) : Type
+  ≔ pure   : α → Free φ α
+  | impure : φ (Free φ α) → Free (φ α).
+
+% type Free (φ : Type → Type) (α : Type) : Type
+%   ≔ α + φ (Free φ α)
+%
+% term pure (φ α : Type) : α → Free φ α ≔ left.
+% term impure (φ α : Type) : φ (Free φ α) → Free (φ α) ≔ right.
+
+term lift-Free (φ α : Type)
+  : {Functor φ} → φ α → Free φ α
+  ≔ impure ○ map pure.
+\end{program}
+
+\begin{program}
+instance Functor φ ⇒ Monad (Free φ)
+  { map f fm ≔ cases fm
+                { pure a ⇒ pure (f a)
+                ; impure m ⇒ impure (map (map f) m) }
+  ; return a ≔ pure a
+  ; fm >>= k ≔ cases fm
+                  { pure a ⇒ k a
+                  ; impure m ⇒ impure (map (m' ⇒ m' >>= k) m) } }.
+\end{program}
+
+% -----------------------------------------------------------------------------
+\subsubsection{Example: Free Mutable}
+
+\begin{program}
+type Free-Mutable (σ : Type) : Type → Type := Free (Mutable σ).
+
+term get-Free (σ : Type) : Free-Mutable σ σ
+  ≔ lift-Free get.
+
+term set-Free (σ : Type) : Free-Mutable σ unit
+  ≔ lift-Free set.
+
+// TODO: did I define run-Mutable in monadic-effects?
+term run-Free-Mutable
+      (m : Free-Mutable σ α) (s : σ)
+  : σ ✕ α
+  ≔ cases m
+      { pure a ⇒ (a, s)
+      ; impure m' ⇒ let (m'', s') ≔ run-Mutable m' s in
+                     run-Free-Mutable m'' s' }.
+\end{program}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Left Kan Extension}
+
+\TODO{Intuition for freer monad using left Kan extension.}
+
+\begin{program}
+type LAN (γ : Type → Type) (α χ : Type) : Type
+  ≔ (γ α) ✕ (χ → α) → LAN γ α.
+
+term make-LAN (γ : Type → Type) (α χ : Type)
+              (gx : γ α) (h : χ → α)
+  : LAN γ α χ
+  ≔ (gx, h).
+
+instance Functor (LAN γ)
+  { map f (make-LAN gx h) ≔ make-LAN gx (f ○ h) }.
+
+term lift-LAN (γ : Type → Type) (α : Type) : γ α → LAN γ α
+  ≔ (h gx ⇒ make-LAN gx h) (x ⇒ x).
+\end{program}

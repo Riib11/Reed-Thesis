@@ -1,0 +1,41 @@
+\begin{snippet}
+term init-x ≔ initialize x 0.
+term init-y ≔ initialize y 0.
+
+$[]$ ; $[]$ ‖ experiment with init-x with init-y
+
+$↠$ (Handle (✕2))
+$[$init-x$,$ init-y$]$ ; $[]$
+  ‖ do { x#set 4 ; y#set 2 ; 10 * (x#get •) + (y#get •) }
+
+$↠$ (Perform (✕2))
+$[$init-x$,$ init-y$]$ ; $[$$($y#set 2$,$ a2$)$ ▷ $($x#set 4$,$ a1$)$$]$
+  ‖ do { a1 ; a2 ; 10 * (x#get •) + (y#get •) }
+
+$↠$ (Simplify)
+$[$init-x$,$ init-y$]$ ; $[$$($y#set 2$,$ a2$)$ ▷ $($x#set 4$,$ a1$)$$]$
+  ‖ 10 * (x#get •) + (y#get •)
+
+$↠$ (Perform (✕2))
+$[$init-x$,$ init-y$]$ ;
+$[$$($y#get •$,$ a4$)$ ▷ $($x#get •$,$ a3$)$ ▷ $($y#set 2$,$ a2$)$ ▷ $($x#set 4$,$ a1$)$$]$
+  ‖ 10 * a3 + a4
+
+$↠$ (Handle-Value (✕2))
+$[$init-x$,$ init-y$]$ ;
+$[$$($y#get •$,$ a4$)$ ▷ $($x#get •$,$ a3$)$ ▷ $($y#set 2$,$ a2$)$ ▷ $($x#set 4$,$ a1$)$$]$
+  ‖ (x y ⇒ 10 * a3 + a4)
+
+$↠$ (Handle-Performance)
+$[$init-x$,$ init-y$]$ ;
+$[$$($y#get •$,$ a4$)$ ▷ $($x#get •$,$ a3$)$ ▷ $($y#set 2$,$ a2$)$ ▷ $($x#set 4$,$ a1$)$$]$
+  ‖ (x y ⇒ 10 * a3 + a4)
+
+$↠$ (Handle-Value)
+$[$init-x$,$ init-y$]$ ;
+$[$$($y#get •$,$ a4$)$ ▷ $($x#get •$,$ a3$)$ ▷ $($y#set 2$,$ a2$)$ ▷ $($x#set 4$,$ a1$)$$]$
+  ‖ do { a1 ; a2 ; 10 * a3 + a4 }
+
+$↠$ (Simplify)
+$[]$ ; $[]$ ‖ 42
+\end{snippet}

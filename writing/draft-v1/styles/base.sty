@@ -1,0 +1,476 @@
+\RequirePackage{unicode-math}
+\RequirePackage[english, greek]{babel}
+\RequirePackage{fullpage}
+% \RequirePackage{hyperref}
+\RequirePackage{amsmath}
+% \RequirePackage{amssymb} % causes issues...
+\RequirePackage{amsthm}
+\RequirePackage{enumitem}
+\RequirePackage{centernot}
+\RequirePackage{graphicx}
+\RequirePackage{rotating}
+\RequirePackage{amsthm}
+% \RequirePackage{mathrsfs}
+% \RequirePackage{calrsfs}
+% \RequirePackage{mathrsfs}
+% \RequirePackage[mathscr]{euscript}
+\RequirePackage{mathtools}
+% \RequirePackage{nicefrac}
+\RequirePackage{adforn}
+\RequirePackage[usenames,dvipsnames]{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{multirow}
+\RequirePackage{calc}
+\RequirePackage{listings}
+\RequirePackage{color}
+% \RequirePackage{bbold}
+% \RequirePackage[bb=boondox]{mathalfa}
+% \RequirePackage{euler}
+\RequirePackage{xspace}
+\RequirePackage{latexsym}
+\RequirePackage{adforn}
+\RequirePackage[sans]{dsfont}
+\RequirePackage{yfonts}
+\RequirePackage{caption}
+\RequirePackage{fontspec}
+% \RequirePackage{mathspec} % also loads fontspec
+\RequirePackage{float}
+\RequirePackage{newunicodechar}
+\RequirePackage{etoolbox}
+\RequirePackage{natbib}
+% \RequirePackage{tabularx}
+\RequirePackage{array}
+\RequirePackage{textcomp}
+% \RequirePackage{textgreek}
+% \RequirePackage{ucs}
+\RequirePackage{stmaryrd}
+\RequirePackage{pifont}
+% \RequirePackage{parcolumns}
+\RequirePackage{caption}
+
+% ------------------------------------------------------------------------------
+% hyperref settings
+% ------------------------------------------------------------------------------
+
+% \hypersetup{
+%   colorlinks=false
+%   linkcolor={black},
+%   citecolor={black}
+% }
+
+% ------------------------------------------------------------------------------
+% graphicx settings
+% ------------------------------------------------------------------------------
+
+\graphicspath{ {./images/} }
+
+% ------------------------------------------------------------------------------
+% fonts
+% ------------------------------------------------------------------------------
+
+% new unicode characters
+\input{styles/newunicodechars.sty}
+
+% NOTE: alters space around ":"
+% \DeclareMathSymbol{:}{\mathord}{operators}{"3A}
+
+% set fonts
+
+% babel setup
+\defaultfontfeatures{Scale=MatchLowercase}
+% \babelfont{rm}[Scale=1.0]{Latin Modern Roman}
+
+% new font familites
+\newfontfamily{\CMUSerif}{CMU Serif}
+% \newfontfamily{\Tamil}{Bamini}
+% \newfontfamily{\STIXTwoMath}{STIX Two Math}
+\newfontfamily{\SourceCodePro}{Source Code Pro}
+
+% language name font
+% \newfontfamily{\Optima}{Optima}
+% \newfontfamily{\Monoid}{Monoid}
+% \newfontfamily{\Spectral}{Spectral}
+% \newfontfamily{\Montserrat}
+%   [ Path = {fonts/}
+%   , Extension = .otf
+%   , UprightFont = *-Regular
+%   , Scale = 1.05 ]
+%   {MontserratAlternates}
+% \newfontfamily{\Doghaus}
+%   [ Path = {fonts/}
+%   , Extension = .otf
+%   , BoldFont = *Heavy
+%   , Scale = 1.1 ]
+%   {QTDoghaus}
+% \newfontfamily{\PoiretOne}{Poiret One}
+\newfontfamily{\PoiretOne}
+  [ Path = {fonts/}
+  , Extension = .ttf
+  , Scale = 1.0 ]
+  {PoiretOne-Bold}
+\newcommand{\langnamefont}{\PoiretOne\bfseries}
+
+% math font
+\newcommand{\mathfontname}{GFS Neohellenic Math}
+\newfontfamily{\mathfont}{\mathfontname}
+\setmathfont[Scale=1.0,Ligatures=TeX]{\mathfontname}
+
+% monosapce font
+\newcommand{\monofontname}{Source Code Pro}
+% \newcommand{\monofontname}{Courier New}
+% \newcommand{\monofontname}{CMU Typewriter Text}
+\newfontfamily{\monofont}[Scale=0.85]{\monofontname}
+\setmonofont[Scale=0.85,Script=Greek]{\monofontname}
+
+% foreign fonts
+\babelprovide[import]{tamil}
+\babelfont[tamil]{rm}{Latha}
+
+% normal font
+\newcommand{\normtextit}[1]{\textit{\CMUSerif #1}}
+\newcommand{\normtext}[1]{\text{\CMUSerif #1}}
+
+% ------------------------------------------------------------------------------
+% header titles
+% ------------------------------------------------------------------------------
+
+% \usepackage[titletoc]{appendix}
+
+% \renewcommand{\chaptername}{Chapter}
+% \renewcommand{\appendixname}{Appendix} % idk what's happening...
+% \renewcommand{\sectionname}
+
+% ------------------------------------------------------------------------------
+% miscellaneous settings
+% ------------------------------------------------------------------------------
+
+\renewcommand\labelitemi{\adforn{2}}
+
+% special lst escape char setup (for lstinline)
+\makeatletter
+\patchcmd{\lsthk@TextStyle}{\let\lst@DefEsc\@empty}{}{}{\errmessage{failed to patch}}
+\makeatother
+
+% ------------------------------------------------------------------------------
+% tables
+% ------------------------------------------------------------------------------
+
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+% ------------------------------------------------------------------------------
+% environments
+% ------------------------------------------------------------------------------
+
+\setcounter{secnumdepth}{3}
+
+\newenvironment{syntaxarray}{
+  \begin{array}{r|l|l}
+  \text{metavariable} &
+  \text{constructors} &
+  \text{name} \\ \hline \hline
+}{
+  \end{array}
+}
+
+\newenvironment{rulearray}
+  {\begin{spreadlines}{10em}\begin{align}\begin{array}{rl}}
+  {\end{array}\end{align}\end{spreadlines}}
+
+\newenvironment{procedure}
+  {\begin{enumerate}[label=\arabic*.]}
+  {\end{enumerate}}
+
+\newenvironment{display}
+  {\begin{table}[H] \centering \begin{tabular}{c}}
+  {\end{tabular} \end{table} \noindent}
+
+\newenvironment{displayp}[1]
+  {\begin{table}[H] \centering \begin{tabular}{p{#1}}}
+  {\end{tabular} \end{table} \noindent}
+
+% ------------------------------------------------------------------------------
+% theorem styles
+% ------------------------------------------------------------------------------
+
+% \theoremstyle{theorem}
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{problem}{Problem}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newtheorem{protocol}{Protocol}[chapter]
+\newtheorem{algorithm}{Algorithm}[chapter]
+\newtheorem{notation}{Notation}[chapter]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[chapter]
+
+\newenvironment{algorumerate}[1]
+  {
+    \begin{enumerate}
+    \item[] {\sc #1}
+    \begin{enumerate}[itemsep=0em, label=\arabic*.]
+  }
+  {
+    \end{enumerate}
+    \end{enumerate}
+  }
+
+\newenvironment{descgram}[1]
+  {
+    \begin{quote}
+    \textbf{#1}.
+  }
+  {
+    \end{quote}
+  }
+
+\newenvironment{blockdefinition}
+  {
+    \begin{quote}
+  }
+  {
+    \end{quote}
+  }
+
+% ------------------------------------------------------------------------------
+% footnotes
+% ------------------------------------------------------------------------------
+
+% makes the cool footnote symbols
+% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+% \RequirePackage[ruled]{bigfoot}
+
+% ------------------------------------------------------------------------------
+% references
+% ------------------------------------------------------------------------------
+
+\newcommand{\prelude}[1]{Appendix: Preludes, #1}
+
+% ------------------------------------------------------------------------------
+% structure commands
+% ------------------------------------------------------------------------------
+
+\newcommand{\newparagraph}{\vspace{1.5em} \noindent}
+
+% ------------------------------------------------------------------------------
+% commands
+% ------------------------------------------------------------------------------
+
+% text
+\newcommand{\tbf}{\textbf}
+\newcommand{\tit}{\textit}
+\newcommand{\tsf}{\textsf}
+\newcommand{\ttt}{\texttt}
+\newcommand{\kw}{\tbf} % text keyword
+\newcommand{\ep}{\tit} % text emphasis
+
+\newcommand{\TODO}[1]{\begin{quote} \tbf{[{\color{red} TODO}]} #1 \end{quote}}
+
+% math
+\newcommand{\ass}[1]{\left(#1\right)}
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\renewcommand{\ss}{\subset}
+\newcommand{\inv}{^{-1}}
+\newcommand{\es}{\varnothing}
+\newcommand{\mt}{\mapsto}
+\newcommand{\bij}{\leftrightarrow}
+
+% meta-lang
+\newcommand{\mvar}[1]{\textnormal{«\tit{#1}»}}
+\newcommand{\alt}{~\mid~}
+
+% abbreviations
+\newcommand{\IO}{\mbox{I\hspace{-0.1em}/\hspace{-0.1em}O}\xspace}
+
+% arrows
+\newcommand{\rto}{\hspace{0.4em}\twoheadrightarrow\hspace{0.4em}} % rewrites to
+\newcommand{\mto}{\Rightarrow} % maps to
+\newcommand{\eto}{\Downarrow} % evaluates to
+% \newcommand{\brto}{\xrightarrow{\beta}} % beta-reduce to
+
+% terms
+% NOTE: remove these...
+% \newcommand{\funterm}[2]{\lambda #1 . #2}
+\newcommand{\funterm}[3]{#1 : #2 \mto #3}
+\newcommand{\appterm}[2]{#1 ~ #2}
+\newcommand{\bindop}{≔}
+\newcommand{\bindterm}[4]{\code{let}~#1 : #2 \bindop #3~\code{in}~#4}
+\newcommand{\leftterm}[1]{\code{left}~#1}
+\newcommand{\rightterm}[1]{\code{right}~#1}
+\newcommand{\prodterm}[2]{(#1, #2)}
+\newcommand{\caseterm}[5]
+  {\code{case}~ #1 ~\{~
+    \leftterm{#2} \mto #3 ~\mid~
+    \rightterm{#4} \mto #5
+  ~\}}
+\newcommand{\firstterm}[1]{\code{first}~#1}
+\newcommand{\secondterm}[1]{\code{second}~#1}
+\newcommand{\seqop}{\hspace{0.4em};\hspace{0.2em}}
+\newcommand{\seqterm}[2]{#1 \seqop #2}
+\newcommand{\mutterm}[1]{* #1}
+\newcommand{\readterm}[1]{! #1}
+\newcommand{\writeop}{\hspace{0.2em} \gets \hspace{0.2em}}
+\newcommand{\writeterm}[2]{#1 \writeop #2}
+\newcommand{\throwterm}[2]{\code{throw}~#1(#2)}
+% \newcommand{\catchterm}[4]{\code{catch}~#1~\{~#2(#3) \mto #4~\}}
+\newcommand{\catchterm}[4]{\code{catch}~\{~#1(#2) \mto #3~\}~\code{in}~#4}
+
+% primitive terms
+\newcommand{\unitterm}{\bullet}
+
+% types
+\newcommand{\funtype}[3]{#1 : #2 \mto #3}
+\newcommand{\arrtype}[2]{#1 \to #2}
+\newcommand{\sumtype}[2]{#1 + #2}
+\newcommand{\prodtype}[2]{#1 \times #2}
+\newcommand{\muttype}[1]{\code{mutable}~#1}
+\newcommand{\stctxtype}[2]{\code{state}~#1~#2}
+
+% Types
+\newcommand{\Type}{Type\xspace}
+
+% primitive types
+\newcommand{\unittype}{\code{unit}}
+
+% inference
+\newcommand{\jctx}{\Gamma}
+\newcommand{\entails}{~\vdash~}
+% \newcommand{\inferm}[2]{
+%   \begin{array}{l} #1 \\ \hline #2 \end{array}
+% }
+% \newcommand{\infer}[3]{
+%   \begin{tabular}{p{10em}}
+%     #2 \\ \hline #3
+%   \end{tabular}
+% }
+\newcommand{\infer}[3]{
+  \begin{tabular}{p{#1}}
+    #2
+    \\ \hline
+    #3
+  \end{tabular}
+}
+
+\newcommand{\iand}{\hspace{2em}}
+\newcommand{\idots}{\hspace{0.25em} \ensuremath{\cdots} \hspace{0.75em}}
+\newcommand{\iforall}{\ensuremath{(\forall i)} \hspace{0.5em}}
+
+% reduction
+\newcommand{\ssred}[2]{#1 ~\rto~ #2} % small-step
+\newcommand{\lsred}[2]{#1 ~\eto~ #2} % large-step
+\newcommand{\rctx}{\Delta} % reduction context
+
+\newcommand{\rulename}[1]{\normtext{\textsc{#1}}} % reduction rule name
+\newcommand{\ruleapp}[1]{\mbox{\rulename{(#1)}}} % reduction rule application
+\newcommand{\ruleappwith}[2]{\mbox{\rulename{(#1} #2\rulename{)}}}
+
+% propositions
+\newcommand{\valprop}[1]{\mathrm{value}~#1}
+\newcommand{\valwithprop}[2]{\mathrm{value}~#1~\mathrm{relative~to}~#2}
+\newcommand{\provprop}[2]{#1~\mathrm{provides}~#2}
+\newcommand{\freshprop}[1]{\mathrm{fresh}~#1}
+
+% evaluation context
+\newcommand{\Eval}[2]{#1 ~\|~ #2}
+
+% name for effectful computation
+\newcommand{\comp}{computation\xspace}
+
+% mutable state
+\newcommand{\stctx}{\mathscr{S}}
+\newcommand{\state}[3]{#1 [\![ #2 \mt #3 ]\!]}
+% \newcommand{\UID}[1]{\mathbb{#1}}
+\newcommand{\UID}{id}
+% \newcommand{\NewUID}[1]{\mcode{new-uid}(#1)}
+\newcommand{\NewUID}[3]{\textsf{new}(#1) ⇝ (#2, #3)}
+\newcommand{\UIDi}[1]{id_{#1}}
+
+% exception handling
+% \newcommand{\exceptions}{\mathscr{E}}
+\newcommand{\exctx}{\mathscr{E}}
+\newcommand{\exception}[1]{\exctx[#1]}
+\newcommand{\noexception}{\exception{}}
+
+% input output (io)
+\newcommand{\ioctx}{\mathscr{I\hspace{-0.1em}O}}
+\newcommand{\outputterm}{\code{output}}
+\newcommand{\inputterm}{\code{input}}
+\newcommand{\appoutputterm}[1]{\appterm\outputterm{#1}}
+\newcommand{\appinputterm}[1]{\appterm\inputterm{#1}}
+% \newcommand{\ioval}[1]{\ioctx\langle#1\rangle}
+\newcommand{\iovall}{\{\!\{}
+\newcommand{\iovalr}{\}\!\}}
+\newcommand{\ioval}[1]{\iovall #1 \iovalr}
+
+% nondeterminism (nd)
+\newcommand{\ndctx}{\mathscr{ND}}
+
+% alebraic effect handlers
+\newcommand{\hctx}{\mathcal{H}}
+\newcommand{\pctx}{\mathcal{P}}
+\newcommand{\hctxWith}[1]{\hctx\{#1\}}
+\newcommand{\hctxNone}{\hctxWith{\varnothing}}
+\newcommand{\finish}{\mathsf{finish}}
+\newcommand{\unvalued}{\mathsf{unvalue}}
+\newcommand{\unfinaled}{\mathsf{unfinal}}
+\newcommand{\monoperform}{\mathsf{monoperforms}}
+\newcommand{\hole}{\ensuremath{@}}
+
+% names
+\newcommand{\lc}{$λ$-calculus\xspace}
+\newcommand{\LC}{Lambda-Calculus\xspace}
+%
+% \newcommand{\LangA}{A\xspace} % core
+% \newcommand{\LangB}{B\xspace} % core + SML-effects
+% \newcommand{\LangC}{C\xspace} % core + AEH-effects (algebraic effect handlers)
+% \newcommand{\LangD}{D\xspace} % core + FMAEH-effects (freer-monadic algebraic effect handlers)
+% \newcommand{\LangE}{E\xspace} % core + FMAEH-effects (freer-monadic algebraic effect handlers)
+%
+% \newcommand{\LangA}{$\mathds{A}$\xspace} % core
+% \newcommand{\LangB}{$\mathds{B}$\xspace} % core + SML-effects
+% \newcommand{\LangC}{$\mathds{C}$\xspace} % core + Monadic-effects
+% \newcommand{\LangD}{$\mathds{D}$\xspace} % core + AEH-effects (algebraic effect handlers)
+% \newcommand{\LangE}{$\mathds{E}$\xspace} % core + FMAEH-effects (freer-monadic algebraic effect handlers)
+%
+% \newcommand{\LangA}{\textds{𝔽𝕦𝕟}\xspace} % core
+\newcommand{\LangA}{{\langnamefont Func}\xspace} % core
+\newcommand{\LangB}{{\langnamefont Impe}\xspace} % core + SML-effects
+\newcommand{\LangC}{{\langnamefont Mona}\xspace} % core + Monadic-effects
+\newcommand{\LangD}{{\langnamefont Alge}\xspace} % core + AEH-effects (algebraic effect handlers)
+\newcommand{\LangE}{{\langnamefont Frer}\xspace} % core + FMAEH-effects (freer-monadic algebraic effect handlers)
+%
+% \newcommand{\LangA}{\foreignlanguage{tamil}{௧}\xspace} % core
+% \newcommand{\LangB}{\foreignlanguage{tamil}{௨}\xspace} % core + SML-effects
+% \newcommand{\LangC}{\foreignlanguage{tamil}{௩}\xspace} % core + Monadic-effects
+% \newcommand{\LangD}{\foreignlanguage{tamil}{௪}\xspace} % core + AEH-effects (algebraic effect handlers)
+% \newcommand{\LangE}{\foreignlanguage{tamil}{௫}\xspace} % core + FMAEH-effects (freer-monadic algebraic effect handlers)
+
+% \newcommand{\LangApronunciation}{(pronounced ``on-roo'')\xspace}
+% \newcommand{\LangBpronunciation}{(pronounced ``ee-ran-too'')\xspace}
+% \newcommand{\LangCpronunciation}{(pronounced ``mun-roo'')\xspace}
+% \newcommand{\LangDpronunciation}{(pronounced ``nan-koo'')\xspace}
+% \newcommand{\LangEpronunciation}{(pronounced ``aeen-too)\xspace}
+
+\newcommand{\LangApronunciation}{}
+\newcommand{\LangBpronunciation}{}
+\newcommand{\LangCpronunciation}{}
+\newcommand{\LangDpronunciation}{}
+\newcommand{\LangEpronunciation}{}
+
+\newcommand{\syneq}{::=}
+\newcommand{\defeq}{:=}
+
+% ------------------------------------------------------------------------------
+\endinput
+% ------------------------------------------------------------------------------

@@ -1,0 +1,53 @@
+\begin{snippet}
+term hx ≔ initialize vx 0.
+term hy ≔ initialize vy 0.
+
+$[]$ ; $[]$ ‖ (answer with hx) with hy
+
+$\ruleapp{Handle}$
+$[$hx$]$ ; $[]$$ $
+ $ $‖ do
+    { vx#set 4
+    ; vy#set ((vx#get •) - 2)
+    ; (vx#get •) * 10 + (vy#get •) }
+  with hy
+
+$\ruleapp{Perform x3}$
+$[$hx$]$ ; $[$(vx#get •, @3), (vx#get •, @2), (vx#set 4, @1)$]$ $ $
+  $ $‖ do{ @1 ; vy#set (@2 - 2) ; @3 * 10 + (vy#get •) }
+    with hy
+
+$\ruleapp{Handle-Value}$
+$[$hx$]$ ; $[$(vx#get •, @3), (vx#get •, @2), (vx#set 4, @1)$]$$ $
+ $ $‖ (sx ⇒ do{ @1 ; vy#set (@2 - 2) ; @3 * 10 + (vy#get •) } with hy)
+
+$\ruleapp{Handle-Performance x3}$
+$[$hx$]$ ; $[]$$ $
+ $ $‖ (sx ⇒ do{ • ; vy#set (4 - 2) ; 40 + (vy#get •) } with hy)
+
+$\ruleapp{Handle-Final}$
+$[]$ ; $[]$$ $
+ $ $‖ (sx ⇒ do{ • ; vy#set (4 - 2) ; 40 + (vy#get •) } with hy)
+      0
+
+$\ruleapp{Simplify}$
+$[]$ ; $[]$ ‖ do{ vy#set (4 - 2) ; 40 + (vy#get •) } with hy
+
+$\ruleapp{Handle}$
+$[$hy$]$ ; $[]$ ‖ do{ vy#set (4 - 2) ; 40 + (vy#get •) }
+
+$\ruleapp{Perform x2}$
+$[$hy$]$ ; $[$(vy#get •, @2), (vy#set (4 - 2), @1)$]$ ‖ do{ @1 ; 40 + @2 }
+
+$\ruleapp{Handle-Value}$
+$[$hy$]$ ; $[$(vy#get •, @2), (vy#set (4 - 2), @1)$]$ ‖ sy ⇒ do{ @1 ; 40 + @2 }
+
+$\ruleapp{Handle-Performance x2}$
+$[$hy$]$ ; $[$(vy#set (4 - 2), @1)$]$ ‖ sy ⇒ 42
+
+$\ruleapp{Handle-Final}$
+$[$hy$]$ ; $[$(vy#set (4 - 2), @1)$]$ ‖ (sy ⇒ 42) 0
+
+$\ruleapp{Simplify}$
+$[$hy$]$ ; $[$(vy#set (4 - 2), @1)$]$ ‖ 42
+\end{snippet}

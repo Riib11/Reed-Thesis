@@ -1,0 +1,58 @@
+
+Abstract: "implicit implicit"
+
+You don't need a hyphen following an adverb, such as in "complexly
+interdependent behaviors".  (You would need an adverb in
+"complexity-interdependent behaviors".)
+
+Also, "freer monad stuff" does not need a hyphen.
+
+"more safe" -> "safer"
+
+Footnote 1 in the introduction: move "in [13]" to before the first comma in
+the sentence.
+
+"map on to" -> "map onto"
+
+footnote 4: need an extra hyphen in "lambda-calculus-inspired"
+
+page 12 of pdf: omit the hyphen in "externally defined behavior"
+
+page 12: remove the apostrophe at the end of "languages'"
+
+Chicago Manual of Style: need the following punctuation: ", i.e.,"
+
+don't need hyphen in "white space" or "line returns" on page 14
+Period after "line returns"
+Then start a new sentence that you do employ white space for readability.
+
+don't need a hyphen in "top level" or in "globally accessible" (page 15)
+
+Please comb for hyphens in your thesis and decide which ones need to stay.
+
+page 15: "introduced primitively declared"
+
+page 16: You have a sentence starting with lower case "suppose"
+Two lines below "true if b is true" -> "true if b is false"
+
+page 17: "who's" -> "whose" (twice)
+
+page 22: "possiblity", "applciations"
+
+in your usage of horns, I presume you are referring to the dilemma options?
+But your options have parentheses around the numbers, so when you refer to
+them, you also need to write parentheses.
+
+page 30: "There are a variety of effects" -> "There is a variety of effects"
+
+page 45: "recieve" -> "receive", "acitivty" -> 
+
+page 47: first sentence needs a "has"
+
+page 48: no need for a comma after "globally accessible"
+
+page 63: "Mondad" -> "Monad"?
+
+Page 143: References [2], [6], [10]...: volume of what?
+
+Reference [7]: Publisher?

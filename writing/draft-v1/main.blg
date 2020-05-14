@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2019)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: main.aux
+The style file: plain.bst
+Database file #1: main.bib
+Warning--empty booktitle in Bauer2013
+Warning--empty booktitle in KiselyovIshii2015
+Warning--empty booktitle in Milner1999
+Warning--empty booktitle in Plotkin200101
+Warning--empty booktitle in Plotkin2001
+Warning--empty booktitle in Plotkin2009
+Warning--empty journal in Turing1936
+You've used 14 entries,
+            2118 wiz_defined-function locations,
+            595 strings with 5753 characters,
+and the built_in function-call counts, 4061 in all, are:
+= -- 384
+> -- 134
+< -- 6
++ -- 57
+- -- 40
+* -- 249
+:= -- 668
+add.period$ -- 43
+call.type$ -- 14
+change.case$ -- 61
+chr.to.int$ -- 0
+cite$ -- 21
+duplicate$ -- 181
+empty$ -- 374
+format.name$ -- 40
+if$ -- 865
+int.to.chr$ -- 0
+int.to.str$ -- 14
+missing$ -- 15
+newline$ -- 74
+num.names$ -- 28
+pop$ -- 81
+preamble$ -- 1
+purify$ -- 48
+quote$ -- 0
+skip$ -- 125
+stack$ -- 0
+substring$ -- 235
+swap$ -- 31
+text.length$ -- 6
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 54
+warning$ -- 7
+while$ -- 40
+width$ -- 16
+write$ -- 149
+(There were 7 warnings)

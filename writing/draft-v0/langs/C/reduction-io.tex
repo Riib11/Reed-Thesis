@@ -1,0 +1,44 @@
+\begin{table}[H] \centering
+\label{tab:LangC-reduction-io}
+\captionof{table}{Reduction in \LangC: \IO}
+\begin{tabular}{rp{30em}}
+  \rulename{Simplify} &
+  \begin{tabular}{p{30em}}
+    \code`$\rctx$ $\|$ $a$` $\rto$
+    \code`$\rctx'$ $\|$ $a'$`
+  \\ \hline
+    \code`$\rctx$ $\|$ $\ioval{a}$` $\rto$
+    \code`$\rctx'$ $\|$ $\ioval{a'}$`
+  \end{tabular}
+\\[2em]
+  \rulename{\IO-Map} &
+  \code`map $f$ $\ioval{a}$` $\rto$ \code`$\ioval{f ~ a}$`
+\\[1em]
+  \rulename{\IO-Lift} &
+  \code`lift $a$` $\rto$ \code`$\ioval{a}$`
+\\[1em]
+  \rulename{\IO-Bind} &
+  \code`bind $\ioval{a}$ $fm$` $\rto$ \code`$\ioval{fm ~ a}$`
+\\[1em]
+  \rulename{\IO-Join} &
+  \code`$\ioval{\ioval{a}}$` $\rto$ \code`$\ioval{a}$`
+\\[1em]
+  \rulename{Input} &
+  \begin{tabular}{p{22em}}
+    $\valprop{v}$
+  \\ \hline
+    \code|$\ioctx$ $\|$ input $v$|
+    $\rto$
+    \code|$\ioctx$ $\|$ $\iovall\ioctx($input $v$$)\iovalr$|
+  \end{tabular}
+\\[2em]
+  \rulename{Output} &
+  \begin{tabular}{p{22em}}
+    $\valprop{v}$
+  \\ \hline
+    \code|$\ioctx$ $\|$ output $v$|
+    $\rto$
+    \code|$\ioctx$ $\|$ $\iovall\ioctx($output $v$$)\iovalr$|
+  \end{tabular}
+\end{tabular}
+\end{table}

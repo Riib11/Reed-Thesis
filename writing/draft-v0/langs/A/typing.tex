@@ -1,0 +1,41 @@
+\begin{table}[H] \centering
+\captionof{table}{Typing in \LangA}
+\begin{tabular}{rp{15em}}
+  \rulename{Simple} &
+  \code|$\jctx$, $a$:$α$ $⊢$ $a$:$α$|
+\\[2em]
+  \rulename{Simple} &
+  \code|$\jctx$, $α$:$A$ $⊢$ $α$:$A$|
+\\[2em]
+  \rulename{Term-Abstraction} &
+  \begin{tabular}{p{15em}}
+    \code|$\jctx$, $a$:$α$ $⊢$ $b$:$β$|
+    \\ \hline
+    \code|$\jctx$ $⊢$ ($a$:$α$) ⇒ $b$ : $α$ → $β$|
+  \end{tabular}
+\\[2em]
+  \rulename{Term-Application} &
+  \begin{tabular}{p{15em}}
+    \code|$\jctx$ $⊢$ $f$ : $α$ → $β$| \iand
+    \code|$\jctx$ $⊢$ $a$:$α$|
+    \\ \hline
+    \code|$\jctx$ $⊢$ $f$ $a$ : $β$|
+  \end{tabular}
+\\[2em]
+  \rulename{Type-Abstraction} &
+  \begin{tabular}{p{15em}}
+    \code|$\jctx$, $α$:$A$ $⊢$ $β$:$B$|
+    \\ \hline
+    \code|$\jctx$ $⊢$ ($α$:$A$) ⇒ $B$ : $A$ → $B$|
+  \end{tabular}
+\\[2em]
+  \rulename{Type-Application} &
+  \begin{tabular}{p{15em}}
+    \code|$\jctx$ $⊢$ $φ$ : $Α$ → $Β$| \iand
+    \code|$\jctx$ $⊢$ $α$:$Α$|
+    \\ \hline
+    \code|$\jctx$ $⊢$ $φ$ $α$ : $B$|
+  \end{tabular}
+\end{tabular}
+\label{tab:LangA-typing}
+\end{table}

@@ -1,0 +1,959 @@
+\chapter{Algebraic Effects with Handlers}
+\label{ch:AEH}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Breaking Down ``Effect''}
+
+In chapter~\ref{ch:simple-effects}, we considered language \LangB which implemented effects by introducing specific language features for each kind of effect.
+In chapter~\ref{ch:ME}, we considered language \LangC which alternatively implemented effects using monads, which as a single language feature, provided a general framework for introducing all new effects.
+In doing so, monads also added a new layer of complexity, including requirements for: explicit \ep{lifting} of relatively pure values and special binding for using the results of computations.
+In particular they make it difficult to write code where multiple effects are used at together i.e. composing monadic effects.
+We would like an extension of \LangA that provides composable effects while also maintaining the useful features of \LangC: type-safety, general class-like structure for new effects, internal effects.
+
+Recall the breakthrough of monadic effects ---
+the implicit context and explicit context of effects could be modeled as language structures (as monads) rather than deferred to external reduction contexts.
+This abstract strategy was to take something intrinsic about the nature of effects in general, and represent it explicitly in the programming language.
+As another instance of this strategy, observe that there is another way to break down effects --- between where the effect is \ep{performed} and where the effect is \ep{handled}.
+In \LangB: effects are performed by using specific primitive values, and are handled during reduction to affect the program state.
+In \LangC: effects are performed by using monad-relevant values, and are handled as per the definition of the monad.
+An alternative way to represent these aspects of effects is to include them both as language structures, but not require them to be overlapping as is the case with monads.
+In other words, to have a structure of performing effects and a separate structure for handling effects.
+
+\kw{Algebraic effects with handlers} provide an effect framework for this kind of organization.
+More formally, it breaks down effects into two aspects:
+%
+\begin{itemize}
+\item
+  \kw{Performance:}
+  Incurs the \tit{performing} of an effect, affecting the implicit program state and resulting in a value.
+\item
+  \kw{Handler:}
+  Defines the result of an effect performance, parametrized by the \tit{handler}'s clauses.
+  In its definition, a handler abstracts the context relevant to handling particular performance (in the same way that a function abstracts its parameter).
+\end{itemize}
+%
+In the following sections, \LangD will introduce many new syntactical structures for describing algebraic effects, but the basic idea is all \LangA-terms of continuations.
+The algebraic effect strategy is two-fold:
+(1) performances build up a sequenced of nested continuations, each parametrized by their expected result, and
+(2) handlers, applied to a built-up continuation stack, handle each continuation in sequence by providing the performance's expected result and keeping track of a context relatively implicit to the performances themselves.
+
+Additionally, algebraic effects need some way of particularizing effects by the performances allowed to be done by them, so that handlers can handle each performance case.
+The approach taken by \cite{Bauer2015ProgrammingWA} in designing the \ep{Eff} programming language is to use the following structures.
+\begin{itemize}
+\item
+  \kw{Resource:}
+  Specifies a collection of primitive effects by their input and output types.
+  These primitive effects it provides are called \kw{actions}.
+\item
+  \kw{Channel}:
+  Represents a specific instance of a resource, providing the primitive effects specified by the resource but having a unique implicit state.
+\end{itemize}
+A resource specifies the typed interface (collection of actions) to an effect, and
+the channels of that resource are particular instances of the effect
+(such as how there can be multiple terms of type \code`mutable $α$` for fixed $α$).
+Since a resource specifies an explicit collection of actions that act as atomic performances, handlers can account for any kind of performance using the resource by handling in terms of its actions.
+
+The core idea of algebraic effects is to define an algebra on the performances that allows for the free composition of effects, and then to separately define algebraic effect handlers that can be applied hierarchically to performances.
+They were mainly introduced by \cite{Plotkin200101}, \cite{Plotkin2009} and \cite{Bauer2013},
+and are inspired by a history of research into the actor model of computation, the $\pi$ calculus \cite{Milner1999}, continuation-passing style, delimited control.
+The \ep{Eff} programming language described by \cite{Bauer2015ProgrammingWA} is a variant of the OCaml programming language that implements algebraic effects with handlers in a way very similar to the language \LangD introduced in the next section.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\newpage
+\section{Language \LangD}
+\label{sec:LangD}
+
+Language \LangD implements algebraic effects with handlers in terms of resources, actions, channels, performances, and handlers.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Syntax}
+
+\input{langs/D/syntax}
+
+% -----------------------------------------------------------------------------
+\subsubsection{Action}
+
+The action type is the type of atomic effects provided by a resource.
+It has two parameters: firstly the input type and secondly the output type.
+It is necessary for all actions to be represented this way
+(even if they take a trivial input or result in a trivial output)
+in order for the to-be-explained framework of performing effects to succeed in generality.
+The action type serves only as a sort of tag for the signature of the effect it represents --- it not have any content.
+For this reason it is introduced as a new syntactical structure rather than a primitive type.
+
+An action can be thought of a sort of function except that it has no body and the normal \LangA reduction rules for function applications do not apply to it.
+An action is a function that raises an \ep{appeal} to a relatively implicit context to dictate its reduction.
+In this way, the ``\code| ↗ |'' operator looks similar to the arrow type's arrow, but is tilted upward in appeal to another context.
+
+% -----------------------------------------------------------------------------
+\subsubsection{Resource}
+
+The kind \code|Resource| is the kind of \ep{resource types}.
+A resource type contains a specification for the collection of actions provided by the resource.
+This specification comes in the form of a collection of \ep{action names} that are each annotated by an action type.
+These action names are called the actions \ep{provided by} the resource.
+In general, a declaration
+\begin{snippet}
+resource $ρ$ { $g_1$ : $α_1$ ↗ $β_1$ ; $\cdots$ ; $g_n$ : $α_n$ ↗ $β_n$ }.
+\end{snippet}
+declares the type \code|$ρ$:Resource| and
+the terms \code`$g_1$ : $α_1$ ↗ $β_1$`, $\dots$, \code`$g_n$ : $α_n$ ↗ $β_n$`.
+
+\newpage
+The typing rule is as follows:
+\input{langs/D/typing-resource}
+
+\newparagraph
+For example, consider the following resource declaration:
+\begin{snippet}
+resource Random
+  { gen-probability : unit ↗ rational
+  ; gen-boolean  : unit ↗ boolean }.
+\end{snippet}
+This declaration declares
+the type \code|Random : Resource| and
+the terms \code|gen-probability : unit ↗ rational|, \code|gen-boolean : unit ↗ boolean|.
+
+% Here we need to introduce the single new syntactic structure for \LangD, as it is the only way to introduce a new kind.
+% It is needed as a new kind unique from \code|Type| since resources specially ---  resources require primitive types and terms and are purely tagged interfaces rather than having content.
+%
+% \begin{table}[H]
+% \label{tab:LangD-syntax-resource}
+% \centering
+% \captionof{table}{Syntax for \LangD: Resource}
+% \begin{tabular}{r|L{7em}|l}
+%   \kw{metavariable} & \kw{constructor} & \kw{name}
+% \\ \hline \hline && \\
+%   \mvar{kind}
+%     & \code`Resource`
+%     & resource kind
+%   \\&&
+% \end{tabular}
+% \end{table}
+
+% There are two parts to using resources: \ep{specifying} resources and \ep{instantiating} resource channels.
+% Firstly, to specify a resource is to define it by a collection of names typed by actions; the resource \ep{provides} these actions.
+% To illustrate this, suppose we are specifying a resource $ρ$ that provides actions \code|$g_i$ : $α_i$ → $β$|.
+% For its resource type, we can declare a primitive type \code|$ρ$ : Resource|.
+% Then for its action terms, we can declare primitive terms \code|$g_i$ : $α_i$ → $β_i$|.
+% To write out this boilerplate structure intuitively (and more carefully in regards to type parameters), the following notation is introduced.
+% \begin{notational}[caption={Notation for resource specification}]
+% resource $\mvar{resource-name}$ $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛_*$ : Resource
+%   { $\mvar{action-name}_1$ $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛_1$ : $\mvar{type}_{1,\text{in}}$ ↗ $\mvar{type}_{1,\text{out}}$
+%   ; $\cdots$
+%   ; $\mvar{action-name}_n$ $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛_n$ : $\mvar{type}_{n,\text{in}}$ ↗ $\mvar{type}_{n,\text{out}}$ }.
+%
+% $\syneq$
+%
+% primitive type $\mvar{resource-name}$ $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛$ : Resource.
+%
+% // actions
+% primitive term $\mvar{action-name}_1$
+%   $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛_*$ $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛_1$
+%   : $\mvar{resource-name}$ $〚$ $\mvar{type-param}$ $〛$ → $\mvar{type}_{1,\text{in}}$ ↗ $\mvar{type}_{1,\text{out}}$.
+% $\vdots$
+% primitive term $\mvar{action-name}_n$
+%   $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛_*$ $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛_n$
+%   : $\mvar{resource-name}$ $〚$ $\mvar{type-param}$ $〛$ → $\mvar{type}_{n,\text{in}}$ ↗ $\mvar{type}_{n,\text{out}}$.
+% \end{notational}
+
+% -----------------------------------------------------------------------------
+\subsubsection{Channel}
+
+A channel is an instance of a resource specification.
+To declare a channel is to name the new channel and its resource kind.%
+\footnote{
+  Note thsi special method for introducing channels that seemingly would be accomplished just the same by using the \code|primitive term| declaration.
+  Using a unique declaration is useful since the declaring of a channel may have effects itself (e.g. declaring a new mutable variable might trigger memory-handling effects) which need to be implemented in an implementation of \LangD.
+}
+In general, a declaration
+\begin{snippet}
+channel $c$ : $ρ$.
+\end{snippet}
+declares the term \code|$c$ : $ρ$|,
+Its typing rule is as follows:
+\input{langs/D/typing-channel}
+
+\newparagraph
+For example, consider the following channel declarations:
+\begin{snippet}
+channel random1 : Random.
+channel random2 : Random.
+\end{snippet}
+These declarations declare the terms \code|random1 : Random| and \code|random2 : Random|, two different channels for the \code|Random| resource.
+
+% Secondly, to instantiate a channel of resource $ρ$ is to define a term \code|$c$:$ρ$|.
+% We must introduce $c$ primitively, since $ρ$ is necessarily a primitive type.
+% The following notation keeps this in mind, and highlights to a reader the fact that it is a specific kind of primitive term.
+% \begin{notational}[caption={Notation for resource channel instantiation}]
+% channel $\mvar{term-name}$ : $\mvar{resource-name}$.
+%   $\syneq$
+%     primitive term $\mvar{term-name}$ : $\mvar{resource-name}$.
+% \end{notational}
+%
+% \begin{table}[H]
+% \label{tab:LangD-syntax-channel}
+% \centering
+% \captionof{table}{Syntax for \LangD: Channel}
+% \begin{tabular}{r|L{20em}|l}
+%   \kw{metavariable} & \kw{constructor} & \kw{name}
+% \\ \hline \hline && \\
+%   \mvar{declaration}
+%     & \code`channel $\mvar{term-name}$ : $\mvar{resource-name}$`.
+%     & channel instantiation
+%   \\&&
+% \end{tabular}
+% \end{table}
+
+% -----------------------------------------------------------------------------
+\subsubsection{Performance}
+
+The performance of an action is the use of a channel (for the resource that provides the effect) to invoke the action's effect given a term of the input type.
+In general, the term
+\begin{snippet}
+$c$#$g$ $a$
+\end{snippet}
+uses channel $c$ to perform action $g$ with input term $a$.
+The typing rule for performances is the following:
+\input{langs/D/typing-performance}
+
+\newparagraph
+For example, consider the following term:
+%
+\begin{snippet}
+term random-sum : rational
+  ≔ (random1#gen-probability •) + (random2#gen-probability •).
+\end{snippet}
+%
+Since action \code|gen-probability| has type \code|unit ↗ rational|,
+action \code|gen-probability| is provided by the resource \code|Random|, and
+both of \code|random1|, \code|random2|, then
+each of \code|(random1#gen-probability •)| and \code|(random2#gen-probability •)| should result in a rational, which can be added together.
+
+
+% -----------------------------------------------------------------------------
+\subsubsection{Handler}
+
+A handler is a term containing an implementation for enacting the effects specified by a certain resource --- it is called a handler \ep{for} this resource.
+Handlers can be used to \ep{handle} (as will be detailed in the section~\ref{sec:handling}) terms that contain such effects, evaluating to a pure result relative to the resource (i.e. no longer has any effects that the resource provides).
+The implementation clauses that a handler must contain are one for each action provided by the resource, as these actions are the basic units for the resource's effects.
+
+A clause that handles the action \code`$g$ : $χ$ ↗ $υ$` has the form
+\code`#$g$ $x$ $k$ ⇒ $b$`,
+where $x$,$k$ are term parameters and $b$ is a term.
+Here,
+$x$ is an input parameter for $g$,
+$k$ is a continuation parametrized by the result of performing $g$, and
+$b$ is a term that encodes the result of performing $g$ given input $x$ and continuation $k$.
+More specifically, $k$ encodes the rest of the computation to carry out after $g$ is performed, with a parameter of type $χ$ which appears everywhere the result of performing $g$ normally appeared (even if it does not appear anywhere).
+
+Additionally, it is convenient to require two other clauses as well: for \ep{relatively-pure values} (relative to the resource) and the \ep{final result values} (after all effects and values have been handled).
+A handler can have only one of each of these clauses.
+
+Firstly, a handler's \ep{relatively-pure value clause}, or just \kw{value clause}, encodes a lifting of relatively-pure values to be of the appropriate type reflecting the effect handling (note that this can be the trivial lift, \code`a ⇒ a`).
+Such a value clause that handles relatively-pure values has the form
+\code`$a$ ⇒ $b$`,
+where $a$ is a term parameter and $b$ is a term.
+Here,
+$a$ is an input parameter for $b$, and
+$b$ is a term encoding the produced value.
+For example, an exception handler based on the \code`optional` data type (see \prelude{\LangA}) might lift pure values via the \code`some` constructor.
+
+Secondly, a handler's \ep{final value clause}, or just \kw{final clause}, encodes some transformation on the result of handling all the other clauses.
+Such a final clause has the form
+\code`$b$ ⇒ $c$`,
+where $b$ is a term parameter and $c$ is a term.
+Here,
+$b$ is an input parameter for $c$, standing in place of the final result, and
+$c$ is a term encoding some last transformation to apply on $c$.
+For example, a mutability handler might in its final clause pass an initial value to a continuation parametrized by the state value that is produced through handling the other clauses.
+
+The type of handlers that handle computations with values of type $α$ and has result type $β$ is \code`$α$ ↘ $β$`.
+The ``\code` ↘ `'' is the the over-horizontal reflection of the action type's operator, indicating that a handler \ep{resolves} (or, \ep{lowers}) the raised appeal that an action makes, resulting in a (handled) result;
+handlers encode the implicit context that actions appeal to and so resolve their appeals.
+
+In general, the term
+\begin{snippet}
+handler
+  { #$g_1$ $x_1$ $k_1$ ⇒ $b_1$ ; $\cdots$ ; $g_n$ $x_n$ $k_n$ ⇒ $b_n$
+  ; value $a_v$ ⇒ $b_v$
+  ; final $b_f$ ⇒ $c_f$ }
+\end{snippet}
+combines the action, value, and final clauses mentioned previously.
+The typing rule is as follows:
+
+\input{langs/D/typing-handler}
+
+\newparagraph
+For example, consider the following term:
+\begin{snippet}
+term not-so-randomly (α:Type) : Random → α ↗ α
+  ≔ handler
+      { #gen-probability _ k ⇒ k (1/2)
+      ; #gen-boolean     _ k ⇒ k true
+      ; value            a   ⇒ a
+      ; final            a   ⇒ a }.
+\end{snippet}
+This handler term handles terms of type $α$ in which \code|Random|-performances appear, and has result type $α$.
+
+% -----------------------------------------------------------------------------
+\subsubsection{Handling}
+\label{sec:handling}
+
+So far we have introduced structures for
+performing effects and
+defining handlers for these effects.
+What is still missing is a way to ``apply'' a handler to a term in way that handles the effects performed in the term via the specification of the handler.
+This ``application'' of a handler to a term is called \ep{handling} the term,
+and the syntactical structure \code|with| is precisely for handling.
+In general, the term
+\begin{snippet}
+$p$ with $h$
+\end{snippet}
+encodes the handling of the term $p$ (which may contain effect performances)
+in the way specified by the clauses of the handler $h$.
+The intuition behind the syntax is that it encodes ``doing'' $p$ with $h$.
+The actual reduction rules for simplifying this term are given in section~\ref{sec:LangD-reduction}.
+
+The typing rule is as follows:
+\input{langs/D/typing-handling}
+
+\newparagraph
+For example, consider the following term (section~\ref{sec:LangD-sequencing} describes the \code|do| syntax):
+\begin{snippet}
+term experiment : boolean
+  ≔ let b ≔ random1#gen-boolean • in
+    let p ≔ random1#gen-probability • in
+    b ∧ (1/2 ≤ p)
+    with not-so-randomly random1.
+\end{snippet}
+This term uses the handler \code`not-so-randomly` to handle the performances using channel \code`random1` in the computation of the \code|do| block.
+Since \code`b ∧ (1/2 ≤ p)` is a boolean, the declaration that \code|experiment| has type \code|boolean| is correct, since \code`not-so-randomly random1 : $α$ ↘ $α$` abstracted over all \code|$α$ : Type|.
+
+\paragraph{Nested handlings.}
+The \code|with| construction is infixed and is left-associative
+i.e. \code|$a$ with $b$ with $c$| associated to \code|(($a$ with $b$) with $c$)|.
+For the sake of conciseness, if a term is handled by multiple nested handlers, the entire expression can be abbreviated by the following notation.
+\begin{notational}[caption={Notation for nested handlings}]
+$\mvar{term}_*$ with $\mvar{term}_1$ with $\cdots$ with $\mvar{term}_n$
+  $\syneq$
+    $\mvar{term}_*$ with $\mvar{term}_1$, $\dots$, $\mvar{term}_n$
+\end{notational}
+
+% -----------------------------------------------------------------------------
+\subsubsection{Sequencing}
+\label{sec:LangD-sequencing}
+
+The sequencing effect can be constructed in \LangD, since the usual reduction rules inherited from \LangA will first reduce the first argument of \code|sequence| and then reduce the second argument.
+In this way, the performances of the first argument are performed first and the second arguments' are performed second.
+Additionally, we need not introduce a special notation for binding since, unlike in \LangC, the results of an $α$-performance has the same type as a pure $α$-term.
+Instead of dealing with effect-tagged types as the performance level, \LangD allows dealing with types to be raised out to the handling level.
+%
+\begin{program}[caption={Construction for sequencing}]
+term sequence (α β : Type) (_:α) (b:β) : β ≔ b.
+\end{program}
+
+\begin{notational}[caption={Notations for sequencing}]
+($\mvar{term}_1$:$\mvar{type}_1$) >> ($\mvar{term}_2$:$\mvar{type}_2$)
+  $\syneq$
+    sequence $\mvar{type}_1$ $\mvar{type}_2$ $\mvar{term}_1$ $\mvar{term}_2$
+
+do{ ($\mvar{term}_1$:$\mvar{type}_1$) ; $\cdots$ ; ($\mvar{term}_n$:$\mvar{type}_n$) }
+  $\syneq$
+    $\mvar{term}_1$ >> $\cdots$ >> $\mvar{term}_n$
+\end{notational}
+The operator \code`>>` is right-associative i.e.
+\code`$a$ >> $b$ >> $c$` associates to \code`$a$ >> ($b$ >> $c$)`
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Reduction}
+\label{sec:LangD-reduction}
+
+\LangD introduces many new syntactical structures for which reduction rules must be provided.
+In chapter~\ref{ch:ME}, we discussed how relying on reduction rules contributed to danger, since reduction rules are not expressible within the programming language itself.
+However, the important reasoning for this was that the reduction rules relied on implicit contexts in order to perform effects in a way not internally-expressible.
+In contrast, \LangD's new syntactical structures provide an internal way of defining direct interactions with the reduction context, rather than using the reduction context as purely an interface.
+So, even though \LangD requires quite a few more reduction rules, the behavior of algebraic effects with handlers is still able to be directly reasoned about (with some amount of locality) within \LangD code itself.%
+\footnote{
+  The language \ep{Eff} from \cite{Bauer2015ProgrammingWA} uses a different reduction scheme that does not require reduction contexts --- it passes around the \code|a with h| handler application to sub-terms instead that a reduction context.
+  This is an alternative and attractive approach, though with slightly less readability in my opinion, and further demonstrates how algebraic effects are more analyzable than naively-imperative effects.
+}
+
+\paragraph{Reduction contexts.}
+The total reduction context $\rctx$ is made up of two sub-contexts:
+the handlers context $\hctx$, and
+the performances context $\pctx$.
+The context $\hctx$ is a list of handlers, in order from inner-most to outer-most.
+For example, when considering the term $a$ for reduction within \code`($a$ with $h_1$) with $h_2$`,
+the handlers context would be $\hctx = [h_2, h_1]$.
+The context $\pctx$ is a list of performances, in order from inner-most to outer-most, and from most-recent to least-recent when performances are at the same level.
+For example, reducing the sequence \code`do{ $a_1$ ; $a_2$ ; $a_3$ }` would yield the performance context $\pctx = [a_3, a_2, a_1]$.
+
+\paragraph{Relative Values.}
+Recall from section~\ref{sec:LangA-reduction} that a term is a value if no reduction rules can simplify it.
+Note though that terms in \LangB must rely on relatively implicit contexts for reduction --- in particular, $\hctx$.
+For example: \code`random1#gen-boolean •` is a value if it appears at the top level, but
+the same term is not a value if it appears somewhere within the appropriate handling structure, such as \code`random1#gen-boolean • with not-so-randomly random1`.
+So, the proposition that a term $v$ is a value, written $\valprop{v}$, must be extended to include the reduction context.
+Thus we introduce the new form ``$\valwithprop{v}{\hctx}$'' to abbreviate
+``$v$ is a value relative to handler context $\hctx$.''
+The proposition ``$\valwithprop{v}{\hctx}$'' is true if $\valprop{v}$ and there is no handler $h$ among the $h$ such that either of the following is true:
+$v$ is an action and $h$ has a matching action clause, or
+$h$ has a \code|value| clause.
+
+\paragraph{Simplification.}
+When reducing the argument in a function application, any handlers used in this sub-term should not be propagated to the parent level.
+For example, when reducing the term \code|($a_1$ ($a_2$ with $h_2$)) with $h_1$|, the handler $h_2$ clearly shouldn't be used to handle $a_2$.
+On the other hand, when reducing a term \code|$a$ ($r$#$e$ $x$) with $h$|, the performance \code|$r$#$e$ $x$| \ep{should} be raised to the parent level in of \code|$a$ ($r$#$e$ $x$)|, since the hole introduced by \code{Perform} should be put in place of the argument of $a$.
+Altogether, simplification of the argument in function application should add performances to $\pctx$, but should not add handlers to $\hctx$.
+
+\paragraph{Performing.}
+The reduction rule \rulename{Perform} dictates how performances interact with the reduction context.
+This reduction of a performance \code|$r$#$g$ $v$| yields the \ep{pushing} of the performance-representation $(r,g,v,⚑)$ to the head of the performances context $\pctx$, where $⚑$ is a fresh term name that stands in place for the result of the performance.%
+\footnote{
+  Note that the name $⚑$ indicates that it is a fresh variable name, named so because it provides a sort of ``hole'' in the term it is abstracted from.
+}
+This indicates how $(r,g,v,⚑)$ is the new inner-most performance, first in priority to get considered for handling.
+The result of this reduction rule is just $⚑$, which will be filled in by whatever the handled result of $(r,g,v,⚑)$ will be.
+
+Note that the rule \rulename{Perform} has a higher priority than any of the rules for handling.
+The result of this is that all performances will be enqueued to $\pctx$ first,
+and then they will be handled in the order they were enqueued.
+
+\paragraph{Handling.}
+The reduction rule \rulename{Handle} dictates how to handle a term given a handler.
+With regards to the reduction contexts, this rule affects both.
+Reduction of \code|$a$ with $h$| yields the adding of $h$ to the inner-most position of $\hctx$, indicating that $h$ is now the most-prioritized handler.
+Finally, the result of this reduction is simply $a$, now to be reduced within the handler context including of $h$.
+
+\paragraph{Handling performance.}
+The reduction rule \rulename{Handle-Performance} dictates how to use a given handler $h$ to handle the performance of an action which is highest-priority from $\pctx$, represented by $(r,g,v,⚑)$.
+Let \code|#$g$ $x$ $k$ ⇒ $b$| be $h$'s clause for handling action $g$,
+and $w$ be the value (relative to the handlers in context) being reduced.
+The clause expects $x$ to be a value of the input type for action $g$, which is exactly $v$ since $v$ was given as the argument to performance that included added it to the performance context (as dictated by the rule \rulename{Perform}).
+Additionally the clause expects $k$ to be a continuation parametrized by the result of the performance, which is exactly \code|$⚑$ ⇒ $w$|, since $⚑$ stands in place of the result of the performance and $w$ is a term referencing $⚑$ to describe the rest of the computation.
+So altogether the result of \rulename{Handle-Performance} is $b$ with $v$ passed as $x$ and \code|$⚑$ ⇒ $w$| passed as $k$,
+written as the application \code|($x$ $k$ ⇒ $b$) $v$ ($⚑$ ⇒ $w$)|.
+
+\paragraph{Handling value.}
+The reduction rule \rulename{Handle-Value} dictates how to use a given handler $h$ to handle a (relative to $h$) value $v$.
+Let \code|value $a$ ⇒ $b$| be the value clause of $h$.
+Then the result of \rulename{Handle-Value} should simply be $b$ with $v$ passed as $a$,
+written as the application \code|($a$ ⇒ $b$) $v$|.
+Additionally, the value clause should only be used once --- otherwise, it would apply ad infinitum.
+So, \rulename{Handle-Value} also removes the value clause from $h$.
+
+Observe that \rulename{Handle-Value} has a higher priority than \rulename{Handle-Performance}.
+The result of this is that, once all the performances have been dictated by \rulename{Perform}, rule \rulename{Handle-Value} will apply once, and then the performances will be subsequently handled.
+
+\paragraph{Handling final.}
+The reduction rule \rulename{Handle-Final} dictates how to use a given handler $h$ to handle a term $v$ that has been so far completely evaluated by applications of \rulename{Handle-Performance} and \rulename{Handle-Value}.
+Let \code|final $b$ ⇒ $c$| be the final clause of $h$.
+The result of \rulename{Handle-Final} should simply be $c$ with $v$ passed as $b$,
+written as the application \code|($b$ ⇒ $c$) $v$| (very similar to \rulename{Handle-Value}).
+
+\paragraph{Handler modifiers.}
+The technique used by the reduction rules for \LangD in order to keep track of which of the steps of reduction (performance, value, then final) a handler is in is to modify the handler so that only the correct reduction rule applies to the handler's structure at each step.
+The $\unvalued$ modifier removes the \code|value| clause,
+the $\unfinaled$ modifier removes the \code|final| clause, and
+the $\monoperform$ modifier removes both the \code|value| and \code|final| clauses from a given handler.
+
+
+\input{langs/D/reduction}
+
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Algebraic Effects with Handlers}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsubsection{Mutability}
+
+The mutability effect can be defined in \LangD as a resource as follows, providing its two signature capabilities, \code|get| and \code|set|, here as the resource's actions.
+%
+\begin{program}[caption={Resource for mutability}]
+resource Mutable (α:Type)
+  { get : unit ↗ α
+  ; set : α ↗ unit }.
+\end{program}
+%
+The mutable value is handled in \code`initialize` using another layer of continuation that keeps track of the state.
+The current continuation \code`k` has two parameters:
+the current mutable value and the result.
+\begin{program}[caption={Handler for mutability}]
+term initialize (σ α : Type) (s-init:σ) : Mutable σ → α ↘ (σ ✕ α)
+  ≔ handler
+      { #get  _ k ⇒ (s ⇒ k s s)
+      ; #set  s k ⇒ (_ ⇒ k • s)
+      ; value   a ⇒ (s ⇒ a)
+      ; final   f ⇒ f s-init }.
+\end{program}
+%
+To handle the \code`get` action: the current mutable value is unchanged, and the result is the current mutable value.
+To handle the \code`set` action: the current mutable value is updated to a new value, and the result is \code`•`.
+To handle a value: the current mutable value is ignored, and the result is the given value.
+To handle a final fully-reduced term, which is the form of a function of a current mutable value: the initial mutable value is passed to the term.
+
+% -----------------------------------------------------------------------------
+\paragraph{Example.}
+In using the mutability effect, the mutability channels correspond to particular mutable memory stores that can be read from via \code`get` and wrote to via \code`set`.
+Say we have a channel \code|counter : Mutable integer| and we want to construct a term \code|increment| that adds \code`1` the counter and results in \code|•|.
+We can write the following program:
+\begin{snippet}
+channel counter : Mutable integer.
+
+term increment : unit → unit
+  ≔ let i ≔ counter#get • in
+    counter#set (i + 1).
+\end{snippet}
+A simple application of \code|increment| is handled (where $s_0$ is an arbitrary integer), from performance to handled-performance, as follows:
+\begin{snippet}
+h ≔ initialize $s_0$ counter.
+
+$[$h$]$ ; $[]$ ‖ increment •
+$\ruleapp{Definition}$
+$[$h$]$ ; $[]$ ‖ let i ≔ counter#get • in counter#set (i + 1)
+$\ruleapp{Simplify}$
+$[$h$]$ ; $[]$ ‖ counter#set ((counter#get •) + 1)
+$\ruleapp{Perform x2}$
+$[$h$]$ ; $[$(counter#set ($⚑_1$ + 1), $⚑_2$), (counter#get •, $⚑_1$)$]$ ‖ $⚑_2$
+$\ruleapp{Handle-Value}$
+$[$h$]$ ; $[$(counter#set ($⚑_1$ + 1), $⚑_2$), (counter#get •, $⚑_1$)$]$ ‖ s ⇒ (s, $⚑_2$)
+$\ruleapp{Handle-Performance x2}$
+$[$h$]$ ; $[]$ ‖ s ⇒ (s + 1, •)
+\end{snippet}
+In this reduction, the handling of \code|increment •| yields a continuation \code|$s$ ⇒ ($s$ + 1, •)| which encodes the transforming of an initial integer state $s$ to a affected integer state \code|$s$ + 1| and a resulting value $•$.
+This state modification and result value are appropriately expected from the construction of the \code|increment| function.
+Abbreviate the reduction done by \rulename{Handle-Performance x2} as \rulename{Handle-Increment}.
+Now, consider the following experiment using \code|increment| to be handled.
+\begin{snippet}
+h ≔ initialize 1 counter.
+
+$[]$ ; $[]$ $ $
+  $ $𝄁 do{ increment • ; increment • ; counter#get • } with h
+$[$h$]$ ; $[]$ $ $
+  $ $𝄁 do{ increment • ; increment • ; counter#get • }
+$\ruleapp{Perform x3}$
+$[$h$]$ ; $[$(counter#get •, $⚑_3$), (increment •, $⚑_2$), (increment •, $⚑_1$)$]$ $ $
+  $ $𝄁 do{ $⚑_1$ ; $⚑_2$ ; $⚑_3$ }
+$\ruleapp{Handle-Value}$
+$[$$\unvalued($h$)$$]$ ; $[$(counter#get •, $⚑_3$),(increment •, $⚑_2$),(increment •, $⚑_1$)$]$ $ $
+  $ $𝄁 s ⇒ (s, do{ $⚑_1$ ; $⚑_2$ ; $⚑_3$ })
+$\ruleapp{Handle-Performance}$
+$[$$\unvalued($h$)$$]$ ; $[$(increment •, $⚑_2$), (increment •, $⚑_1$)$]$ $ $
+  $ $𝄁 s ⇒ (s, do{ $⚑_1$ ; $⚑_2$ ; s })
+$\ruleapp{Handle-Increment x2}$
+$[$$\unvalued($h$)$$]$ ; $[$(increment •, $⚑_2$), (increment •, $⚑_1$)$]$ $ $
+  $ $𝄁 s ⇒ (s + 2, do{ • ; • ; s + 2 })
+$\ruleapp{Handle-Final}$
+$[$$\unvalued($h$)$$]$ ; $[]$ 𝄁 (3, do{ • ; • ; 3 })
+$\ruleapp{Simplify}$
+$[$$\unvalued($h$)$$]$ ; $[]$ 𝄁 (3, 3)
+\end{snippet}
+
+% % -----------------------------------------------------------------------------
+% \subsubsection{Experiment}
+%
+% To test our mutability setup, let us introduce a few channels and impure terms to work with.
+% The following is a selection of channels as instances of the mutability effect with different type arguments.
+% The significance of having these different channels is to specify their type but also to dedicate a unique mutable state to each one, kept track of independently.
+%
+% \begin{program}
+% channel variables : Mutable (integer ✕ integer).
+% \end{program}
+%
+% \begin{program}
+% term get-x (_:unit) : unit ≔ part-1 (variables#get •).
+% term get-y (_:unit) : unit ≔ part-2 (variables#get •).
+%
+% term update (f : variables → variables) : unit
+%   ≔ variables#set (f (variables#get •)).
+%
+% term set-x (x:integer) : unit ≔ update ((_, y) ⇒ (x, y)).
+% term set-y (y:integer) : unit ≔ update ((x, _) ⇒ (x, y)).
+%
+% term answer : integer
+%   ≔ do
+%       { set-x 4
+%       ; set-y ((get-x •) - 2)
+%       ; (get-x •) * 10 + (get-y •) };
+% \end{program}
+%
+%
+% % \input{langs/D/old/LangD-mutability-example}
+% \input{langs/D/old/LangD-mutability-example-2}
+%
+
+% \begin{snippet}[caption={Mutability experiment with multiple channels}]
+% channel vx : Mutable integer.
+% channel vy : Mutable integer.
+%
+% term answer : integer
+%   ≔ do
+%       { vx#set 4
+%       ; vy#set ((vx#get •) - 2)
+%       ; 10 * (vx#get •) + (vy#get •) }.
+% \end{snippet}
+%
+%
+% % \input{langs/D/old/LangD-mutability-example-3}
+% % \input{langs/D/old/LangD-mutability-example-4}
+%
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsubsection{Exception}
+%
+The exception effect can be defined in \LangD as a resource that provides one action for throwing exceptions.
+A ``valid'' action is not needed since pure terms are by default considered valid (which is possible since algebraic effect handlers postpone the type-validation to handling rather than requiring it when performing).
+%
+\begin{program}[caption={Resource for exception}]
+resource Exceptional (α:Type) { throw : unit ↗ α }.
+\end{program}
+%
+The resource \code|Exceptional| is parametrized by its result type.
+
+% -----------------------------------------------------------------------------
+\paragraph{Example.}
+%
+The resource for the exception effect can be instantiated as particular exception channels, where each channel corresponds to a particular sort of exception.
+For example, we can write the \code|divide-safely| in \LangD as the following, where we first declare a new channel \code|division-by-0| representing the exception of dividing by $0$.
+%
+\begin{snippet}
+channel division-by-0 : Exceptional integer.
+
+term divide-safely (x y : integer) : integer
+  ≔ if y != 0
+      then x/y
+      else division-by-0#throw •.
+\end{snippet}
+
+% -----------------------------------------------------------------------------
+\paragraph{Handler for exceptions.}
+%
+We can write the following canonical \code|Exceptional|-handler \code|trying| with a similar structure to how the \code|exceptional| monad was defined in \LangC.
+If a \code|#throw $e$| action is performed, then the continuation $k$ is ignored and \code|left e| is propagated as the result.
+The \code|value| clause treats values as valid and so uses \code|right|, the $α$-constructor of \code|$ε$ ⊕ $α$|.
+%
+\begin{program}[caption={Handler of exceptions as optionals}]
+term trying (α:Type) : Exceptional ε → α ↘ ε ⊕ α
+  ≔ handler
+      { #throw e k ⇒ left e
+      ; value  a   ⇒ right a
+      ; final  x   ⇒ x }.
+\end{program}
+%
+We can handle a performance of \code|divide-safely| by using this handler.
+If the performance throws a \code|division-by-0| exception, then \code|trying division-by-0| will handle it to \code|none|.
+if the performance throws no exceptions and results in $a$, then \code|trying division-by-0| will handle it to \code|right $a$|.
+%
+\begin{snippet}
+term h ≔ trying division-by-0.
+
+$[]$ ; $[]$ ‖ divide-safely 5 0 with h
+$↠$ $\ruleapp{Handle}$
+$[$h$]$ ; $[]$ ‖ divide-safely 5 0
+$↠$ $\ruleapp{Simplify}$
+$[$h$]$ ; $[]$ ‖ division-by-0#throw •
+$↠$ $\ruleapp{Perform}$
+$[$h$]$ ; $[($division-by-0#throw •$,$ $⚑_1$$)]$ ‖ $⚑_1$
+$↠$ $\ruleapp{Handle-Value}$
+$[\unvalued($h$)]$ ; $[($division-by-0#throw •$,$ $⚑_1$$)]$ ‖ some $⚑_1$
+$↠$ $\ruleapp{Handle-Performance}$
+$[\unvalued($h$)]$ ; $[]$ ‖ (x k ⇒ none) • ($⚑_1$ ⇒ some $⚑_1$)
+$↠$ $\ruleapp{Simplify}$
+$[\unvalued($h$)]$ ; $[]$ ‖ none
+$↠$ $\ruleapp{Handle-Final}$
+$[]$ ; $[]$ ‖ none
+\end{snippet}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsubsection{Nondeterminism}
+\label{sec:aeh-nondeterminism}
+
+We shall use the example of coin-flipping to demonstrate algebraic effect-handled nondeterminism.
+A nondeterministic coin-flipping effect requires one action: flipping a coin to get either ``heads'' or ``tails.''
+A handler for this effect in some way fills in the result of each coin flip.
+
+% -----------------------------------------------------------------------------
+\paragraph{Resource.}
+%
+The resource \code|Coin| is the resource for the nondeterministic coin-flipping effect.
+It provides one action, \code|flip|, which results in a \code|boolean| value where \code|true| corresponds to ``heads'' and \code|false| corresponds to ``tails''.
+%
+\begin{program}[caption={Resource for nondeterministic coin-flipping}]
+resource Coin { flip : unit ↗ boolean }.
+\end{program}
+
+% -----------------------------------------------------------------------------
+\paragraph{Example}
+%
+An experiment that counts the number of heads resulting from two \code`coin#flip`'s.
+The following familiar experiment \code|lucky| flips two coins and returns true only when both were heads.
+In order to use the coin-flipping effect, we first declare a new channel \code|coin| of the \code|Coin| resource.
+%
+\begin{snippet}
+channel coin : Coin.
+
+term lucky : boolean ≔ (coin#flip •) ∧ (coin#flip •).
+\end{snippet}
+%
+Uniquely for algebraic-effect-handling, the term \code|lucky| is inert on its own --- a handler must be provided to handle the effects \code|lucky| encodes.
+Since the performances are abstracted from the handling in this way, we can define many different ways of handling the same effect.
+The following paragraphs demonstrate.
+
+\paragraph{Handler for all possibilities.}
+This handler accumulates all possible results into a list.
+%
+\begin{program}[caption={Handler for either heads or tails}]
+term either-heads-or-tails : Coin → integer ↘ list integer
+  ≔ handler
+      { #flip _ k ⇒ k true ◇ k false
+      ; value x   ⇒ [x]
+      ; final xs  ⇒ xs }.
+\end{program}
+%
+We can use \code|either-heads-or-tails| to handle \code|lucky|, yielding a list of all the possible results of \code|lucky|.
+\begin{snippet}
+term h ≔ either-heads-or-tails coin.
+
+$[]$ ; $[]$ ‖ lucky with h
+$↠$ $\ruleapp{Handle}$
+$[$h$]$ ; $[]$ ‖ (coin#flip •) ∧ (coin#flip •)
+$↠$ $\ruleapp{Perform ✕2}$
+$[$h$]$ ; $[($coin#flip •$,$ $⚑_2$$)$$,$ $($coin#flip •$,$ $⚑_1$$)]$ ‖ $⚑_2$ ∧ $⚑_1$
+$↠$ $\ruleapp{Handle-Value}$
+$[$h$]$ ; $[($coin#flip •$,$ $⚑_2$$)$$,$ $($coin#flip •$,$ $⚑_1$$)]$ ‖ [$⚑_2$ ∧ $⚑_1$]
+$↠$ $\ruleapp{Handle-Performance ✕2}$
+$[$h$]$ ; $[]$ ‖ [true ∧ true, false ∧ true, false ∧ true, false ∧ false]
+$↠$ $\ruleapp{Simplify}$
+$[$h$]$ ; $[]$ ‖ [true, false, false, false]
+$↠$ $\ruleapp{Handle-Final}$
+$[]$ ; $[]$ ‖ [true, false, false, false]
+\end{snippet}
+
+% -----------------------------------------------------------------------------
+\newpage
+\paragraph{Handler for fixed possibility.}
+This handler determines each coin flip to yield heads.
+%
+\begin{program}[caption={Handler for just heads}]
+term just-heads : Coin → integer ↘ integer
+  ≔ handler
+      { #flip _ k ⇒ k true
+      ; value x ⇒ x
+      ; final x ⇒ x }.
+\end{program}
+%
+We can use \code|just-heads| to handle \code|lucky|, yielding the result of \code|lucky| if each coin-flip was a ``heads''.
+\begin{snippet}
+term h ≔ just-heads coin.
+
+$[]$ ; $[]$ ‖ experiment with just-heads
+$↠$ $\ruleapp{Handle}$
+$[$h$]$ ; $[]$ ‖ (coin#flip •) ∧ (coin#flip •)
+$↠$ $\ruleapp{Perform ✕2}$
+$[$h$]$ ; $[($coin#flip •$,$ $⚑_2$$)$$,$ $($coin#flip •$,$ $⚑_1$$)]$ ‖ $⚑_2$ ∧ $⚑_1$
+$↠$ $\ruleapp{Handle-Value}$
+$[\unvalued($h$)]$ ; $[($coin#flip •$,$ $⚑_2$$)$$,$ $($coin#flip •$,$ $⚑_1$$)]$ ‖ $⚑_2$ ∧ $⚑_1$
+$↠$ $\ruleapp{Handle-Performance ✕2}$
+$[\unvalued($h$)]$ ; $[]$ ‖ true ∧ true
+$↠$ $\ruleapp{Simplify}$
+$[\unvalued($h$)]$ ; $[]$ ‖ true
+$↠$ $\ruleapp{Handle-Final}$
+$[]$ ; $[]$ ‖ true
+\end{snippet}
+
+% -----------------------------------------------------------------------------
+\paragraph{Handler for alternating possibilities.}
+This handler alternates the results of flips between heads and tails.
+%
+\begin{program}[caption={Handler for alternating between heads and tails}]
+term alternating-between-heads-and-tails (b-init : boolean)
+  : Coin → boolean ↘ boolean
+  ≔ handler
+      { #flip _ k ⇒ (b ⇒ k b (not b))
+      ; value x   ⇒ (b ⇒ x)
+      ; final f   ⇒ f b-init }.
+\end{program}
+We can use \code|alternating-between-heads-and-tails| to handle \code|lucky|,
+yielding the result of \code|lucky| if the first coin-flip was ``heads'' and the second was ``tails''.
+\begin{snippet}
+term h ≔ alternating-between-heads-and-tails true coin.
+
+$[]$ ; $[]$ ‖ experiment with h
+$↠$ $\ruleapp{Handle}$
+$[$h$]$ ; $[]$ ‖ (coin#flip •) ∧ (coin#flip •)
+$↠$ $\ruleapp{Perform ✕2}$
+$[$h$]$ ; $[$(coin#flip •$,$ $⚑_2$)$,$ (coin#flip •$,$ $⚑_1$)$]$ ‖ $⚑_2$ ∧ $⚑_1$
+$↠$ $\ruleapp{Handle-Value}$
+$[\unvalued($h$)]$ ; $[$$($coin#flip •$,$ $⚑_2$$)$$,$ $($coin#flip •$,$ $⚑_1$$)$$]$ ‖ (b1 ⇒ $⚑_2$ ∧ $⚑_1$)
+$↠$ $\ruleapp{Handle-Performance}$
+$[\unvalued($h$)]$ ; $[($coin#flip •$,$ $⚑_1$$)]$
+  ‖ (_ k ⇒ (b2 ⇒ k b2 (not b2))) • ($⚑_2$ b1 ⇒ $⚑_2$ ∧ $⚑_1$)
+$↠$ $\ruleapp{Simplify}$
+$[\unvalued($h$)]$ ; $[($coin#flip •$,$ $⚑_1$$)]$ ‖ b2 ⇒ b2 ∧ $⚑_1$
+$↠$ $\ruleapp{Handle-Performance}$
+$[\unvalued($h$)]$ ; $[]$
+  ‖ (_ k ⇒ b3 ⇒ k b3 (not b3)) • ($⚑_1$ b2 ⇒ b2 ∧ $⚑_1$)
+$↠$ $\ruleapp{Simplify}$
+$[\unvalued($h$)]$ ; $[]$ ‖ b3 ⇒ (not b3) ∧ b3
+$↠$ $\ruleapp{Handle-Final}$
+$[]$ ; $[]$ ‖ (f ⇒ f true) (b3 ⇒ (not b3) ∧ b3)
+$↠$ $\ruleapp{Simplify}$
+$[]$ ; $[]$ ‖ false ∧ true
+$↠$ $\ruleapp{Simplify}$
+$[]$ ; $[]$ ‖ false
+\end{snippet}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsubsection{\IO}
+
+The \IO effect presents here similarly to \LangB's implementation in contrast to \LangC's implementation.
+This is because, important unlike in \LangC, \IO-performances that results in $α$ is treated just like a pure $α$.
+Differently from both \LangB and \LangC, however, here we are able to present both an external handler and an internal handler for the \IO effect.
+
+% -----------------------------------------------------------------------------
+\paragraph{Resource.}
+%
+As usual, the \IO effect has two actions: \code|input| for receiving input, and \code|output| for sending output.
+%
+\begin{program}[caption={Resource for \IO}]
+resource IO
+  { input  : unit ↗ string
+  ; output : string ↗ unit }.
+\end{program}
+
+We provide a standard \code|IO|-channel to represent a generic \IO peripheral (e.g. a computer terminal).
+In many real-world programming languages this is referred to as \ep{standard \IO} or just \ep{stdio}.
+%
+\begin{program}[caption={Channel for \IO}]
+channel io : IO.
+\end{program}
+
+% -----------------------------------------------------------------------------
+\paragraph{Example}
+%
+The usual \code|greetings| example can be written in a very similar way here as it was in \LangB, with just two differences.
+The first is that \code|greetings| does not require a \code|unit|-parameter,
+which was needed in \LangB in order to postpone the evaluation (and thus \IO-effect) until the unit parameter was provided.
+Here the \IO effect is not performed until a handler is applied and so this is not needed.
+The second difference is that \code|input| and \code|output| are now proceeded by the \code|io| channel since performances are required to operate on a specific channel, rather than on an implicitly global and unitary $\ioctx$.
+%
+\begin{program}
+term greetings : unit
+  ≔ do
+      { let name ≔ io#input •
+      ; io#output ("Hello, " ⧺ name) }.
+\end{program}
+
+% -----------------------------------------------------------------------------
+\paragraph{Handlerlessness of external \IO.}
+%
+In the same way that the \code|io| monad from \LangC would not allow the result of a computation to be extracted from the \code|io| wrapper we should
+likewise not provide a handler of type \code|IO → α ↘ α|.
+We \ep{could} provide a dangerous handler of the type \code|IO → α ↘ α|, but this would counter our purposes of moving on from \LangB --- allowing the ``free'' handling of \code|IO|-performances effectively removes any guarantee that \IO effects are explicitly represented in \LangD.%
+\footnote{
+  Most real-world languages, even the most effectually-purist such as Haskell, provide dangerous handler-like capabilities such as this for \IO and other effects.
+}
+Instead, it is assumed that \code|IO|-performances can only be handled at the top level when the program is executed by some unique handler provided at that time of type  \code|IO → α ↘ unit|.
+This ``main'' handler for \IO programs would have an imaginary body looking something like the following:
+%
+\begin{snippet}[caption={Imaginary body for \code`external`}]
+handler
+  { #output x k ⇒ k $\ioctx$(output x)
+  ; #input  _ k ⇒ k $\ioctx$(input •)
+  ; value     a ⇒ a
+  ; final     a ⇒ • }
+\end{snippet}
+%
+The $\ioctx$ used here inherits the same specification as given for \LangB.
+
+\input{langs/D/old/LangD-reduction-example-external-io}
+
+Note that the usage of the interface \IO interface $\ioctx$ is subscripted by the order of use.
+So, in the last \rulename{Simplify} step, the term \code|$\ioctx_1$(input •)| is evaluated first via $\ioctx$, and then the outer \code|$\ioctx_2$(output ("Hello, " ⧺ $\ioctx_1$(input •)))| is evaluated via $\ioctx$.
+
+% -----------------------------------------------------------------------------
+\paragraph{Handler for internal \IO}
+The previous section made use of a primitive, implicit handler for the \IO which appealed to a language-external interface $\ioctx$.
+However, one of the freedoms granted by algebraic effect handlers is the ability to implement a variety of handlers for the same effect.
+% A few examples were given for the nondeterminism effect in section~\ref{sec:aeh-nondeterminism}, whereas only one implementation for the nondeterminism effect was given as a monad in chapter~\ref{chap:monadic-effects}.
+So, we can handle the same experiment \code`greetings` using a constructed, explicit handler.
+Call such a handler an internal handler for \IO.
+
+The \IO effect requires a stream of inputs and a store for outputs.
+We can represent the stream and store each as a list --- the \IO handler is parametrized by a list of inputs and results in the computation's value and a list of outputs.
+The following handler implements this description:
+%
+\begin{program}[caption={Handler for pure \IO}]
+term internal (α:Type) (inputs : list string) : IO → α ↘ (list string ✕ α)
+  ≔ handler
+      { #output x k ⇒ is os ⇒ k • is (os ◇ [x])
+      ; #input  _ k ⇒ is os ⇒ k (head is) (tail is) os
+      ; value     a ⇒ is os ⇒ (a, os)
+      ; final     f ⇒ f inputs [] }.
+\end{program}
+%
+The implementation here derives its complexity from the two continuation layers --- the parameters \code|is| and \code|os| to the performance and \code|value| branches --- added to keep track of the current stream of inputs and store of outputs.
+The strategy is exactly the one used by the handler \code|initialize| for mutability, but with two layers rather than just one.
+
+The following demonstrates how \code|internal| handles \code|greetings| to produce a stream of outputs matching what would be expected to print to the console when using a main external handler.
+
+\newpage
+\input{langs/D/old/LangD-reduction-example-internal-io}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Considerations for Algebraic Effects with Handlers}
+\label{sec:AEH-considerations}
+
+Algebraic effects with handlers offer a strategy for implementing effects that preserves some of the advantages of \LangC over \LangB, while also allowing effects to be used much more easily than in \LangC.
+Recall that the core idea of algebraic effects with handlers is the division of effects into performances and handlers.
+This framework allowed for \LangD to allow the free composition of performances, which was a problem with \LangC mentioned in section~\ref{sec:ME-considerations}.
+Computations are not tagged by an wrapper effect type for performance, and so their result terms can be used among pure terms as if they were pure --- the blissful ignorance of \LangB.
+That is composability of effects.
+Handlers still remain strictly hierarchical.
+
+While allowing composable performances, \LangD manages to not suffer as much from the un-analyzability of \LangB's effects;
+in \LangD effects must be explicitly handled, where the typing scheme for handlers salvages some type-safety.
+If a handler is applied to a term, it is inferable that all performances of the handler's effect have been handled.
+
+% Disadvantages:
+% \begin{enumerate}
+%   \item loses type-checking effect handling
+%   \item unhandled effects cause errors
+%   \item certain kinds of co-recursive effects can cause issues
+%   \item TODO: look in algebraic effect handling papers for details
+% \end{enumerate}}
+
+
+However, there are still some drawbacks to algebraic effects with handlers.
+Though composability of effects is achieved without entirely losing type-safety, there is still some type-safety lost.
+Code cannot be analyzed as locally as \LangC code, since performances rely on (top-level explicit) reduction contexts to dictate reduction.
+It is an interesting new ability for a performance \code|output "hello"| to be possibly handled by many different handlers, but it also implies that it is hard to determine what \code|output "hello"| \ep{is} on its own.
+It is a syntactically new structure beyond \LangA's vocabulary.
+There is an analogy that captures a \LangA-like intuition for these new structures:
+\begin{display}
+  functions are to arguments (in \LangA) as
+  handlers are to performances (in \LangD)
+\end{display}
+In other words, handlers are like a special kind of function term that specifically accepts performances (and trivially accepts pure terms) as input.
+Might there be a way of encapsulating this structure within an extension of \LangA in a similar way to how \code|Monad| captured an idea of effects?
+Such an encapsulation would greatly shrink the complexity of \LangD's syntactic and reduction definitions.
+
+Another significant drawback to algebraic effects with handlers is that, though applying a handler to a term guarantees that performances of its effect have been handled in the term, it is still indeterminable from the type of the term whether or not it uses certain effects in the first place.
+This problem also arose in \LangB but was avoided in \LangC.
+Consider the situation where a library provides a black-box function \code|do-something| of which it is undeterminable if it uses certain effects, then the function is dangerous.
+Some language-internal feature (read: types) specifying usage of effects is what we desire.

@@ -1,0 +1,25 @@
+\begin{table}[H] \centering
+\captionof{table}{Reduction in \LangB: Sequencing}
+\begin{tabular}{rp{15em}}
+  \rulename{Sequence} &
+  \begin{tabular}{p{15em}}
+    $\rctx$ 𝄁 \code`$a$`
+    $\rto$
+    $\rctx'$ 𝄁 \code`$a'$`
+  \\ \hline
+    $\rctx$ 𝄁 \code`$a$ >> $b$`
+    $\rto$
+    $\rctx'$ 𝄁 \code`$a'$ >> $b$`
+  \end{tabular}
+\\[2em]
+  \rulename{Next} &
+  \begin{tabular}{p{10em}}
+    $\valprop{v}$
+  \\ \hline
+    $\rctx$ 𝄁 \code`$v$ >> $a$`
+    $\rto$
+    $\rctx$ 𝄁 \code`$a$`
+  \end{tabular}
+\end{tabular}
+\label{tab:LangB-reduction-sequencing}
+\end{table}

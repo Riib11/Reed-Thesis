@@ -1,0 +1,60 @@
+% generic unicode character
+% \DeclareUnicodeCharacter{0177}{\^y}
+% \newunicodechar{→}{\ensuremath{\mathtt\to}}
+% \newunicodechar{⇒}{\ensuremath{\mathtt\Rightarrow}}
+% \newunicodechar{≔}{\ensuremath{\mathtt\coloneq.}}
+\newunicodechar{≔}{\ensuremath{\makebox[0.6em]{:\hspace{-0.2em}=}}}
+\newunicodechar{⩴}{\ensuremath{\mathtt\Coloneq}}
+% \newunicodechar{↗}{\ensuremath{\mathtt\nearrow}}
+% \newunicodechar{↘}{\ensuremath{\mathtt\searrow}}
+\newunicodechar{•}{\ensuremath{\mathtt\bullet}}
+% \newunicodechar{•}{()}
+\newunicodechar{◇}{\ensuremath{\mathtt\diamond}}
+\newunicodechar{↠}{\ensuremath{\mathtt\twoheadrightarrow}}
+\newunicodechar{⋈}{\ensuremath{\mathtt\bowtie}}
+\newunicodechar{⇛}{\ensuremath{\mathtt\Mapsto}}
+\newunicodechar{〚}{\ensuremath{\mathtt\llbracket}}
+\newunicodechar{〛}{\ensuremath{\mathtt\rrbracket}}
+\newunicodechar{↦}{\ensuremath{\mathtt\mapsto}}
+\newunicodechar{✪}{\ensuremath{\textmusicalnote}}
+\newunicodechar{⦅}{\ensuremath{\llparenthesis\hspace{0.2em}}}
+\newunicodechar{⦆}{\ensuremath{\hspace{0.2em}\rrparenthesis}}
+\newunicodechar{∷}{\hspace{0.1em}\ensuremath{:\hspace{-0.1em}:}\hspace{0.1em}}
+\newunicodechar{‖}{\ensuremath{\|}}
+\newunicodechar{𝄁}{\ensuremath{\|}}
+\newunicodechar{⪢}{\ensuremath{\textsf{>\!\!>}}}
+\newunicodechar{∧}{\ensuremath{\land}}
+\newunicodechar{⪡}{\hspace{0.15em}\ensuremath{\mbox{<\!<}}\hspace{0.15em}}
+% \newunicodechar{▷}{\hspace{0.1em}\ensuremath{\triangleright}\hspace{0.1em}}
+\newunicodechar{⚑}{\ensuremath{@}} % hole for AEH-continuation
+\newunicodechar{᠅}{\hspace{0.1em}\ensuremath{\rotatebox[origin=c]{45}{:\hspace{-0.2em}:}}\hspace{0.1em}}
+
+% sum type infixed operator
+\newcommand{\SumTypeInfixedOperator}{\oplus}
+\newunicodechar{⊕}{\ensuremath{\makebox[0.6em]{\ensuremath{\SumTypeInfixedOperator}}}}
+
+% product type infixed operator
+% \newcommand{\ProductTypeInfixedOperator}{\otimes}
+\newcommand{\ProductTypeInfixedOperator}{\times}
+\newunicodechar{⊗}{\ensuremath{\makebox[0.6em]{\ensuremath{\ProductTypeInfixedOperator}}}}
+\newunicodechar{✕}{\ensuremath{\makebox[0.6em]{\ensuremath{\ProductTypeInfixedOperator}}}}
+\newunicodechar{×}{MULTIPLICATION SIGN}
+
+\newunicodechar{⧺}{\ensuremath{\makebox[0.6em]{
+  \ensuremath{\text{+}\hspace{-0.2em}\text{+}}
+}}}
+
+% \newunicodechar{α}{alpha}
+% \newunicodechar{α}{\text{\textalpha}}
+
+% \catcode`\+=\active
+% \def +{\ensuremath{\mathtt+}}%
+
+% \catcode`\α=\active
+% \def α{\textalpha}%
+
+
+% \makeatletter \@namedef{u8:\detokenize{α}}{hello} \makeatother
+% \renewunicodechar{β}{\text{\textbeta}}}
+% \newunicodechar{≔}%
+%   {\text{$\stackrel{\mathclap{\tiny{\normalfont\mbox{def}}}}{=}$}}

@@ -1,0 +1,67 @@
+\begin{table}[H] \centering
+\label{tab:LangD-reduction}
+\captionof{table}{Reduction in \LangD}
+\begin{tabular}{R{8em}p{28em}}
+  \rulename{Handle} &
+  \begin{tabular}{p{28em}}
+    \code`$h$ ≔ handler {$\dots$ final $b$ ⇒ $c$ ; $\dots$} $r$`
+  \\\hline
+    \code`$a$ with $h$` $\rto$
+    \code`(b ⇒ c) ($a$ with $\unfinaled($h$)$)`
+  \end{tabular}
+\\[2em]
+  \rulename{Perform} &
+  \begin{tabular}{p{28em}}
+    \code`$h$ ≔ handler {$\dots$ #$g$ $x$ $k$ ⇒ $b$ ; $\dots$} $r$`
+  \\\hline
+    $r$#$g$ $v$` with $\unfinaled($h$)$ $\rto$
+    ($x$ $k$ ⇒ $b$) $v$ ($a$ ⇒ $a$)
+
+
+
+
+    $\valwithprop{v}{\handlers}$ \iand
+    $\freshprop{a}$
+  \\\hline
+    \code`$\handlers$ ; $\performances$ ‖ $r$#$g$ $v$` $\rto$
+    \code`$\handlers$ ; $($$r$#$g$ $v$$,$ $a$$)$ ▷ $\performances$ ‖ $a$`
+  \end{tabular}
+\\[3em]
+  \rulename{Handle-Final} &
+  \begin{tabular}{p{28em}}
+    $\valwithprop{v}{\unfinaled(h)}$ \\
+    \code`$h$ ≔ handler {$\dots$ final $b$ ⇒ $c$ ; $\dots$} $r$`
+  \\\hline
+    \code`$\unvalued(h)∷\handlers$ ; $\performances$ ‖`
+    \code`$v$`
+    $\rto$
+    \code`$\handlers$ ; $\performances$ ‖`
+    \code`($b$ ⇒ $c$) $v$`
+  \end{tabular}
+\\[3em]
+  \rulename{Handle-Value} &
+  \begin{tabular}{p{28em}}
+    $\valwithprop{v}{h∷\handlers}$
+    \\
+    \code`$h$ ≔ handler {$\dots$ value $a$ ⇒ $b$ ; $\dots$} $r$`
+  \\\hline
+    \code`$h∷\handlers$ ; $\performances$ ‖`
+    \code`$v$`
+    $\rto$
+    \code`$\unvalued(h)∷\handlers$ ; $\performances$ ‖`
+    \code`($a$ ⇒ $b$) $v$`
+  \end{tabular}
+\\[4em]
+  \rulename{Handle-Performance} &
+  \begin{tabular}{p{28em}}
+    $\valwithprop{w}{h∷\handlers}$ \\
+    \code`$h$ ≔ handler {$\dots$ #$g$ $x$ $k$ ⇒ $b$ ; $\dots$} $r$`
+  \\\hline
+    \code`$\unvalued(h)∷\handlers$ ; $\performances$ ▷ $($$r$#$g$ $v$$,$ $a$$)$ ‖`
+    \code`$w$`
+    $\rto$ \\
+    \code`$\unvalued(h)∷\handlers$ ; $\performances$ ‖`
+    \code`($x$ $k$ ⇒ $b$) $v$ ($a$ ⇒ $w$)`
+  \end{tabular}
+\end{tabular}
+\end{table}

@@ -1,21 +1,593 @@
-\chapter{Freer Monadic Effects}
-\label{chapter:freer-monadic-effects}
+\chapter{Freer-Monadic Effects}
+\label{ch:FME}
 
-\section{Outline}
-\begin{enumerate}
-  \item Consideration of the problem of \tit{composing monads}; no systems so far have facilitated this while maintaining type-checking
-  \item Definition and context for freer monads in category theory and computer science, in relation to monads as previously discussed in chapter~\ref{chapter:monadic-effects}
-  \item Explanation of how freer monads can model effects
-  \begin{enumerate}
-    \item left Kan extension (Lan)
-    \item act as a sort of monadic implementation of algebraic effect handlers
-  \end{enumerate}
-  \item Demonstration of stateful freer monad, paralleling monadic example from chapter~\ref{chapter:monadic-effects}
-  \item Discussion of advantages and disadvantages of freer monadic effects
-  \begin{enumerate}
-    \item fully-typed system for algebraic effect handlers; all the advantages of algebraic effect handlers
-    \item facilitates generally composable effects
-    \item not implementable in non-dependently typed languages like Haskell, OCaml, SML, etc. since it requires extensive type-level manipulation
-    \item potentially very user-unfriendly, incurring many of the original problems with monadic effects
-  \end{enumerate}
-\end{enumerate}
+% code here based on code in \code|~/Documents/Prototypes/haskell/freer-monads/src|
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Interleaved Effects}
+
+To \ep{interleave} effects is to use multiple effects at the level.
+For example, abstracting away from a particular effects implementation, the following code uses three effects at the same level:
+%
+\begin{snippet}[numbers=left]
+term get-username (_:unit)
+  ≔ do
+      { let name ← $\normtextit{(get input from the user)}$
+      ; $\normtextit{(set a variable }$username$\normtextit{ to the value of }$name$\normtextit{)}$
+      ; $\normtextit{(if }$name$\normtextit{ is "Henry", then throw an exception;}$
+        $\normtextit{otherwise result in }$name$\normtextit{)}$ }
+\end{snippet}
+%
+In section~\ref{sec:ME-considerations}, we reflected on this problem as the problem of \ep{composing monads} in \LangC.
+For \LangC, the code written above would have to be significantly modified in order to work.
+The performance on line 3 has type \code|io string|,
+the performance on line 4 has type \code|mutable string unit|, and
+the performance on line 5 has type \code|exceptional string| ---
+so they cannot be directly sequenced together as the same level.
+In order to be sequenced, each term must be of the same monad.%
+\footnote{
+  There is another monadic structure called \ep{monad transformers} that also facilitate this feature.
+  However, they are not as general or easy to use as freer monads.
+}
+
+In chapter~\ref{ch:AEH}, algebraic effect handlers were introduced as a framework for implementing effects that maintained the generality and strictness of monadic effects but also allowed for interleaving effects.
+The \code|get-username| example could be written in \LangD with the same structure as presented in the example --- disparate effects can be sequenced as an example of interleaving.
+However, algebraic effect handlers sacrificed some of the type-safety of \LangC and re-introduced a reliance on language-external reduction contexts (for handlers and performances).
+
+Although monadic effects and algebraic effect handlers have been presented thus far as completely orthogonal approaches to implementing, it turns out that there is a way to implement a variant of algebraic effect handlers with \LangA using monads.
+The strategy is to define a generalized monad that is parametrized by an effect type as well as a result type.
+
+We will construct a type \code|freer : (kind → kind) → kind → kind| which lifts particular effects of type \code|kind → kind| into a single overarching effect type.
+For example, \code|freer (mutable $σ$) $α$| is the lifted mutability effect.
+Additionally, we shall construct a term \code|freer (M : kind → kind) (α : kind) : M α → freer M α| that lifts actions (terms) of \code|M| to be actions of the overarching effect type.
+Given these constructions, disparate effects can be intertwined since they will each be wrapped within the same \code|freer| type.
+Call our language that implements and makes use of freer monads \LangE.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Freer Monad}
+
+% \begin{enumerate}
+%   \item preserve typing rules
+%   \item don't require redundant implementations of same effect-style for each instance
+%   \item separate performances and handlers
+%   \item reference to Left Kan Extension (LAN) as being inspiration
+% \end{enumerate}}
+
+Freer monads are majorly described as a basis for a generalized effect framework in \cite{KiselyovIshii2015}.
+However that work approaches freer monads as a generalization of \ep{free monads} and \ep{monad transformers},%
+\footnote{
+  Describing these structures is beyond the scope of this work.
+}
+whereas this work approaches freer monads as a monadic implementation of algebraic effect handlers.
+The idea behind freer monads is to lift types \code|$υ$ : kind → kind| to monad instances in a generalized way.
+Such a lifting is described to yield a monad instance ``for free'' because no monadic structure is required of $υ$, yet monadic structure involving $υ$ is produced.%
+\footnote{
+  Similarly the idea behind free monads is to lift $υ$ to monad instances in a generalized way that requires $υ$ be a functor.
+  So since fre\ep{er} monads do not require $υ$ to be a functor, they yield a monad instance ``for fre\ep{er}.''
+}
+% The type $υ$ is called the \kw{base type}.
+Lifting can be thought of in comparison to instantiating type-classes:
+the \code|Monad| type-class requires each instance to individually implement monadic structure;
+the \code|freer| type generally lifts a type to a monadic structure that requires no implementation.
+
+So, how can this be done?
+Our goal is, given \code|$υ$ : kind → kind|, to define a type \code|freer : (kind → kind) → kind → kind| such that we can instantiate \code|Monad (freer $υ$)| parametrized by result type $α$.
+Recall the monad capabilities: lifting, mapping, and binding.
+With these in mind, consider the following definition:
+\begin{program}[caption={Definition of \code|freer|}]
+type freer (υ : kind → kind) (α : kind) : kind
+  ≔ pure   : α → freer υ α
+  | impure : (χ:kind) ⇒ υ χ → (χ → freer υ α) → freer υ α.
+\end{program}
+The constructor \code|pure| clearly corresponds to the lifting monad capability.
+It is named so to reflect the lifting of a pure $α$ to the impure type \code|freer $υ$ $α$|%
+\footnote{
+  The \code|α| need not necessarily be pure, but it \ep{may} be.
+  Additionally, if \code|α| is of the form \code|Free υ β| for the same \code|υ| and some \code|β|,
+  then the \code`join` function (see \prelude\LangC) can transform the resulting term of type \code`Free υ (Free υ β)` into a term of type \code`Free υ β`,
+  joining the nesting of the same monad.
+}
+The motivation for constructor \code|impure| is less obvious.
+It's type signature appears as a sort of mixing between the binding monad capabilities for each of $υ$ on its own and the wrapped \code|freer $υ$|.
+It is named so to reflect the the handling of \code|$($$υ$ $χ$$)$|-terms as effectual, given the \code|$($$χ$ → freer $υ$ $α$$)$|-continuation, in order to produce a \code|freer $υ$ $α$|.
+% This appears similar to the binding monad capability, but has a \code|$υ$ $χ$| in place of a \code|freer $υ$ $α$|
+The intuition is that \code|impure $y$ $k$| encodes a $υ$-wrapped $χ$-term and a continuation $k$ that is waiting for an (unwrapped) $χ$-term.
+By itself, a term \code|impure $y$ $k$| merely encodes such a performance but does not actually \ep{perform} it.
+It must be provided with a handler that uses $y$ and $k$ to perform the encoded performance and produce the next step of the computation (i.e. a term of type \code|freer $υ$ $α$|).
+Such a handler must depend on the structure of the base type $υ$, and so much be implemented separately for each $υ$.
+A \kw{freer-monadic handler}, or just \kw{handler}, has a type of the form \code|freer $υ$ $α$ → $ω$ $α$|, where $ω$ is the type of affected results (parametrized by the result type $α$).
+This abstracting away of the handling from the performing mimics algebraic effects handlers, in contrast to how monadic effects require the effect handling to be implemented by each effect's monad instance.
+
+To instantiate \code|freer $υ$| as a monad, the implementations of mapping and binding must be provided:
+\begin{itemize}
+  \item For mapping $f$ over
+  \begin{itemize}
+    \item \code|pure $a$|, simply apply $f$ to $a$.
+    \item \code|impure $y$ $k$|, maintain $y$ and compose \code|map $f$| with $k$ as the new continuation.
+        Note that this case defines \code|map| recursively.
+  \end{itemize}
+
+  \item For binding in $fm$ the result of
+  \begin{itemize}
+    \item \code|pure $a$|, simply appled $fm$ to $a$.
+    \item \code|impure $y$ $k$|, maintain $y$ and as the new continuation, parametrized by $a$, bind \code|$k$ $a$| to the parameter of $fm$.
+        Note that this case defines \code|bind| recursively.
+  \end{itemize}
+\end{itemize}
+(Observe that the recursive cases will terminate for terms of the form \code|impure $y$ $k$| as long as they ``end'' with a pure term i.e. the body of $k$ eventually is a term of the form \code|pure $a$|.
+Termination is not guaranteed otherwise.)
+The following implements in code the above informal descriptions.
+\begin{program}[caption={Monad instance of \code|freer|}]
+instance (υ : kind → kind) ⇒ Monad (freer υ)
+  { lift   a  ≔ pure a
+  ; map  f m  ≔ cases m
+                  { pure   a   ⇒ pure (f a)
+                  | impure y k ⇒ impure y (map f ○ k) }
+  ; bind m fm ≔ cases m
+                  { pure   a   ⇒ fm a
+                  | impure y k ⇒ impure y (a ⇒ bind (k a) fm) } }
+\end{program}
+Indeed this results in a monad instance for any $υ$.
+
+So far we have defined the \code|freer| type as a way of lifting a type \code|$υ$ : kind → kind| to a monad instance \code|freer $υ$| (parametrized by result type $α$).
+However, we still need a way of lifting a corresponding term \code|$y$ : $υ$ $α$| to a computation of \code|freer $υ$ $α$|.
+Such a lift is simply to wrap $y$ as the first parameter of \code|impure|, and then provide \code|pure| as the trivial continuation.
+The following function implements the informal description in code.
+\begin{program}
+term freer-lift (y : υ α) : freer υ α ≔ impure y pure.
+\end{program}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Language \LangE}
+
+So now that we have described the abstract workings of freer monads, how can they be concretized as particular effects in \LangE?
+Going forward, we shall call a type of the form \code|freer $υ$ $α$| the \kw{effect type} of the effect structured by the \kw{base type} $υ$.
+We shall call a term of type \code|freer $υ$ $α$| a freer-$υ$-computation with $α$-result.
+Suppose we have our usual type for the mutability effect: \code|$σ$ → $σ$ ✕ $α$|.
+This will serve a the base type for the freer mutability effect, named simply \code|mutable| since it is taking the role of the mutability effect.
+%
+\begin{snippet}
+type mutable-base (σ α : kind) : kind ≔ σ → σ ✕ α.
+type mutable      (σ α : kind) : kind ≔ freer (mutable-base σ) α.
+\end{snippet}
+%
+In order to define the actions \code|get| and \code|set| for \code|mutable|, we can lift the usual monadic-effect implementation via \code|freer-lift| like so:
+%
+\begin{snippet}
+term get-base (σ:kind) : mutable-base σ σ ≔ s ⇒ (s, s).
+term get      (σ:kind) : mutable      σ σ ≔ freer-lift (get-base •).
+
+term set-base (σ α : kind) (s:σ) : mutable-base σ unit ≔ _ ⇒ (s, •).
+term set      (σ α : kind) (s:σ) : mutable      σ unit ≔ freer-lift
+                                                          (set-base s).
+\end{snippet}
+%
+In this way, we have constructed a new monadic encoding of the mutability effect without needing to newly instantiate it as a monad!
+All we needed to do was give the base type and then construct the effect actions as they operate on the base type.
+
+There is clearly a lot of boilerplate structure here that could be simplified ---
+the names \code|mutable-base|, \code|get-base|, and \code|set-base| are only used once to bootstrap their freer-lifts,
+and the structure of these liftings if very regular.
+So, we can posit the following notation to prune the process down to a standard pattern for defining freer-monadic effects.
+%
+\newpage
+\begin{notational}
+effect $〚$$\mvar{type-param}$:$\mvar{kind}$$〛_e$ $\mvar{effect-name}$ lifts $\mvar{type}_*$
+  { $〚$ $\mvar{action-name}_i$ $〚$$\mvar{type-param}$:$\mvar{kind}$$〛_i$ $〚$$\mvar{term-param}$:$\mvar{type}$$〛_i$
+      : $\mvar{type}_*$ $\mvar{type}_i$
+      ≔ $\mvar{term}_i$ ; $〛$ }
+
+$\syneq$
+
+type $\mvar{effect-name}$ $〚$$\mvar{type-param}$:$\mvar{kind}$$〛_e$ ≔ freer $\mvar{type}_*$.
+
+$〚$ term $\mvar{action-name}_i$ $〚$$\mvar{type-param}$:$\mvar{kind}$$〛_e$ $〚$$\mvar{type-param}$:$\mvar{kind}$$〛_i$
+          $〚$$\mvar{term-param}$:$\mvar{type}$$〛_i$
+    : $\mvar{effect-name}$ $\mvar{type}_i$
+    ≔ freer-lift $\mvar{term}_i$. $〛$
+\end{notational}
+Using this notation, the definition of the freer-monadic mutability effect is written as the following:
+\begin{program}[caption={Definitions for the mutability effect}]
+effect (σ:kind) ⇒ mutable σ
+ lifts (α:kind) ⇒ σ → σ ✕ α
+  { get       ≔ s ⇒ (s, s)
+  ; set (s:σ) ≔ _ ⇒ (s, •) }.
+\end{program}
+Finally, we can provide a \code|initialize : mutable $σ$ $α$ → $σ$ → $σ$ ✕ $α$| function that acts as a handler of the mutability effect.
+\begin{program}
+term initialize (σ α : kind) (s:σ) (m : mutable σ α) : σ ✕ α
+  ≔ cases m
+      { pure   a   ⇒ (s, a)
+      | impure y k ⇒ let (s', a) ≔ y s in initialize s' (k a) }.
+\end{program}
+While mutability has one canonical handler, later examples will demonstrate effects that could have multiple interesting handlers.
+
+\newpage
+Now we can write the freer-monadic version of the \code|sort-two| example of mutability.
+\begin{snippet}
+type state ≔ { x:integer; y:integer }.
+
+term get-x : mutable state integer ≔ get >>= (lift ○ x).
+term set-x : mutable state integer ≔ get >>= (lift ○ y).
+
+term modify (f : σ → σ) : mutable σ α → mutable σ α
+  ≔ get >>= (set ○ f).
+
+term set-x : integer → mutable state integer ≔ modify map-x ○ constant.
+term set-y : integer → mutable state integer ≔ modify map-y ○ constant.
+
+term sort-two : mutable state unit
+  ≔ do
+      { let vx ← get-x
+      ; let vy ← get-y
+      ; if vx > vy
+          then set-x y >> set-y x
+          else lift • }.
+\end{snippet}
+The function \code|constant (α β : kind) : α → β → α| is given by \code|constant a b ≔ a|.
+%
+This implementation of the mutability effect behaves just the same as the normal monadic effect.
+%
+\begin{snippet}
+initialize (1, 2) sort-two
+$↠$ $\cdots$ $↠$
+initialize (1, 2, true)
+  ( impure (s ⇒ (s, s)) (s ⇒
+      impure (s ⇒ (s, s)) (s ⇒
+        if (x s) > (y s)
+          then
+            ( impure (s ⇒ (s, s)) (s ⇒
+                impure (s _ ⇒ (s, •)) pure ○ map-x ○ constant (y s) s)
+            >>impure (s ⇒ (s, s)) (s ⇒
+                impure (s _ ⇒ (s, •)) pure ○ map-y ○ constant (x s) s) )
+          else pure •)) )
+$↠$ $\cdots$ $↠$
+((2, 1), •)
+\end{snippet}
+%
+There are a lot of complicated reduction steps omitted here, because it is hard to follow and is better understood by the abstract method of simulating algebraic effect handling with monads.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsubsection{Exception}
+
+The exception effect has base type \code|$ε$ ⊕ $α$|, where $ε$ is the exception type and $α$ is the valid type.
+The usual exception actions produce the left or right construction of the exception type.
+We can define the freer-monadic exception effect as follows:
+\begin{program}
+effect (ε:kind) ⇒ exceptional ε
+ lifts (α:kind) ⇒ ε ⊕ α
+  { throw (e:ε) ≔ left e
+  ; valid (a:α) ≔ right a }.
+\end{program}
+
+We shall consider two handlers for the exception effect: \code|trying| and \code|catching|.
+
+The handler \code|trying| handles an exceptional computation by producing a term of type \code|ε ⊕ α| encoding the monadic-effects representation of exception.
+\begin{itemize}
+\item
+  For a \code|pure $a$| term, treat $a$ as a valid.
+\item
+  For an \code|impure (left $e$) $k$| term, ignore $k$ since the computation has already reached an exceptional, and propogate the thrown $e$.
+\item
+  For an \code|impure (right $a$) $k$| term, pass $a$ to the continuation $k$.
+\end{itemize}
+The following implements in code the above informal descriptions.
+\begin{program}
+term trying (ε α : kind) (m : exceptional ε α) : ε ⊕ α
+  ≔ cases m
+      { pure   a   ⇒ right a
+      | impure y k ⇒ cases y
+                        { left  e ⇒ left e
+                        | right a ⇒ k a }.
+\end{program}
+
+The handler \code|catching| handles a exceptional computation, given an exception-continuation \code|$f$ : $ε$ → $α$|, by producing a term of type $α$.
+The $α$-result is either the valid result of the computation if it is valid,
+or the exception-continuation applied to the thrown exceptional value.
+\begin{itemize}
+\item
+  For a \code|pure $a$| term, treat $a$ as valid.
+\item
+  For an \code|impure (left $e$) $k$| term, ignore $k$ since the computation has already reached an exception, and result in the exception-continuation applied to $e$.
+\item
+  For an \code|impure (right $a$) $k$| term, pass $a$ to the continuation $k$.
+\end{itemize}
+The following implements in code the above informal descriptions.
+\begin{program}
+term catching (ε α : kind) (f : ε → α) (m : exceptional ε α) : α
+  ≔ cases m
+      { pure   a   ⇒ right a
+      | impure y k ⇒ cases y
+                      { left  e ⇒ left (f e)
+                      | right a ⇒ k a } }.
+\end{program}
+
+Recall the safe division function, which is written in \LangE as follows:
+\begin{snippet}
+term division (i j : integer)
+  : exceptional integer integer
+  ≔ if j == 0
+      then throw i
+      else valid (i/j)
+\end{snippet}
+
+We can use the handler \code|optionalized| to encode the result of a division as either
+the left of a sum (encoding the numerator) if a division-by-0 was attempted, or
+the right of a sum (encoding the quotiient) if division was valid.
+\begin{snippet}[caption={Handling \code|division| with \code|optionalized|}]
+optionalized (division 4 0)
+$↠$
+optionalized (throw 4)
+$↠$
+optionalized (freer-lift (left 4))
+$↠$
+optionalized (impure (left 4) pure)
+$↠$
+optionalized 4
+\end{snippet}
+
+We can use the handler \code|catching| to provide an exception-continuation that triggers for exceptional results.
+The following example uses the exception-continuation \code|i ⇒ 0| to effectively provide a default value \code|0| for exceptional divisions.
+\begin{snippet}[caption={Handling \code|division| with \code|catching|}]
+catching (i ⇒ 0) (division 4 0)
+$↠$
+catching (i ⇒ 0) (throw 4)
+$↠$
+catching (i ⇒ 0) (freer-lift (left 4))
+$↠$
+catching (i ⇒ 0) (impure (left 4) pure)
+$↠$
+(i ⇒ 0) 4
+$↠$
+0
+\end{snippet}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsubsection{Nondeterminism}
+
+The nondeterministism effect has base type \code|list $α$|.
+The usual nondeterministic action samples an element of a list.
+So we can define the freer-monadic nondeterministism effect as follows:
+%
+\begin{program}
+effect nondeterministic
+ lifts list
+  { sample as ≔ as }.
+\end{program}
+%
+We shall consider one canonical handler for this effect: \code|possibilities|.
+This handler gathers all the possible results of a computation, where the performances of \code|sample| proliferate the computational pathways.
+%
+\begin{program}
+term all-possibilities (α : kind) (m : nondeterministic α) : list α
+  ≔ cases m
+      { pure   a   ⇒ [a]
+      | impure y k ⇒
+          let next-possibilities     ≔ all-possibilities ○ k in
+          let all-next-possibilities ≔ map next-possibilities y in
+          concat all-next-possibilities }
+\end{program}
+%
+(For the construction of \code|map| in the \code|Monad| instance for \code|list|, see \prelude\LangA).
+Recall the coin-flipping experiments from chapters~\ref{ch:ME} and~\ref{ch:AEH}.
+We can represent the sample list of coin-flipping as \code|[true, false]|, as in~\ref{ch:ME}.
+The experiment is written in \LangE as follows:
+%
+\begin{snippet}
+term coin-flip : nondeterministic boolean
+  ≔ sample [true, false].
+
+term lucky : nondeterministic boolean
+  ≔ do
+      { a ← coin-flip
+      ; b ← coin-flip
+      ; lift (a ∧ b) }.
+\end{snippet}
+Then we can use the handler \code|possibilities| to gather all the possible results of \code|lucky|.
+\newpage
+\begin{snippet}
+all-possibilities lucky
+$↠$ $\ruleappwith{Definition of}{lucky}$
+all-possibilities
+  (sample [true, false] >>= (a ⇒
+    sample [true, false] >>= (b ⇒
+      lift (a ∧ b))))
+$↠$ $\ruleappwith{Definition of}{sample}$
+all-possibilities
+  (impure [true, false] pure >>= (a ⇒
+    impure [true, false] pure >>= (b ⇒
+      pure (a ∧ b))))
+$↠$ $\ruleappwith{Apply}{bind}$
+all-possibilities
+  (impure [true, false] (c ⇒
+    pure c >>= (a ⇒
+      impure [true, false] pure >>= (b ⇒
+        pure (a ∧ b)))))
+$↠$ $\ruleappwith{Apply}{bind}$
+all-possibilities
+  (impure [true, false] (c ⇒
+    impure [true, false] pure >>= (b ⇒
+      pure (c ∧ b))))
+$↠$ $\ruleappwith{Apply}{bind}$
+all-possibilities
+  (impure [true, false] (c ⇒
+    impure [true, false] (d ⇒
+      pure d >>= (b ⇒
+        pure (c ∧ b)))))
+$↠$ $\ruleappwith{Apply}{bind}$
+all-possibilities
+  (impure [true, false] (c ⇒
+    impure [true, false] (d ⇒
+      pure (c ∧ d))))
+$↠$ $\ruleappwith{Apply}{all-possibilities}$
+concat
+  (map (all-possibilities ○ (c ⇒
+          impure [true, false] (d ⇒
+            pure (c ∧ d))))
+    [true, false])
+\end{snippet}
+
+\newpage
+
+\begin{snippet}
+$↠$ $\ruleapp{Simplify}$
+concat
+  [ all-possibilities
+      (impure [true, false] (d ⇒
+        pure (true ∧ d)))
+  , all-possibilities
+      (impure [true, false] (d ⇒
+        pure (false ∧ d))) ]
+$↠$ $\ruleappwith{Apply (x2)}{all-possibilities}$
+concat
+  [ concat
+      [ all-possibilities (pure (true  ∧ true))
+      , all-possibilities (pure (true  ∧ false)) ]
+  , concat
+      [ all-possibilities (pure (false ∧ true))
+      , all-possibilities (pure (false ∧ false)) ] ]
+$↠$ $\ruleappwith{Apply (x4)}{all-possibilities}$
+concat
+  [ concat [[true  ∧ true] , [true  ∧ false]]
+  , concat [[false ∧ true] , [false ∧ false]] ]
+$↠$ $\ruleapp{Simplify}$
+[true ∧ true, true ∧ false, false ∧ true, false ∧ false]
+$↠$ $\ruleapp{Simplify}$
+[true, false, false, false]
+\end{snippet}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsubsection{\IO}
+
+For the \IO effect, \LangD presented two handlers: one external and one internal.
+We can mimic this freer-monadically by specifying a single type class \code|IO| for the \IO effect, and then creating two freer-monadic effects that will each be instantiated of the the \code|IO| class.
+The \code|IO| class specifies the actions required by the \IO effect.
+Then, the \code|io| effect lifts instances of \code|IO| to monad instances.
+In other words, it creates an effect for each instance of \code|IO|.
+\begin{program}
+class IO (ιο : kind → kind)
+  { input-class  : unit → ιο string
+  ; output-class : string → ιο unit }.
+
+effect (ιο : kind → kind) {IO ιο} ⇒ io ιο
+ lifts ιο
+  { input  _ ≔ input-class •
+  ; output s ≔ output-class s }.
+\end{program}
+
+\paragraph{External \IO.}
+We require two new primitive introductions: a wrapping type \code|external|, and its instance of \code|IO|.
+\begin{program}
+primitive type external : kind → kind.
+
+primitive instance IO external.
+\end{program}
+Additionally, the following primitive actually handle the performances of an \code|io external| term.
+\begin{program}
+primitive term run-external : io external α → external α.
+\end{program}
+
+\paragraph{Internal \IO.}
+%
+Constructing this handler is more complicated since it requires specific implementation of the effects.
+\begin{program}
+%
+type internal (α:kind) : kind
+  ≔ list string ✕ list string → list string ✕ list string ✕ α
+
+instance IO internal
+  { input  _ ≔ (is, os) ⇒ (tail is, os, head is)
+  ; output s ≔ (is, os) ⇒ (is, os ◇ [x], •) }.
+\end{program}
+%
+Additionally we can construct a term \code|run-internal| that explicitly handles the performance of an internal-\IO effect.
+%
+\begin{program}
+term run-internal (is : list string) (os : list string)
+        (m : internal-io α)
+  : list string ✕ α
+  ≔ cases m
+      { pure   a   ⇒ ([], a)
+      | impure y k ⇒ let (is', os, a) ≔ y is os in
+                     run-internal is' os (k a) }.
+\end{program}
+
+\newpage
+Finally, consider the following experiment.
+It can be parsed as either an internal \IO effect or an external \IO effect, and handled accordingly.
+%
+\begin{snippet}
+term main (ιο : kind → kind) {IO ιο} : io ιο unit
+  ≔ do
+      { name ← input •
+      ; output ("Hello, " ⧺ name) }.
+
+term external-main : external unit ≔ run-external main.
+
+term internal-main : list string ✕ unit
+  ≔ run-internal ["Henry", "Blanchette"] [] main.
+\end{snippet}
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Stacked-Freer Monad}
+
+The goal in adopting freer monads as a framework for effects was to vary monadic effects in a way that allows for composable effects.
+However, the \code|freer| type given in this chapter only appears to facilitate the same organization of effects as \LangC --- the freer-monadic effects given in this chapter don't compose as given so far.
+What is missing is a way of taking a term \code|$m$ : freer $υ$ $α$| and a term \code|$fn$ : $α$ → freer $ζ$ $β$| and binding them (notice crucially that the base types $υ$ and $ζ$ do not necessarily match).
+The given \code|Monad| instance for \code|freer| is parametrized by a single base type, and is not compatible with mutliple base types at once.
+What is missing from \LangE is something corresponding to the \LangD's reduction context $\hctx$ containing a stack of handlers.
+
+A solution to this is \ep{stacked freer monads}, which are implemented by the Polysemy\footnote{https://hackage.haskell.org/package/polysemy} package for Haskell.
+A \kw{stacked-freer monad} is a freer monad that has base type \code|$Σ$ : Base-Stack|,
+where \code|Base-Stack $α$| is the kind of stack of base types parametrized by a shared result type $α$.
+The base stack $Σ$ in \code|$m$ : freer $Σ$ $α$| contains the base types of each effect used in $m$.
+In order to monadically bind the result of $m$ to the parameter of the continuation \code|$fm$ : $α$ → freer $Σ'$ $β$|, the stacks are concatenated into a result of type \code|freer ($Σ$ $⬡$ $Σ'$) $β$| (where the $⬡$ operator concatenates \code|Base-Stack|-types).
+Thus the composing of effects is achieved!
+There are many details missing here, but unfortunately a large toolbox of type-level operations are required in order to formally express them --- they are beyond the scope of this work.
+
+Finally, handlers with types of the form \code|freer ($υ$ ᠅ $Σ$) $α$ → freer $Σ$ $α$| can be constructed in order to handle effects on the base stack, popping them off of the base stack in the same way that handlers were popped of of $\hctx$ when all their performances were handled.
+In \LangC and \LangE we have already demonstrated what these handlers look like e.g. \code|initialize|, \code|trying|, \code|catching|, \code|all-possibilities|, \code|internal|, \code|external|.
+These handlers follow \LangD's style of providing a heirarchy, since only one handler can be applied at a time.
+Once the base stack is handled down to the empty stack, a handler of type \code|freer $⦗⦘$ $α$ → $α$| can reduce the trivial computation (uses no effects) to a proper pure term.
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\section{Considerations for Freer-Monadic Effects}
+
+The freer-monadic framework for defining effects, extended by stacked-freer monads, provides meets almost all of the goals proposed throughout this work.
+Freer monads take full advantage of the type-safety of \LangA and \LangC while also providing composable effects in an algebraic-effects-with-handlers style.
+Recall the \code|get-username| example from the beginning of this chapter.
+Without filling in all the details, we could write it freer-monadically as something the following.
+%
+\begin{snippet}
+type store : kind { username:string }.
+
+term get-username (_:unit)
+  : freer $⦗$io, mutable store, exceptional string$⦘$ string
+  ≔ do
+      { let name ← stacked input
+      ; stacked (set-username name)
+      ; if name == "Henry"
+          then stacked (throw "invalid name")
+          else lift name }.
+\end{snippet}
+%
+The function \code|stacked| takes a freer-monadic performance and lifts it to the appropriate stacked-freer-monadic performance.
+The effects are interleaved, and the composition of using multiple effects is reflected in the type of \code|get-username|.
+Handlers need to be provided to handle each of the effects off of the \code|Base-Stack| in order to perform the effects.
+
+A major drawback to freer-monadic effects is that the type-system it requires is very complex and not very programmer-friendly.
+It seems like a lot of work on the programmer's part to have to appeal to a highly abstract structure like freer monads just in order to write a Hello World program.
+However, most of the complexity of freer-monadic effects, as demonstrated in by example above, can be mostly hidden from the programmer in most typical use-cases.

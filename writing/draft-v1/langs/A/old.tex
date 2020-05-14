@@ -1,0 +1,60 @@
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsection{Syntax for \LangA}
+
+In \LangA, there are two forms used for constructing well-formed expressions: \kw{terms} and \kw{types}.
+They are expressed by the following syntax:
+
+\input{langs/A/syntax}
+
+% ------------------------------------------------------------------------------
+\subsubsection{Metavariables and Names}
+The metavariables $\mvar{term-name}$, $\mvar{type-name}$, and $\mvar{term-param}$ range over, for a given program, a fixed and collection of names.
+There are two kinds of names included in this collection:
+\begin{itemize}
+\item \kw{constructed names}: Require a construction written in the language; establish a \ep{functional equality} between name and construction --- the name universally can be substituted \ep{with} its construction.
+\item \kw{basic names}: Require a construction written in the language; establish a \ep{definitional equality} between name and construction --- the name universally can be substituted \ep{with} or \ep{for} its construction.
+\item \kw{primitive names}: Included a priori. Terms and types provided this way are provided along with their a priori type or kind respectively, and primitive terms along with a priori reduction rules (if any). Primitive names are also trivially basic.
+\end{itemize}
+
+This syntax schema is formatted as a \ep{generative context-free grammar}, with
+\begin{itemize}
+  \item
+  \ep{non-terminals}: The meta-variables \mvar{progam}, \mvar{declaration}, \mvar{kind}, \mvar{kind}, \mvar{term}.
+  \item
+  \ep{terminals}: Ranged over by the meta-variables \mvar{term-name}, \mvar{type-name}.
+  \item
+  \ep{repeated}: Expressions of the form $[~\mvar{meta-var}~]$ indicate that any number of \mvar{meta-var} can be repeated in its place.
+  Note also that metavariables inside of repeated expressions may be indexed by $i$ or $j$, indicating that they are the $i$-th repeated sub-expression.
+\end{itemize}
+
+The following are some examples of the sorts of formal items that these meta-variables stand range over:
+\begin{itemize}
+  \item \mvar{term-name}:
+    \code|1|,
+    \code|12309|,
+    \code|true|,
+    \code|false|,
+    \code|"hello world"|,
+    \code|$\unitterm$|.
+  \item \mvar{type-name}:
+    \code|natural|,
+    \code|integer|,
+    \code|boolean|,
+    \code|string|,
+    \code|void|,
+    \code|unit|.
+  \item \mvar{term-param}:
+    \code|x|,
+    \code|y|,
+    \code|this-is-a-parameter|.
+\end{itemize}
+\TODO{include some function terms and (and maybe types?)}
+
+A given expression is well-formed with respect to \LangA if it is constructible by a series of applications of these rules.
+Note that this syntax does not specify any concrete terms or types.
+In this way, \LangA's syntax is defined so abstractly in order to make the definitions for its typing and semantics as concise as possible.
+For example, we shall reference to the type \code|int|, some \mvar{term-name}s that have type \code|int| such as
+\code|0|, \code|1|, \code|-1|, \code|2|, \code|-2|, \code`3`, \code`-3`,
+and so on.
+Such types and terms as these are called \kw{atoms} because they do not have any internal; they are simply posited as primitives in the language.

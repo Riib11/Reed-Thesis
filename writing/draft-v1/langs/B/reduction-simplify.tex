@@ -1,0 +1,20 @@
+\begin{table}[H] \centering
+\captionof{table}{Reduction in \LangB}
+\begin{tabular}{rp{20em}}
+  \rulename{Simplify} &
+  \begin{tabular}{p{15em}}
+    \code|$\rctx$ $\|$ $b$| $\rto$ \code|$\rctx'$ $\|$ $b'$|
+    \\ \hline
+    \code|$\rctx$ $\|$ $a$ $b$| $\rto$ \code|$\rctx'$ $\|$ $a$ $b'$|
+  \end{tabular}
+\\[2em]
+  \rulename{Simplify} &
+  \begin{tabular}{p{15em}}
+    \code|$\rctx$ $\|$ $a$| $\rto$ \code|$\rctx'$ $\|$ $a'$| \iand
+    $\valprop{v}$
+    \\ \hline
+    \code|$\rctx$ $\|$ $a$ $v$| $\rto$ \code|$\rctx'$ $\|$ $a'$ $v$|
+  \end{tabular}
+\end{tabular}
+\label{tab:LangB-reduction-simplify}
+\end{table}

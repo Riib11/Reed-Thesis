@@ -1,0 +1,14 @@
+\chapter*{Abstract}
+There exists a dilemma of two programming language design philosophies: \ep{imperative} languages and \ep{declarative} languages.
+Imperative languages are well-adapted for real-world programming, one reason being their ability to interact with implicit \ep{implicit contexts}, which is formalized by the concept of \ep{performing effects}.
+Though effects can be very useful, they are often \ep{dangerous} --- effects yield complexly-interdependent behaviors that are hard to analyze and predict.
+Declarative languages are less well-adapted for this imperative style of programming, but can be much more \ep{safe} --- behavior is locally contained and easily analyzable and predictable.
+
+This thesis approaches the challenge of designing a declarative programming language that provides effects with all the same capabilities of imperative language's effects while still maintaining safety.
+The design process follows a progression of five languages:
+(1) \LangA is a foundational declarative language,
+(2) \LangB extends \LangA with imperative effects,
+(3) \LangC extends \LangA with monadic effects,
+(4) \LangD extends \LangA with algebraic effects with handlers, and finally
+(5) \LangE extends \LangC with a freer-monadic effects (a monadic implementation of algebraic effects with handlers).
+The effect framework of \LangE meets the goals of the design challenge, and a subsequent discussion analyzes its significance.

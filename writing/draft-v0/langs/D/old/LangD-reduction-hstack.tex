@@ -1,0 +1,88 @@
+\TODO{Explain that SIMPLIFY can raise performances but not handlers. the level at which the handler is raised is the only level at which it works, theres no interacting handlers.}
+
+\begin{table}[H] \centering
+\label{tab:LangD-reduction}
+\captionof{table}{Reduction in \LangD}
+\begin{tabular}{R{8em}p{28em}}
+  \rulename{Simplify} &
+  \begin{tabular}{p{28em}}
+    \code`$\monoperform(h)∷\hctx$ ; $\pctx$ ‖ $a$` \\
+    \hspace{1em} $\rto$ \code`$\monoperform(h)∷\hctx$ ; $\pctx'$ ‖ $a'$`
+  \\\hline
+    \code`$h∷\hctx$ ; $\pctx$ ‖ $a$ $b$` $\rto$ \code`$h∷\hctx$ ; $\pctx'$ ‖ $a'$ $b$`
+  \end{tabular}
+\\[3em]
+  \rulename{Simplify} &
+  \begin{tabular}{p{28em}}
+    $\valwithprop{v}{\hctx}$
+    \\
+    \code`$\monoperform(h)∷\hctx$ ; $\pctx$ ‖ $b$` \\
+    \hspace{1em} $\rto$ \code`$\monoperform(h)∷\hctx'$ ; $\pctx'$ ‖ $b'$`
+  \\\hline
+    \code`$h∷\hctx$ ; $\pctx$ ‖ $v$ $b$` $\rto$
+    \code`$h∷\hctx'$ ; $\pctx'$ ‖ $v$ $b'$`
+  \end{tabular}
+\\[3em]
+  \rulename{Sequence} &
+  \begin{tabular}{p{28em}}
+    $\valwithprop{v}{\hctx}$
+  \\\hline
+    \code`$\hctx$ ; $\pctx$ ‖ $v$ >> $b$` $\rto$
+    \code`$\hctx$ ; $\pctx$ ‖ $b$`
+  \end{tabular}
+\\[3em]
+  \rulename{Handle} &
+  \begin{tabular}{p{28em}}
+    \code`$\hctx$ ; $\pctx$ ‖ $a$ with $h$` $\rto$
+    \code`$h∷\hctx$ ; $\pctx$ ‖ $a$`
+  \end{tabular}
+\\[2em]
+  \rulename{Perform} &
+  \begin{tabular}{p{28em}}
+    $\valwithprop{v}{\hctx}$ \iand
+    $\freshprop{a}$
+  \\\hline
+    \code`$\hctx$ ; $\pctx$ ‖ $r$#$g$ $v$` $\rto$
+    \code`$\hctx$ ; $($$r$#$g$ $v$$,$ ⚐$)∷\pctx$ ‖ ⚐`
+  \end{tabular}
+\\[3em]
+  \rulename{Handle-Final} &
+  \begin{tabular}{p{28em}}
+    $\valwithprop{v}{\unfinaled(h)}$ \\
+    \code`$h$ ≔ handler {$\dots$ final $b$ ⇒ $c$ ; $\dots$} $r$`
+  \\\hline
+    \code`$\unvalued(h)∷\hctx$ ; $\pctx$ ‖`
+    \code`$v$`
+    $\rto$
+    \code`$\hctx$ ; $\pctx$ ‖`
+    \code`($b$ ⇒ $c$) $v$`
+  \end{tabular}
+\\[3em]
+  \rulename{Handle-Value} &
+  \begin{tabular}{p{28em}}
+    $\valwithprop{v}{h∷\hctx}$
+    \\
+    \code`$h$ ≔ handler {$\dots$ value $a$ ⇒ $b$ ; $\dots$} $r$`
+  \\\hline
+    \code`$h∷\hctx$ ; $\pctx$ ‖`
+    \code`$v$`
+    $\rto$
+    \code`$\unvalued(h)∷\hctx$ ; $\pctx$ ‖`
+    \code`($a$ ⇒ $b$) $v$`
+  \end{tabular}
+\\[4em]
+  \begin{tabular}{r}
+    \rulename{Handle-} \\ \rulename{Performance}
+  \end{tabular} &
+  \begin{tabular}{p{28em}}
+    $\valwithprop{w}{h∷\hctx}$ \\
+    \code`$h$ ≔ handler {$\dots$ #$g$ $x$ $k$ ⇒ $b$ ; $\dots$} $r$`
+  \\\hline
+    \code`$\unvalued(h)∷\hctx$ ; $($$r$#$g$ $v$$,$ ⚐$)∷\pctx$ ‖`
+    \code`$w$`
+    $\rto$ \\
+    \code`$\unvalued(h)∷\hctx$ ; $\pctx$ ‖`
+    \code`($x$ $k$ ⇒ $b$) $v$ (⚐ ⇒ $w$)`
+  \end{tabular}
+\end{tabular}
+\end{table}

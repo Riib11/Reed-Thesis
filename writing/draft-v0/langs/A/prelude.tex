@@ -1,0 +1,248 @@
+\section{\LangA}
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsection{Functions}
+
+\begin{program}
+term identity (α:Type) (a:α) : α : a.
+
+term compose (α β γ : Type)
+  : (α → β) → (β → γ) → (α → γ)
+  ≔ f g a ⇒ f (g a).
+\end{program}
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsection{Data}
+
+\begin{program}[caption={unit}]
+primitive type unit.
+
+// only constructor
+primitive term • : unit.
+\end{program}
+
+
+\begin{program}[caption={boolean}]
+type boolean : Type { true | false }.
+\end{program}
+
+\begin{notational}[caption={Notation for conditional}]
+if $\mvar{term}_1$ then $\mvar{term}_2$ else $\mvar{term}_3$
+  $\syneq$
+    cases $\mvar{term}_1$ { true  ⇒ $\mvar{term}_2$
+                          | false ⇒ $\mvar{term}_3$
+\end{notational}
+
+
+\begin{program}[caption={natural number}]
+type natural : Type
+  { zero : natural
+  | succ : natural → natural }.
+
+// canonical terms
+term N0 : natural ≔ zero.
+term N1 : natural ≔ succ N0.
+term N2 : natural ≔ succ N1.
+term N3 : natural ≔ succ N2.
+// $\cdots$ and so on
+
+// addition
+term add (m n : natural) : natural
+  ≔ cases m
+      { zero    ⇒ n
+      | succ m' ⇒ succ (add m' n) }.
+
+// multiplication
+term mul (m n : natural) : natural
+  ≔ cases m
+      { zero    ⇒ zero
+      | succ m' ⇒ add n (mul m' n) }.
+
+// minimum
+term min (m n : natural) : natural
+  ≔ cases m
+      { zero    ⇒ zero
+      | succ m' ⇒ cases n
+                    { zero    ⇒ m'
+                    | succ n' ⇒ succ (min m' n') } }.
+
+// maximum
+term max (m n : natural) : natural
+  ≔ cases m
+      { zero    ⇒ n
+      | succ m' ⇒ cases n
+                    { zero    ⇒ m
+                    | succ n' ⇒ succ (max m' n') } }.
+\end{program}
+
+\begin{program}[caption={integer}]
+type integer : Type
+  { negative : natural → integer
+  | positive : natural → integer }.
+
+// canonical terms
+basic term  0 : integer ≔ positive N0.
+basic term  1 : integer ≔ positive N1
+basic term -1 : integer ≔ negative N1
+basic term  1 : integer ≔ positive N2
+basic term -1 : integer ≔ negative N2
+// $\cdots$ and so on
+
+// negation
+term neg (i : integer) : integer
+  ≔ cases i
+      { left  n ⇒ right n
+      ; right n ⇒ left  n }.
+
+// addition; inherits notation
+term add (i j : integer) : integer ≔ ...
+
+// subtraction; inherits notation
+term sub (i j : integer) : integer ≔ ...
+
+// modulus
+term mod (i j : integer) : integer
+  ≔ if i < j
+      then i
+      els mod (i - j) j.
+\end{program}
+
+\begin{program}[caption={rational}]
+type rational : Type
+  { numerator   : integer
+  ; denomenator : natural }.
+
+basic term 0   : rational ≔ (0, 1).
+basic term 1   : rational ≔ (1, 1).
+basic term 1/2 : rational ≔ (1, 2).
+basic term 2/8 : rational ≔ (2, 8).
+
+term div (q r : rational) : rational ≔ ...
+\end{program}
+
+\begin{notational}[caption={Notations for infixed binary numerical operations.}]
+$\mvar{term}_1$ + $\mvar{term}_2$   $\syneq$   add $\mvar{term}_1$ $\mvar{term}_2$
+
+$\mvar{term}_1$ * $\mvar{term}_2$   $\syneq$   mul $\mvar{term}_1$ $\mvar{term}_2$
+
+- $\mvar{term}$   $\syneq$   neg $\mvar{term}$
+
+$\mvar{term}_1$ - $\mvar{term}_2$   $\syneq$   sub $\mvar{term}_1$ $\mvar{term}_2$
+
+$\mvar{term}_1$ / $\mvar{term}_2$   $\syneq$   div $\mvar{term}_1$ $\mvar{term}_2$
+\end{notational}
+
+\subparagraph{Characters and Strings.}
+%
+These data types are introduced primitively because it is much to annoying and irrelevant to formally introduce them.
+
+\begin{program}[caption={string}]
+primitive type character.
+primitive type string.
+
+// utilities
+primitive term character-join     : list character → string.
+primitive term string-join        : string → string → string.
+primitive term string-concat      : list string → string.
+primitive term string-explode     : string → list character.
+primitive term character-append   : character → string → string.
+primitive term character-unappend : string → character ⊗ string.
+\end{program}
+
+\begin{notational}[caption={Notations for characters and strings.}]
+$\mvar{term}_1$ ⧺ $\mvar{term}_2$   $\syneq$   string-concat [$\mvar{term}_1$, $\mvar{term}_2$]
+\end{notational}
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsection{Data Structures}
+
+\begin{program}[caption={optional}]
+type optional (α : Type)
+  { some : α → optional α
+  | none : optioanl α }.
+\end{program}
+
+
+\begin{program}[caption={list}]
+type list (α : Type) : Type ≔ unit ⊕ (α ✕ list α).
+
+type list (α : Type) : Type
+  { nil : list α
+  | app : α → list α → list α }.
+\end{program}
+
+\begin{notational}[caption={list notations}]
+[]   $\syneq$   nil
+
+$\mvar{term}_1$ ∷ $\mvar{term}_2$   $\syneq$   app $\mvar{term}_1$ $\mvar{term}_2$
+
+$\mvar{term}_1$ ◇ $\mvar{term}_2$   $\syneq$   concat $\mvar{term}_1$ $\mvar{term}_2$
+\end{notational}
+
+\begin{program}[caption={list utilities}]
+term concat (α : Type) (ass : list (list α)) : list α
+  ≔ cases ass
+      { []        ⇒ []
+      | as ∷ ass' ⇒ cases as
+                      { []      ⇒ concat ass'
+                      | a ∷ as' ⇒ a ∷ concat (as' ∷ ass') }.
+
+// undefined on nil
+term head (α : Type) (as : list α) : α
+  ≔ cases as{ a ∷ _ ⇒ a }.
+
+// tail of empty is empty
+term tail (α : Type) (as : list α) : list α
+  ≔ cases as{ [] ⇒ [] | _ ∷ as' ⇒ as' }.
+
+// undefined on out-of-bound indices
+// gets the $n$th element of $as$
+term index (α : Type) (as : list α) (n : natural) : α
+  ≔ cases n
+      { zero    ⇒ cases as{ a ∷ _   ⇒ a }
+      | succ n' ⇒ cases as{ _ ∷ as' ⇒ index as' n' } }.
+
+term contains (α : Type) (as : list α) (a : α) : boolean
+  ≔ cases as
+      { []       ⇒ false
+      | a' ∷ as' ⇒ if a = a' then true else contains as' a }.
+
+term replicate (α : Type) (n : natural) (a : α) : list α
+  ≔ cases n
+      { zero    ⇒ []
+      | succ n' ⇒ a ∷ repeat n' a }.
+\end{program}
+
+
+\begin{program}[caption={tree and forest}]
+type tree (α : Type) : Type
+  { value    : α
+  ; branches : list (tree α) }.
+
+type forest (α : Type) : Type ≔ list (tree α).
+\end{program}
+
+
+\begin{program}[caption={mapping}]
+type mapping (α β : Type) : Type ≔ α → β.
+
+term make-mapping (α β : Type) (ls : list (α ✕ β)) : mapping α β
+  ≔ $\cdots$
+
+term lookup (α β : Type) (m : mapping α β) (a : α) : β
+  ≔ m a.
+\end{program}
+
+\begin{notational}[caption={mapping notations}]
+$\mvar{type}_1$ ⇛ $\mvar{type}_2$   $\syneq$   mapping $\mvar{type}_1$ $\mvar{type}_2$.
+
+$〚$ $\mvar{term}_{i1}$ ↦ $\mvar{term}_{i2}$ $〛$   $\syneq$   make-mapping [$〚$ ($\mvar{term}_{i1}$, $\mvar{term}_{i2}$) $〛$]
+
+$\mvar{term}_1$@$\mvar{term}_2$   $\syneq$   lookup $\mvar{term}_1$ $\mvar{term}_2$.
+\end{notational}

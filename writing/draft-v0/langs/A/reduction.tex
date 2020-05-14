@@ -1,0 +1,47 @@
+\begin{table}[H] \centering
+\captionof{table}{Reduction in \LangA}
+\begin{tabular}{rp{25em}}
+  \rulename{Simplify} &
+  \begin{tabular}{p{10em}}
+    $a$ $\rto$ $a'$ \\
+  \hline
+    \code|$a$ $b$| $\rto$ \code|$a'$ $b$|
+  \end{tabular}
+\\[2em]
+  \rulename{Simplify} &
+  \begin{tabular}{p{10em}}
+    $b$ $\rto$ $b'$ \iand
+    $\valprop{v}$ \\
+  \hline
+    \code|$v$ $b$| $\rto$ \code|$v$ $b'$|
+  \end{tabular}
+\\[2em]
+  \rulename{Apply} &
+  \begin{tabular}{p{20em}}
+    $\valprop{v}$
+    \\ \hline
+    \code|(($a$ : $α$) ⇒ $b$) $v$| $\rto$ \code|$[v/a]$ $b$|
+  \end{tabular}
+\\[2em]
+  \rulename{Split-Left} &
+    \code|split (left $a$) $f$ $g$|
+    $\rto$
+    \code|$f$ $a$|
+\\[2em]
+  \rulename{Split-Right} &
+    \code|split (right $b$) $f$ $g$|
+    $\rto$
+    \code|$f$ $b$|
+\\[2em]
+  \rulename{Project-First} &
+    \code|first ($a$, $b$)|
+    $\rto$
+    \code|$a$|
+\\[2em]
+  \rulename{Project-Second} &
+    \code|second ($a$, $b$)|
+    $\rto$
+    \code|$b$|
+\end{tabular}
+\label{tab:LangA-reduction}
+\end{table}

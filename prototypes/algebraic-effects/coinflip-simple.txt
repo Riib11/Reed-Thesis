@@ -1,0 +1,26 @@
+type Coin := resource{ flip : unit -> bool }
+term coin := new Coin
+term h := handler { #flip () k => k true <> k false
+                  ; value v => [v]
+                  ; final v => v }
+
+[] ; []
+  do coin#flip () with h coin
+// DO
+[h] ; []
+  p
+// PERORM
+[h] ; [(coin#flip (), x)]
+  x
+// HANDLE-VALUE
+[h] ; [(coin#flip (), x)]
+  [x]
+// HANDLE-PERFORMANCE
+[h] ; []
+  (x => [x]) true <> (x => [x]) false
+// SIMPLIFY
+[h] ; []
+  [true, false]
+// HANDLE-FINAL
+[] ; []
+  [true, false]

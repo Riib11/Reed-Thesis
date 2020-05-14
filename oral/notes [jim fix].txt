@@ -1,0 +1,86 @@
+1. Overview
+
+. Interested in functional languages (FPLs) like Haskell. (Why?)
+
+. Most languages are not purely functional (What does that mean?). In fact most languages have an "imperative" component. Some features:
+
+* side-effecting "statements"
+* mutable variables
+* objects in memory with mutable components
+* I/O is a side-effect
+* exception mechanism gives you "jumps"
+
+. You think of each of these as "effecting systems" that, from your perspective, are tacit/implicit. You see that as a problem. Programmers see them as useful and convenient. Powerful.
+
+. Turns out that these things in Haskell are difficult to write. Its language designers expect you to write using monads. Other FPLs adopt imperative semantics and
+constructs.
+
+. Monads are complex and awkward, hard to work with. Haskell code that uses(?), interacts with (?), deploys (?) several different effect systems is tricky to write. Not intuitive. Not easily adopted by programmers.
+
+. You see advantages to using to adopting Haskell-like PLs (Why? What are they?)
+
+. You propose two languages that work to improve on the FPL situation. 
+
+* Alge - like [Eff], uses Algebraic Effect Handlers [ref?]
+* Frer - like [ref?], uses Free-er Monads
+
+To do this, you also describe three other languages
+
+* Func - Haskell-like FPL
+* Impe - SML-like FPL. basically an imperative extension to Func
+* Mona - an examination of monads within Func
+
+Details of these could be embedded in the above, but I list them below.
+
+2. Examples of imperative programming
+
+* sum of an array in Java
+* swapping of two integer variables (in Java or similar)
+* hello Henry (in Python? C++?)
+* protected division that raises exception (in Java)
+
+3. Examples of Func programming
+
+* define `fold`; define summing a list using `fold`
+* define `not` function and `and` function
+* talk about types and typing, briefly
+   * talk about type judgement and example rules
+   * talk about pairs and sums (maybe?) 
+   * show type of list sum maybe?
+* talk about algebraic rewrite maybe?
+
+4. Talk about problems expressing imperative code in Func; Impe
+
+* explain why its hard
+* give extension Impe
+* show examples in Impe
+- swap variables
+- hello, Henry
+- protected division
+
+5. Show how Haskell/Func formulate imperative stuff; Mona
+* explain state monad formulation/set-up
+* give get and set
+* give internal I/O as state monad thing (state is two lists)
+* give exceptional monad formulation/set-up
+* give protected division
+* give generalization using bind,return; do, etc.
+* nondeterminism example?
+
+6. Alge
+* explain handler syntax
+* explain appeals
+* give swap example
+* give protected division example
+* give internal hello world
+* give nondeterminism example(s)
+* give general typing info about handler syntax
+
+7. Quick overview of Frer; What does Chapter 6 say?
+
+
+
+
+
+
+

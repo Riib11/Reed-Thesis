@@ -1,0 +1,32 @@
+\begin{snippet}[caption={Handle greetings with standard \IO}]
+h ≔ external io.
+
+$[]$ ; $[]$ ‖ greetings with h
+$↠$ $\ruleappwith{Definition}{greetings}$
+$[]$ ; $[]$ ‖ io#output ("Hello, " ⧺ io#input •) with h
+$↠$ $\ruleapp{Handle}$
+$[$h$]$ ; $[]$ ‖ io#output ("Hello, " ⧺ io#input •)
+$↠$ $\ruleapp{Perform}$
+$[$h$]$ ; $[$$($io#input •$,$ @1$)$$]$ ‖ io#output ("Hello, " ⧺ @1)
+$↠$ $\ruleapp{Simplify}$
+$[$h$]$ ; $[$$($io#input •$,$ @1$)$$]$ ‖ io#output ("Hello, " ⧺ @1)
+$↠$ $\ruleapp{Perform}$
+$[$h$]$ ; $[$$($io#output ("Hello, " ⧺ @1)$,$ @2$)$$,$ $($io#input •$,$ @1$)$$]$ ‖ @2
+$↠$ $\ruleapp{Handle-Value}$
+$[$$\unvalued($h$)$$]$ ; $[$$($io#output ("Hello, " ⧺ @1)$,$ @2$)$$,$ $($io#input •$,$ @1$)$$]$ $ $
+  $ $‖ @2
+$↠$ $\ruleapp{Handle-Performance}$
+$[$$\unvalued($h$)$$]$ ; $[$$($io#input •$,$ @1$)$$]$ $ $
+  $ $‖ (x k ⇒ k $\ioctx$(output x)) ("Hello, " ⧺ @1) (@2 ⇒ @2)
+$↠$ $\ruleapp{Simplify}$
+$[$$\unvalued($h$)$$]$ ; $[$$($io#input •$,$ @1$)$$]$ ‖ $\ioctx$(output ("Hello, " ⧺ @1))
+$↠$ $\ruleapp{Handle-Performance}$
+$[$$\unvalued($h$)$$]$ ; $[]$ $ $
+  $ $‖ (x k ⇒ k $\ioctx$(input x)) • (@1 ⇒ $\ioctx$(output ("Hello, " ⧺ @1)))
+$↠$ $\ruleapp{Simplify}$
+$[$$\unvalued($h$)$$]$ ; $[]$ ‖ $\ioctx$(output ("Hello, " ⧺ $\ioctx$(input •)))
+$↠$ $\ruleapp{Simplify}$
+$[$$\unvalued($h$)$$]$ ; $[]$ ‖ $\ioctx_2$(output ("Hello, " ⧺ $\ioctx_1$(input •)))
+$↠$ $\ruleapp{Simplify}$
+$[$$\unvalued($h$)$$]$ ; $[]$ ‖ •
+\end{snippet}

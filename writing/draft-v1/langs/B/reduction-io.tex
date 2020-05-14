@@ -1,0 +1,23 @@
+\begin{table}[H] \centering
+\captionof{table}{Reduction in \LangB: \IO}
+\begin{tabular}{rp{19em}}
+  \rulename{Input} &
+  \begin{tabular}{p{19em}}
+    $\valprop{v}$
+  \\ \hline
+    \code|$\ioctx$ $\|$ input $v$|
+    $\rto$
+    \code|$\ioctx$ $\|$ $\ioctx$(input $v$)|
+  \end{tabular}
+\\[2em]
+  \rulename{Output} &
+  \begin{tabular}{p{19em}}
+    $\valprop{v}$
+  \\ \hline
+    \code|$\ioctx$ $\|$ output $v$|
+    $\rto$
+    \code|$\ioctx$ $\|$ $\ioctx$(output $v$)|
+  \end{tabular}
+\end{tabular}
+\label{tab:LangB-reduction-io}
+\end{table}

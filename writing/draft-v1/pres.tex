@@ -1,0 +1,316 @@
+\documentclass[12pt]{reedthesis}
+\usepackage{main}
+\usepackage[left=1cm, right=1cm]{geometry}
+
+
+\begin{document}
+.\\ \vspace{2em}
+
+% ------------------------------------------------------------------------------
+% Func
+% ------------------------------------------------------------------------------
+
+% \begin{snippet}
+% type boolean : kind
+%   { true  : boolean
+%   | false : boolean }.
+%
+% term natural : kind
+%   { zero : natural
+%   | succ : natural → natural }.
+%
+% term add (m n : natural) : natural
+%   ≔ cases m
+%       { zero    ⇒ n
+%       | succ m' ⇒ succ (add m' n) }.
+%
+% term mul (m n : natural) : natural
+%   ≔ cases m
+%       { zero    ⇒ zero
+%       | succ m' ⇒ add n (mul m' n) }.
+%
+% type list (α:kind) : kind
+%   { nil : list α
+%   | app : α → list α → list α }.
+%
+%         []   $\syneq$   nil
+%
+%       $a$ ∷ $l$   $\syneq$   app $a$ $l$
+%
+% [$a_1$, $\dots$, $a_n$]   $\syneq$   $a_1$ ∷ $\cdots$ ∷ $a_n$ ∷ []
+%
+% term fold : (α β : kind) ⇒ (β → α → β) → β → list α → β
+%   ≔ f b l ⇒ cases l
+%               { []     ⇒ b
+%               | a ∷ l' ⇒ fold f (f b a) l' }
+%
+% term list-sum : list integer → integer ≔ fold add 0
+% \end{snippet}
+
+% ------------------------------------------------------------------------------
+% Impe
+% ------------------------------------------------------------------------------
+
+% \begin{snippet}
+% primitive type exception-of : kind → kind.
+%
+% primitive term throw    (α β : kind) : exception-of α → α → β.
+% primitive term catching (α β : kind) : (exception-of α → α → β) → β → β.
+%
+% catch { $e$ $a$ ⇒ $b'$ } in $b$   $\syneq$   catching ($e$ $a$ ⇒ $b'$) $b$
+%
+% exception division-by-0 of rational.
+%
+% term divide-safely (r s : rational) : rational
+%   ≔ if s == 0
+%       then throw (division-by-0 r)
+%       else r/s.
+%
+% catch { division-by-0 r ⇒ 0 } in
+%   divide-safely 5 0
+%
+% term head-of-nil of unit.
+%
+% term head-safely (α:kind) (l : list α) : α
+%   ≔ cases l
+%       { []    ⇒ throw (head-of-nil •)
+%       ; a ∷ _ ⇒ a }.
+% \end{snippet}
+
+% \begin{snippet}
+% primitive term sample (α:kind) : list α → α.
+%
+% term flip-coin (_:unit) : boolean ≔ sample [true, false].
+%
+% term lucky (_:unit) : boolean
+%   ≔ let b1 ≔ flip-coin • in
+%     let b2 ≔ flip-coin • in
+%     b1 ∧ b2.
+%
+% $\ndctx$ $\|$ lucky •
+% $↠$
+% $\ndctx$ $\|$ let b1 ≔ flip-coin • in
+%       let b2 ≔ flip-coin • in
+%       b1 ∧ b2.
+% $↠$
+% $\ndctx$ $\|$ let b1 ≔ $\ndctx_1$(flip-coin •) in
+%       let b2 ≔ $\ndctx_2$(flip-coin •) in
+%       b1 ∧ b2.
+% $↠$
+% $\ndctx$ $\|$ $\ndctx_1$(flip-coin •) ∧ $\ndctx_2$(flip-coin •).
+% \end{snippet}
+
+% \begin{snippet}
+% primitive type mutable : kind → kind.
+%
+% primitive term initialize (α:kind) : α → mutable α.
+% primitive term get        (α:kind) : mutable α → α.
+% primitive term set        (α:kind) : mutable α → α → unit.
+%
+% !$m$    $\syneq$ get $m$
+% $m$ ← $a$ $\syneq$ set $m$ $a$
+%
+% term sort-two (mx my : mutable integer) : unit
+%   ≔ let x ≔ !mx in
+%     let y ≔ !my in
+%     if x > y
+%       then mx ← y >> my ← x
+%       else •.
+%
+% term list-sum (l : list integer) : integer
+%   ≔ do
+%       { let s : mutable integer ≔ initialize 0
+%       ; let i : mutable integer ≔ initialize 0
+%       ; while !i < length l
+%           loop do
+%             { let x : integer ≔ l[!i]
+%             ; s ← !s + x
+%             ; i ← !i + 1 }
+%           done !s }.
+% \end{snippet}
+
+% ------------------------------------------------------------------------------
+% Mona
+% ------------------------------------------------------------------------------
+
+% \begin{snippet}
+% class Monad (M : kind → kind) : kind
+%   { lift (α:kind)     : α → M α
+%   ; map  (α β : kind) : (α → β) → M α → M β
+%   ; bind (α β : kind) : M α → (α → M β) → M β }.
+% \end{snippet}
+%
+% \begin{snippet}
+% type nondeterministic : kind → kind ≔ list.
+%
+% instance Monad nondeterministic
+%   { lift a   ≔ [a]
+%   ; map  f m ≔ cases m
+%                 { []     ⇒ []
+%                 | a ∷ m' ⇒ f a ∷ map f m' }
+%   ; bind m k ≔ concat (map k m) }.
+%
+% $m$ >>= $k$    $\syneq$    bind $m$ $k$
+% $m$ >> $m'$    $\syneq$    bind $m$ (_ ⇒ $m$')
+%
+% term flip-coin : nondeterministic boolean ≔ [true, false].
+%
+% term lucky : nondeterministic boolean
+%   ≔ flip-coin >>= (b1 ⇒
+%       flip-coin >>= (b2 ⇒
+%         lift (b1 ∧ b2))).
+%
+% term lucky : nondeterministic boolean
+%   ≔ do
+%       { let b1 ← flip-coin
+%       ; let b2 ← flip-coin
+%       ; lift (b1 ∧ b2) }.
+% \end{snippet}
+% \newpage
+% \begin{snippet}
+% lucky
+% $↠$
+% do{ let b1 ← [true, false]; let b2 ← [true, false]; lift (b1 ∧ b2) }
+% $↠$
+% flip-coin >>= (b1 ⇒ [true, false] >>= (b2 ⇒ lift (b1 ∧ b2)))
+% $↠$ $\ruleappwith{Apply}{bind}$
+% concat (map (b1 ⇒ [true, false] >>= (b2 ⇒ lift (b1 ∧ b2)))
+%           [true, false])
+% $↠$ $\ruleappwith{Apply}{bind}$
+% concat (map (b1 ⇒
+%               concat (map (b2 ⇒ lift (b1 ∧ b2))
+%                         [true, false]))
+%           [true, false])
+% $↠$ $\ruleappwith{Apply}{lift}$
+% concat (map (b1 ⇒
+%               concat (map (b2 ⇒ [b1 ∧ b2])
+%                         [true, false]))
+%           [true, false])
+% $↠$ $\ruleappwith{Apply}{map}$
+% concat (map (b1 ⇒
+%               [b1 ∧ true, b1 ∧ false])
+%           [true, false])
+% $↠$ $\ruleappwith{Apply}{map}$
+% [true ∧ true, true ∧ false, false ∧ true, false ∧ false]
+% $↠$
+% [true, false, false, false]
+% \end{snippet}
+
+% \begin{snippet}
+% type exceptional (ε α : kind) : kind
+%   { throw : ε → exceptional ε α
+%   | valid : α → exceptional ε α }.
+%
+% instance (ε:kind) ⇒ Monad (exceptional ε)
+%   { lift a   ≔ valid a
+%   ; map  f m ≔ cases m
+%                 { throw e ⇒ throw e
+%                 | valid a ⇒ valid (f a) }
+%   ; bind m k ≔ cases m
+%                 { throw e ⇒ throw e
+%                 | valid a ⇒ k a } }.
+%
+% term divide-safely (r s : rational)
+%   : exceptional rational rational
+%   ≔ if s == 0
+%       then throw r
+%       else lift (r/s).
+%
+% term reciprocals-sum (r s : rational)
+%   : exceptional rational rational
+%   ≔ do
+%       { let q  ← divide-safely r s
+%       ; let q' ← divide-safely s r
+%       ; lift (q + q') }.
+% \end{snippet}
+
+% ------------------------------------------------------------------------------
+% Alge
+% ------------------------------------------------------------------------------
+
+% \begin{snippet}
+% resource Coin { flip : unit ↗ boolean }.
+%
+% channel coin : Coin.
+%
+% term lucky : boolean
+%   ≔ (coin#flip •) ∧ (coin#flip •).
+%
+% term either-heads-or-tails
+%   : Coin → boolean ↘ list boolean
+%   ≔ handler
+%       { #flip _ k ⇒ k true ◇ k false
+%       ; value x   ⇒ [x]
+%       ; final l   ⇒ l }.
+%
+% lucky with either-heads-or-tails
+% \end{snippet}
+
+% \begin{snippet}
+% h := either-heads-or-tails
+%
+% $[]$  ;  $[]$ $\|$ lucky with either-heads-or-tails
+% $↠$
+% $[]$  ; $[]$ $\|$ (coin#flip •) ∧ (coin#flip •) with either-heads-or-tails
+% $↠$ $\ruleapp{Handle}$
+% $[$h$]$ ; $[]$ $\|$ (coin#flip •) ∧ (coin#flip •)
+% $↠$ $\ruleapp{Perform}$
+% $[$h$]$ ; $[$(coin#flip •, $@_1$)$]$ $\|$ (coin#flip •) ∧ $@_1$
+% $↠$ $\ruleapp{Perform}$
+% $[$h$]$ ; $[$(coin#flip •, $@_2$), (coin#flip •, $@_1$)$]$ $\|$ $@_2$ ∧ $@_1$
+% $↠$ $\ruleapp{Value}$
+% $[$h$]$ ; $[$(coin#flip •, $@_2$), (coin#flip •, $@_1$)$]$ $\|$ [$@_2$ ∧ $@_1$]
+% $↠$ $\ruleapp{Handle-Performance}$
+% $[$h$]$ ; $[$(coin#flip •, $@_1$)$]$ $\|$ [true ∧ $@_1$] ◇ [false ∧ $@_1$]
+% $↠$
+% $[$h$]$ ; $[$(coin#flip •, $@_1$)$]$ $\|$ [true ∧ $@_1$, false ∧ $@_1$]
+% $↠$ $\ruleapp{Handle-Performance}$
+% $[$h$]$ ; $[]$ $\|$ [true ∧ true, false ∧ true] ◇ [true ∧ false, false ∧ false]
+% $↠$
+% $[$h$]$ ; $[]$ $\|$ [true, false, false, false]
+% $↠$ $\ruleapp{Handle-Final}$
+% $[]$  ; $[]$ $\|$ [true, false, false, false]
+%
+% ($@$ ⇒ $w$)
+%
+% \end{snippet}
+
+% ------------------------------------------------------------------------------
+% Frer
+% ------------------------------------------------------------------------------
+
+\begin{snippet}
+instance (υ : kind → kind) ⇒ Monad (freer υ)
+  { lift a   ≔ pure a
+  ; map  f m ≔ cases m
+                { pure   a   ⇒ pure (f a)
+                | impure y q ⇒ impure y (map f ○ q) }
+  ; bind m k ≔ cases m
+                { pure   x   ⇒ k x
+                | impure y q ⇒ impure y (x ⇒ bind (q x) k) } }.
+\end{snippet}
+
+\begin{snippet}
+type nondeterministic-base : kind → kind ≔ list.
+type nondeterministic      : kind → kind ≔ freer nondeterministic-base.
+
+term sample-base (α:kind) (l : list α) : nondeterministic-base α ≔ l.
+term sample      (α:kind) (l : list α) : freer-lift (sample-base l).
+
+effect nondeterministic
+ lifts list
+  { sample l ≔ l }.
+\end{snippet}
+
+\begin{snippet}
+type exceptional-base (ε α : kind) : kind ≔ ε ⊕ α.
+type exceptional      (ε α : kind) : kind ≔ freer (exceptional-base ε) α.
+
+term throw-base (ε α : kind) (e:ε) : exceptional-base ε α ≔ left e.
+term throw-base (ε α : kind) (e:ε) : exceptional      ε α ≔ freer-lift (throw-base e).
+
+term valid-base (ε α : kind) (a:α) : exceptional-base ε α ≔ right a.
+term valid      (ε α : kind) (a:α) : exceptional      ε α ≔ freer-lift (valid-base a).
+\end{snippet}
+
+\end{document}

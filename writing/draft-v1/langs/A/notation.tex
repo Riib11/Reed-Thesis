@@ -1,0 +1,311 @@
+
+Notations establish a convenient shorthand for certain structures that establish a \kw{syntactical equivalency} --- the notation and the structure is abbreviates are universally substitutable for each other.
+In the programming languages community such these notations are commonly referred to as \kw{syntax sugar}, since they are addictive and can concisely and readable express otherwise very dense code.
+Notations posit \ep{new} structures in the syntax of \LangA, but they can completely reduce to the core set of syntactical structures as defined by table~\ref{tab:LangA-syntax}.
+Since there are some code structures that will be used very commonly throughout this work, we shall adopt a variety of notations.
+This subsection starts us off with with the most common and low-level notations.
+
+% NOTE: describe notational convention for lists of joined items i.e. having ``[[ i ; ]]'' means that the ``;'' goes between each of the ``i''s in the list.
+
+% ------------------------------------------------------------------------------
+\paragraph{Declarations}
+
+A \LangA program is a sequence of declarations, where declarations can only be written at this top level.
+Declarations don't \ep{do} any computation but merely serve as a programmatic skeleton.
+In interpreting the steps of computing \LangA with programs --- syntax-checking, type-checking, evaluating --- declarations take effect right before type-checking.
+In this way, declarations can add judgements to the type-judgement context.
+They do so statically i.e. the order declarations are written in a program not matter.
+
+% ------------------------------------------------------------------------------
+\paragraph{Parameters}
+For parametrized terms and types, a convenient notation is to accumulate the parameters to the left side of a single ``\code| ⇒ |'' as follows:
+\begin{notational}[caption={Notation for multiple parameters}]
+($\mvar{term-param}_1$ : $\mvar{kind}_1$) $\cdots$ ($\mvar{term-param}_n$ : $\mvar{kind}_n$) ⇒ $\mvar{term}_*$
+  $\syneq$
+    ($\mvar{term-param}_1$ : $\mvar{kind}_1$) ⇒ $\cdots$ ⇒ ($\mvar{term-param}_n$ : $\mvar{kind}_n$) ⇒ $\mvar{term}_*$
+
+($\mvar{type-param}_1$ : $\mvar{kind}_1$) $\cdots$ ($\mvar{type-param}_n$ : $\mvar{kind}_n$) ⇒ $\mvar{kind}_*$
+  $\syneq$
+    ($\mvar{type-param}_1$ : $\mvar{kind}_1$) ⇒ $\cdots$ ⇒ ($\mvar{type-param}_n$ : $\mvar{kind}_n$) ⇒ $\mvar{kind}_*$
+\end{notational}
+
+\newpage
+When defining a term or type in a declaration it is convenient to write the names of parameters immediately to the right of the name being defined, resembling the syntax for applying the new term or type to its given arguments.
+The following notations implement this.
+\begin{notational}[caption={Notation for declaration parameters}]
+term $\mvar{term-name}$ $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛$ $〚$ ($\mvar{term-param}$:$\mvar{type}$) $〛$
+  : $\mvar{type}$ ≔ $\mvar{term}$.
+    $\syneq$
+      term $\mvar{term-name}$
+        : $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛$ ⇒ $\mvar{type}$
+        ≔ $〚$ ($\mvar{term-param}$:$\mvar{type}$) $〛$ ⇒ $\mvar{term}$.
+
+type $\mvar{type-name}$ $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛$ : $\mvar{kind}$ ≔ $\mvar{type}$.
+  $\syneq$
+    type $\mvar{type-name}$ : $\mvar{kind}$ ≔ $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛$ ⇒ $\mvar{type}$.
+\end{notational}
+
+When two consecutive parameters have the same type or kind, the following notation allows a reduction in redundancy:
+
+\begin{notational}[caption={Notations for multiple shared-type and shared-kind parameters}]
+($〚$ $\mvar{term-param}$ $〛$ : $\mvar{type}$) ⇒   $\syneq$   $〚$ ($\mvar{term-param}$:$\mvar{type}$) $〛$ ⇒
+
+($〚$ $\mvar{type-param}$ $〛$ : $\mvar{kind}$) ⇒   $\syneq$   $〚$ ($\mvar{type-param}$:$\mvar{kind}$) $〛$ ⇒
+\end{notational}
+
+% ------------------------------------------------------------------------------
+\paragraph{Local bindings}
+This is a core feature in all programming languages, and is expressed in \LangA with this notation:
+\begin{notational}[caption={Notation for local binding.}]
+let $\mvar{term-param}_1$ : $\mvar{kind}_1$ ≔ $\mvar{term}_2$ in $\mvar{term}_3$
+  $\syneq$
+    (($\mvar{term-name}_1$:$\mvar{term}_1$) ⇒ $\mvar{term}_3$) $\mvar{term}_2$
+\end{notational}
+Such a binding allows for the scoped binding of a name to a value.
+The instance of the name introduced is only available from inside $\mvar{term}_3$ --- the \ep{body} of the local binding.
+
+% ------------------------------------------------------------------------------
+\newpage
+\paragraph{Omitted types}
+\label{sec:omitted-types}
+The types of $\mvar{term-param}$s may sometimes be omitted when they are unambiguous and obvious from their context.
+For example, in
+\begin{program}
+term twice : (α → α) → α → α ≔
+  f a ⇒
+    let a' = f a in
+    f a'.
+\end{program}
+the types of $\code|f|$, $\code|a|$, and $\code|a'|$ are obvious from the immediately-previous type of $\code|twice|$.
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsubsection{Primitives}
+
+The primitive names for a program are defined by its \code|primitive term| and \code|primitive type| declarations, and
+the constructed names for a program are defined by the other \code|term| and \code|type| declarations.
+% The following are primitives that will be used throughout the rest of this work:
+There are three particularly prevalent types, along with some primitive terms, to have defined as part of the core of \LangA.
+They are the arrow type, sum type, and product type.
+
+% ------------------------------------------------------------------------------
+\paragraph{Arrow Type}
+The first notable primitive type is the \ep{arrow type}, where \code|arrow $α$ $β$| is the type of terms that are functions with input type $α$ and output type $β$.
+All we need is the following declaration, since functions are a syntactic structure already introduced by table~\ref{tab:LangA-syntax}.
+\begin{program}[caption={Primitive for the arrow type}]
+primitive type arrow : kind → kind → kind.
+\end{program}
+
+\subparagraph{Notation for infixed type arrow.}
+This notation is right-associative.
+For example, the types \code|$α$ → $β$ → $γ$| and \code|$α$ → ($β$ → $γ$)| are equal.
+\begin{program}[caption={Notation for infixed type arrow}]
+$\mvar{kind}_1$ → $\mvar{kind}_2$   $\syneq$   arrow $\mvar{kind}_1$ $\mvar{kind}_2$
+\end{program}
+This right-associativity corresponds to the idea of \ep{currying} functions (also called \ep{partial application}).
+For example consider what the type of a function, that takes two inputs of types $α$ and $β$ respectively and has output of type $γ$, should be.
+The type could be written \code|product $α$ $β$ → $γ$| (the \code|product| type is defined in the soon subsubsection ``Product Type''), where \code|product $α$ $β$| contains the two inputs.
+It could also be written \code|$α$ → $β$ → $γ$|, which associates to \code|$α$ → ($β$ → $γ$)|,
+
+
+% A function with type \code|$α$ → $β$ → $γ$| takes two inputs of types $α$ and $β$, and has output of type $β$.
+% The right-associativity exposes how this function can also be considered as taking one input of type $α$, and having output of type \code|$α$ → $β$|.
+
+% ------------------------------------------------------------------------------
+\paragraph{Sum Type}
+
+The second notable primitive type is the \ep{sum type}, where \code|sum $α$ $β$| is the type of terms that are either of type $α$ (exclusively) or of type $β$.
+This property is structured by the following declarations:
+\begin{program}[caption={Primitives for the sum type}]
+primitive type sum : kind → kind → kind.
+
+// constructors
+primitive term left  (α β : kind) : α → sum α b.
+primitive term right (α β : kind) : β → sum α b.
+
+// destructor
+primitive term split (α β γ : kind)
+  : sum α β → (α → γ) → (β → γ) → γ.
+\end{program}
+
+\subparagraph{Notation for infixed type sum.}
+This notation is right-associative.
+For example, the types \code|$α$ ⊕ $β$ ⊕ $γ$| and \code|$α$ ⊕ ($β$ ⊕ $γ$)| are equal.
+\begin{notational}[caption={Notation for infixed type sum}]
+$\mvar{kind}_1$ ⊕ $\mvar{kind}_2$   $\syneq$   sum $\mvar{kind}_1$ $\mvar{kind}_2$
+\end{notational}
+
+\newpage
+\subparagraph{Notation for cases of a sum term.}
+We also introduce the following syntax sugar for \code|split| --- the following \code|cases| notation:
+\begin{notational}[caption={Notation for \code|case|.}]
+cases $\mvar{term}_*$ to $\mvar{kind}_*$
+  { left ($\mvar{term-param}_1$:$\mvar{kind}_1$) ⇒ $\mvar{term}_1$
+  ; right ($\mvar{term-param}_2$:$\mvar{kind}_2$) ⇒ $\mvar{term}_2$ }
+
+$\syneq$
+
+split $\mvar{kind}_1$ $\mvar{kind}_2$ $\mvar{kind}_*$
+  $\mvar{term}_*$
+  (($\mvar{term-param}_1$:$\mvar{kind}_1$) ⇒ $\mvar{term}_1$)
+  (($\mvar{term-param}_2$:$\mvar{kind}_2$) ⇒ $\mvar{term}_2$)
+\end{notational}
+Note however that the \code|to $\mvar{kind}_*$| phrase in this notation will often omitted and leave the type of the case expression implicit (in the same way as described by paragraph~\ref{sec:omitted-types}).
+
+\subparagraph{$n$-ary sums.}
+The definition of \code|sum| can be considered as a special case of $n$-ary sum types --- the binary sum type.
+However only the binary case need be introduced primitively, since any $n$-ary sum type can be constructed by a nesting of binary sum types.
+For example, the sum of types $α, β, γ$ can be written \code|sum $α$ (sum $β$ $γ$)|.
+For example, the product of types $α, β, γ$ can be written \code|α ⊕ (β ⊕ γ)|.
+To streamline representation, we adopt that \code|✕| is right-associative; the product \code|α ⊕ (β ⊕ γ)| can be written simply as \code|α ⊕ β ⊕ γ|.
+Observe that providing a $b:β$ as a case of this sum is cumbersomely written \code|right (left $b$)|.
+The following notation specifies a family of terms of the form \code|case-$i$| where $0 < i \in \Z$, which construct the $i$-th component of a sum term.
+\begin{notational}
+case-$i$   $\syneq$   (right ○ $\stackrel{i-1}{\cdots}$ ○ right ○ left)
+\end{notational}
+
+\newpage
+Finally, destructing an $n$-ary product involves many levels of \code|cases| where each level handles just two cases at a time.
+The following notation flattens this structure by allowing the top-level \code|cases| to have more than two branches.
+\begin{notational}[caption={Notation for destructing $n$-ary sum types}, label={lst:not-desctruct-n-sum-type}]
+cases $\mvar{term}_*$ to $\mvar{kind}_*$
+  { case-1 ($\mvar{term-param}_1$:$\mvar{kind}_1$) ⇒ $\mvar{term}_1$
+  ; $\cdots$
+  ; case-$n$ ($\mvar{term-param}_n$:$\mvar{kind}_n$) ⇒ $\mvar{term}_n$ }
+
+$\syneq$
+
+split $\mvar{kind}_1$ $\mvar{kind}_2$ $\mvar{kind}_*$
+  $\mvar{term}_*$
+  ($\mvar{term-param}_1$:$\mvar{kind}_1$) ⇒ $\mvar{term}_1$)
+  ($x$ ⇒ cases $x$ to $\mvar{kind}_*$
+          { case-1 ($\mvar{term-param}_2$:$\mvar{kind}_2$) ⇒ $\mvar{term}_2$
+          ; $\cdots$
+          ; case-$(n-1)$ ($\mvar{term-param}_n$:$\mvar{kind}_n$) ⇒ $\mvar{term}_n$ })
+\end{notational}
+This notation is defined inductively for the sake of simplicity.
+Note that the parameter $x$ introduced is a \kw{fresh} name i.e. unique and not able to be referenced from outside this notation definition.
+
+\newpage
+\subparagraph{Named sums.}
+The sum type is widely applicable for modeling data types which have terms that must be exclusively one from a delimited set of cases.
+Such data types can be defined as the sum of the types of each case.
+In such constructions, it is convenient to name the components as basic terms.
+The following notation provides a conceptually-fluid way of defining them.
+\begin{notational}[caption={Notation for defining named sum types and constructing named sum terms}]
+type $\mvar{type-name}_*$ : $\mvar{kind}_*$
+  { $\mvar{term-name}_1$:$\mvar{type}_1$ | $\cdots$ | $\mvar{term-name}_n$:$\mvar{type}_n$ }.
+
+$\syneq$
+
+type $\mvar{type-name}_*$ : $\mvar{kind}_*$ ≔ $\mvar{type}_1$ ⊕ $\cdots$ ⊕ $\mvar{type}_n$.
+
+// constructors
+basic term $\mvar{term-name}_1$ : $\mvar{type}_1$ → $\mvar{type-name}_*$ ≔ case-1.
+$\vdots$
+basic term $\mvar{term-name}_n$ : $\mvar{type}_n$ → $\mvar{type-name}_*$ ≔ case-$n$.
+\end{notational}
+There is an additional requirement for this notation that kinds $\mvar{kind}_1, \dots, \mvar{kind}_n$ are each (independently) one of the following:
+either $\mvar{type}_*$ or an application of $\mvar{type}_*$, or,
+an $n$-ary arrow type ending with either $\mvar{type}_*$ or an application of $\mvar{type}_*$.
+
+As for destruction, the notation given in listing~\ref{lst:not-desctruct-n-sum-type} is compatible with replacing the \code`case-$i$` with the constructors named by the named sum type definition since the constructors are basic terms.
+
+% ------------------------------------------------------------------------------
+\paragraph{Product Type}
+
+The third notable primitive type to define here is the product type, where \code|product $α$ $β$| is the type of terms that are a term of type $α$ joined with a term of type $β$.
+This property is structured by the following declarations:
+\begin{program}[caption={Primitives for \code|product|.}]
+primitive type product : kind → kind → kind.
+
+// constructor
+primitive term pair (α β : kind) : α → β → product α β.
+
+// destructors
+primitive term first (α β : kind) : product α β → α.
+primitive term second (α β : kind) : product α β → β.
+\end{program}
+
+\subparagraph{Infixed type product.}
+\begin{notational}[caption={Notation for infixed type product}]
+$\mvar{kind}_1$ ✕ $\mvar{kind}_2$   $\syneq$   product $\mvar{kind}_1$ $\mvar{kind}_2$
+\end{notational}
+This notation is right-associative.
+For example, the types \code|$α$ ✕ $β$ ✕ $γ$| and \code|$α$ ✕ ($β$ ✕ $γ$)| are equal.
+
+\subparagraph{$n$-ary products.}
+The definition of \code|product| can be considered as a special case of $n$-ary product types --- the binary product type.
+However only the binary case need be introduced primitively, since any $n$-ary product type can be constructed by a nesting of binary product types (this is the same strategy as for $n$-ary sum types before).
+For example, the product of types $α, β, γ$ can be written \code|α ✕ (β ✕ γ)|.
+However, constructing a product term from \code|$a$:$α$|, \code|$b$:$β$|, \code|$c$:$γ$| is cumbersomely written as \code|pair $a$ (pair $b$ $c$)|.
+A common mathematical and computer science notation for product terms, often called \ep{tuples}, is the following.
+\begin{notational}[caption={Notation for constructing $n$-ary product terms}]
+($\mvar{term}_1$, $\dots$, $\mvar{term}_n$)
+  $\syneq$
+    pair $\mvar{term}_1$ (pair $\cdots$ (pair $\mvar{term}_{n-1}$ $\mvar{term}_n$))
+\end{notational}
+Additionally, the projecting of an $n$-ary product term onto one of its components is verbose.
+For example, the function that projects a term of type \code|$α$ ✕ $β$ ✕ $γ$ ✕ $δ$| onto its second component is constructed \code|second ○ second ○ first|.
+The following notation specifies a family of terms of the form \code|part-$i$| where $0 < i \in \Z$, which destruct a product term by projecting onto its $i$-th component.
+\begin{notational}[caption={Notations for destructing $n$-ary product terms}]
+part-$i$   $\syneq$   (second ○ $\stackrel{i-1}{\cdots}$ ○ second ○ first)
+\end{notational}
+One other useful utility is the ability to apply a function to a particular component of the product, called \ep{mapping} a function over that component.
+The following notation defines a collection of such mapping utilities.
+\begin{notational}[caption={Notations for mapping over $n$-ary product terms}]
+map-$i$   $\syneq$   $f$ ($a_1$, $\dots$, $a_n$) ⇒ ($a_1$, $\dots$, $a_{i-1}$, $f$ $a_i$, $a_{i+1}$, $\dots$, $a_n$)
+\end{notational}
+
+\subparagraph{Named products.}
+The product type is widely applicable for modeling data types which are composed of several required parts.
+Such data types can be defined as the product of the types of each other their parts.
+In such constructions, it is convenient to name the parts (in a similar way to the cases of named sums).
+These constructions are often called \ep{record types}, since they liken to a record holding named data entries.
+The following notation provides a concise way of defining the type along with its appropriately named constructors and component maps.
+\begin{notational}[caption={Notation for defining named products types and utilities}]
+type $\mvar{type-name}_*$ : $\mvar{kind}_*$
+  { $\mvar{term-name}_1$:$\mvar{type}_1$ ; $\cdots$ ; $\mvar{term-name}_n$:$\mvar{type-name}_n$ }.
+
+$\syneq$
+
+type $\mvar{type-name}_*$ : $\mvar{kind}_*$
+  ≔ $\mvar{type}_1$ ✕ $\cdots$ ✕ $\mvar{type}_n$.
+
+// component destructors
+term $\mvar{term-name}_1$ : $\mvar{type-name}_*$ → $\mvar{type}_1$ ≔ part-1.
+$\vdots$
+term $\mvar{term-name}_n$ : $\mvar{type-name}_*$ → $\mvar{type}_n$ ≔ part-$n$.
+
+// components maps $\forall i $
+term map-$\mvar{term-name}_1$ : ($\mvar{type}_1$ → $\mvar{type}_1$) → $\mvar{type-name}_*$ → $\mvar{type-name}_*$
+  ≔ map-1.
+$\vdots$
+term map-$\mvar{term-name}_n$ : ($\mvar{type}_n$ → $\mvar{type}_n$) → $\mvar{type-name}_*$ → $\mvar{type-name}_*$
+  ≔ map-$n$.
+\end{notational}
+Lastly, the following notation provides an intuitive way to construct named product terms without having to remember the order of the components:
+\begin{notational}[caption={Notation for constructing named product terms}]
+{ $\mvar{term-name}_1$ ≔ $\mvar{term}_1$ ; $\cdots$ ; $\mvar{term-name}_n$ ≔ $\mvar{term}_n$ }
+  $\syneq$
+    ($\mvar{term}_{name_1}$, $\dots$, $\mvar{term}_{name_n}$)
+\end{notational}
+where $name_1, \dots, name_n$ are the components named in the order intended for the underlying product type.
+
+\newpage
+% ------------------------------------------------------------------------------
+\paragraph{Other Common Primitives}
+These are given in Appendix: Preludes.
+
+% ------------------------------------------------------------------------------
+\paragraph{Infixed-notation Associativity Levels}
+Having multiple infixed notations for $\mvar{kind}$s introduce inter-notational ambiguity.
+For example, the type \code|$α$ → $β$ ✕ $γ$ ⊕ $δ$| has not yet been determined to associate in any one of many possible ways.
+We adopt the following precedence order of increasing tightness to eliminate this ambiguity: \code| → , ⊕ , ✕ |.
+So, the type \code|$α$ → $β$ ✕ $γ$ ⊕ $δ$| associates as \code|($α$ → $β$) ✕ ($γ$ ⊕ $δ$)|
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+\subsubsection{Type application}
+The notation for \code|$\mvar{type-name}$ $\mvar{kind}$ $\cdots$ $\mvar{kind}$| is read as $\mvar{type-name}$ acting as a kind of function that takes some number of type parameters.
+So, \code|arrow| is a type-constructor with type type parameters, say $α$ and $β$, and forms the type \code|arrow α β|.

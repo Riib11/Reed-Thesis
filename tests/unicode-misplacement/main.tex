@@ -1,0 +1,40 @@
+\documentclass{article}
+
+\usepackage[mathrm=sym]{unicode-math}
+\usepackage{newunicodechar}
+\usepackage{fontspec}
+
+\usepackage{listings}
+
+\lstset{
+    inputencoding = utf8x
+  , extendedchars = \true
+  , mathescape = false
+  , escapechar = {$}
+  , basicstyle = \ttfamily
+  , numbers = left
+}
+
+\newfontfamily{\CourierNew}{Courier New}
+\setmonofont[Scale=0.85]{Courier New}
+
+% \newunicodechar{Γ}{{\CourierNew \symbol{"0393}}}
+% \newunicodechar{Γ}{${\CourierNew \symbol{"0393}}$}
+% \newunicodechar{ζ}{{\CourierNew \symbol{"03B6}}}
+
+\begin{document}
+
+Hello (Γ) world
+
+\begin{lstlisting}
+(${\CourierNew ζ}$).
+( ζ).
+(ζ ).
+ζ
+
+(abcζ).
+(abc ζ).
+( abcζ).
+\end{lstlisting}
+
+\end{document}
