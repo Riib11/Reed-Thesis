@@ -13,12 +13,12 @@ This subsection starts us off with with the most common and low-level notations.
 A \LangA program is a sequence of declarations, where declarations can only be written at this top level.
 Declarations don't \ep{do} any computation but merely serve as a programmatic skeleton.
 In interpreting the steps of computing \LangA with programs --- syntax-checking, type-checking, evaluating --- declarations take effect right before type-checking.
-In this way, declarations can add judgements to the type-judgement context.
+In this way, declarations can add judgments to the type-judgment context.
 They do so statically i.e. the order declarations are written in a program not matter.
 
 % ------------------------------------------------------------------------------
 \paragraph{Parameters}
-For parametrized terms and types, a convenient notation is to accumulate the parameters to the left side of a single ``\code| ⇒ |'' as follows:
+For parameterized terms and types, a convenient notation is to accumulate the parameters to the left side of a single ``\code| ⇒ |'' as follows:
 \begin{notational}[caption={Notation for multiple parameters}]
 ($\mvar{term-param}_1$ : $\mvar{kind}_1$) $\cdots$ ($\mvar{term-param}_n$ : $\mvar{kind}_n$) ⇒ $\mvar{term}_*$
   $\syneq$
@@ -124,8 +124,7 @@ primitive term left  (α β : kind) : α → sum α b.
 primitive term right (α β : kind) : β → sum α b.
 
 // destructor
-primitive term split (α β γ : kind)
-  : sum α β → (α → γ) → (β → γ) → γ.
+primitive term split (α β γ : kind) : sum α β → (α → γ) → (β → γ) → γ.
 \end{program}
 
 \subparagraph{Notation for infixed type sum.}
@@ -156,8 +155,8 @@ Note however that the \code|to $\mvar{kind}_*$| phrase in this notation will oft
 The definition of \code|sum| can be considered as a special case of $n$-ary sum types --- the binary sum type.
 However only the binary case need be introduced primitively, since any $n$-ary sum type can be constructed by a nesting of binary sum types.
 For example, the sum of types $α, β, γ$ can be written \code|sum $α$ (sum $β$ $γ$)|.
-For example, the product of types $α, β, γ$ can be written \code|α ⊕ (β ⊕ γ)|.
-To streamline representation, we adopt that \code|✕| is right-associative; the product \code|α ⊕ (β ⊕ γ)| can be written simply as \code|α ⊕ β ⊕ γ|.
+For example, the sum of types $α, β, γ$ can be written \code|α ⊕ (β ⊕ γ)|.
+To streamline representation, we adopt that \code|✕| is right-associative; the sum \code|α ⊕ (β ⊕ γ)| can be written simply as \code|α ⊕ β ⊕ γ|.
 Observe that providing a $b:β$ as a case of this sum is cumbersomely written \code|right (left $b$)|.
 The following notation specifies a family of terms of the form \code|case-$i$| where $0 < i \in \Z$, which construct the $i$-th component of a sum term.
 \begin{notational}
@@ -184,7 +183,7 @@ split $\mvar{kind}_1$ $\mvar{kind}_2$ $\mvar{kind}_*$
           ; case-$(n-1)$ ($\mvar{term-param}_n$:$\mvar{kind}_n$) ⇒ $\mvar{term}_n$ })
 \end{notational}
 This notation is defined inductively for the sake of simplicity.
-Note that the parameter $x$ introduced is a \kw{fresh} name i.e. unique and not able to be referenced from outside this notation definition.
+Note that the parameter $x$ introduced is a \kw{fresh} name --- a new, unique name not able to be referenced from outside this notation definition.
 
 \newpage
 \subparagraph{Named sums.}
@@ -228,6 +227,7 @@ primitive term second (α β : kind) : product α β → β.
 \end{program}
 
 \subparagraph{Infixed type product.}
+In the same way as the type sum, this notation provides an infixed operation for the type product.
 \begin{notational}[caption={Notation for infixed type product}]
 $\mvar{kind}_1$ ✕ $\mvar{kind}_2$   $\syneq$   product $\mvar{kind}_1$ $\mvar{kind}_2$
 \end{notational}

@@ -1736,7 +1736,7 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no h in font nullfont!
 Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
-l.61 ...fect performance, parametrized by the \tit
+l.61 ...fect performance, parameterized by the \tit
                                                   {handler}'s clauses.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -5598,7 +5598,7 @@ Overfull \hbox (20.0pt too wide) in paragraph at lines 253--254
 
 ! Undefined control sequence.
 l.255 \TODO
-           {Explain how contextual value judgement works. Since the presence...
+           {Explain how contextual value judgment works. Since the presence...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct

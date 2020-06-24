@@ -30,13 +30,13 @@ More formally, it breaks down effects into two aspects:
   Incurs the \tit{performing} of an effect, affecting the implicit program state and resulting in a value.
 \item
   \kw{Handler:}
-  Defines the result of an effect performance, parametrized by the \tit{handler}'s clauses.
+  Defines the result of an effect performance, parameterized by the \tit{handler}'s clauses.
   In its definition, a handler abstracts the context relevant to handling particular performance (in the same way that a function abstracts its parameter).
 \end{itemize}
 %
 In the following sections, \LangD will introduce many new syntactical structures for describing algebraic effects, but the basic idea is all \LangA-terms of continuations.
 The algebraic effect strategy is two-fold:
-(1) performances build up a sequenced of nested continuations, each parametrized by their expected result, and
+(1) performances build up a sequenced of nested continuations, each parameterized by their expected result, and
 (2) handlers, applied to a built-up continuation stack, handle each continuation in sequence by providing the performance's expected result and keeping track of a context relatively implicit to the performances themselves.
 
 Additionally, algebraic effects need some way of particularizing effects by the performances allowed to be done by them, so that handlers can handle each performance case.
@@ -67,7 +67,7 @@ The \ep{Eff} programming language described by \cite{Bauer2015ProgrammingWA} is 
 \section{Language \LangD}
 \label{sec:LangD}
 
-Language \LangD implements algebraic effects with handlers in terms of resources, actions, channels, performances, and handlers.
+Language \LangD is an extension of \LangA that implements algebraic effects with handlers in terms of resources, actions, channels, performances, and handlers.
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -168,7 +168,7 @@ the terms \code|gen-probability : unit ↗ rational|, \code|gen-boolean : unit �
 A channel is an instance of a resource specification.
 To declare a channel is to name the new channel and its resource kind.%
 \footnote{
-  Note thsi special method for introducing channels that seemingly would be accomplished just the same by using the \code|primitive term| declaration.
+  Note this special method for introducing channels that seemingly would be accomplished just the same by using the \code|primitive term| declaration.
   Using a unique declaration is useful since the declaring of a channel may have effects itself (e.g. declaring a new mutable variable might trigger memory-handling effects) which need to be implemented in an implementation of \LangD.
 }
 In general, a declaration
@@ -248,7 +248,7 @@ A clause that handles the action \code`$g$ : $χ$ ↗ $υ$` has the form
 where $x$,$k$ are term parameters and $b$ is a term.
 Here,
 $x$ is an input parameter for $g$,
-$k$ is a continuation parametrized by the result of performing $g$, and
+$k$ is a continuation parameterized by the result of performing $g$, and
 $b$ is a term that encodes the result of performing $g$ given input $x$ and continuation $k$.
 More specifically, $k$ encodes the rest of the computation to carry out after $g$ is performed, with a parameter of type $χ$ which appears everywhere the result of performing $g$ normally appeared (even if it does not appear anywhere).
 
@@ -271,7 +271,7 @@ where $b$ is a term parameter and $c$ is a term.
 Here,
 $b$ is an input parameter for $c$, standing in place of the final result, and
 $c$ is a term encoding some last transformation to apply on $c$.
-For example, a mutability handler might in its final clause pass an initial value to a continuation parametrized by the state value that is produced through handling the other clauses.
+For example, a mutability handler might in its final clause pass an initial value to a continuation parameterized by the state value that is produced through handling the other clauses.
 
 The type of handlers that handle computations with values of type $α$ and has result type $β$ is \code`$α$ ↘ $β$`.
 The ``\code` ↘ `'' is the the over-horizontal reflection of the action type's operator, indicating that a handler \ep{resolves} (or, \ep{lowers}) the raised appeal that an action makes, resulting in a (handled) result;
@@ -437,7 +437,7 @@ The reduction rule \rulename{Handle-Performance} dictates how to use a given han
 Let \code|#$g$ $x$ $k$ ⇒ $b$| be $h$'s clause for handling action $g$,
 and $w$ be the value (relative to the handlers in context) being reduced.
 The clause expects $x$ to be a value of the input type for action $g$, which is exactly $v$ since $v$ was given as the argument to performance that included added it to the performance context (as dictated by the rule \rulename{Perform}).
-Additionally the clause expects $k$ to be a continuation parametrized by the result of the performance, which is exactly \code|$⚑$ ⇒ $w$|, since $⚑$ stands in place of the result of the performance and $w$ is a term referencing $⚑$ to describe the rest of the computation.
+Additionally the clause expects $k$ to be a continuation parameterized by the result of the performance, which is exactly \code|$⚑$ ⇒ $w$|, since $⚑$ stands in place of the result of the performance and $w$ is a term referencing $⚑$ to describe the rest of the computation.
 So altogether the result of \rulename{Handle-Performance} is $b$ with $v$ passed as $x$ and \code|$⚑$ ⇒ $w$| passed as $k$,
 written as the application \code|($x$ $k$ ⇒ $b$) $v$ ($⚑$ ⇒ $w$)|.
 
@@ -529,7 +529,7 @@ $[$h$]$ ; $[$(counter#set ($⚑_1$ + 1), $⚑_2$), (counter#get •, $⚑_1$)$]$
 $\ruleapp{Handle-Performance x2}$
 $[$h$]$ ; $[]$ ‖ s ⇒ (s + 1, •)
 \end{snippet}
-In this reduction, the handling of \code|increment •| yields a continuation \code|$s$ ⇒ ($s$ + 1, •)| which encodes the transforming of an initial integer state $s$ to a affected integer state \code|$s$ + 1| and a resulting value $•$.
+In this reduction, the handling of \code|increment •| yields a continuation \code|$s$ ⇒ ($s$ + 1, •)| which encodes the transforming of an initial integer state $s$ to an affected integer state \code|$s$ + 1| and a resulting value $•$.
 This state modification and result value are appropriately expected from the construction of the \code|increment| function.
 Abbreviate the reduction done by \rulename{Handle-Performance x2} as \rulename{Handle-Increment}.
 Now, consider the following experiment using \code|increment| to be handled.
@@ -618,7 +618,7 @@ A ``valid'' action is not needed since pure terms are by default considered vali
 resource Exceptional (α:Type) { throw : unit ↗ α }.
 \end{program}
 %
-The resource \code|Exceptional| is parametrized by its result type.
+The resource \code|Exceptional| is parameterized by its result type.
 
 % -----------------------------------------------------------------------------
 \paragraph{Example.}
@@ -627,11 +627,11 @@ The resource for the exception effect can be instantiated as particular exceptio
 For example, we can write the \code|divide-safely| in \LangD as the following, where we first declare a new channel \code|division-by-0| representing the exception of dividing by $0$.
 %
 \begin{snippet}
-channel division-by-0 : Exceptional integer.
+channel division-by-0 : Exceptional rational.
 
-term divide-safely (x y : integer) : integer
+term divide-safely (x y : rational) : rational
   ≔ if y != 0
-      then x/y
+      then x / y
       else division-by-0#throw •.
 \end{snippet}
 
@@ -714,7 +714,7 @@ The following paragraphs demonstrate.
 This handler accumulates all possible results into a list.
 %
 \begin{program}[caption={Handler for either heads or tails}]
-term either-heads-or-tails : Coin → integer ↘ list integer
+term either-heads-or-tails : Coin → boolean ↘ list boolean
   ≔ handler
       { #flip _ k ⇒ k true ◇ k false
       ; value x   ⇒ [x]
@@ -893,7 +893,7 @@ So, we can handle the same experiment \code`greetings` using a constructed, expl
 Call such a handler an internal handler for \IO.
 
 The \IO effect requires a stream of inputs and a store for outputs.
-We can represent the stream and store each as a list --- the \IO handler is parametrized by a list of inputs and results in the computation's value and a list of outputs.
+We can represent the stream and store each as a list --- the \IO handler is parameterized by a list of inputs and results in the computation's value and a list of outputs.
 The following handler implements this description:
 %
 \begin{program}[caption={Handler for pure \IO}]

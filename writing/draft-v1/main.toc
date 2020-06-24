@@ -5,159 +5,159 @@
 \contentsline {subsection}{\numberline {1.2.1}Syntax}{5}% 
 \contentsline {subsection}{\numberline {1.2.2}Typing}{9}% 
 \contentsline {subsection}{\numberline {1.2.3}Reduction}{12}% 
-\contentsline {subsection}{\numberline {1.2.4}Properties}{14}% 
-\contentsline {chapter}{Chapter 2: Imperative Effects}{15}% 
-\contentsline {section}{\numberline {2.1}Declarative and Imperative Languages}{15}% 
-\contentsline {section}{\numberline {2.2}Computation with Effects}{16}% 
-\contentsline {subsection}{\numberline {2.2.1}Effects}{20}% 
-\contentsline {paragraph}{Mutability.}{21}% 
-\contentsline {paragraph}{Exception.}{21}% 
-\contentsline {paragraph}{Nondeterminism.}{21}% 
-\contentsline {paragraph}{Input/Output (\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace ).}{21}% 
-\contentsline {section}{\numberline {2.3}Language {\PoiretOne \bfseries Impe}\xspace }{23}% 
-\contentsline {subsection}{\numberline {2.3.1}Imperative Effects}{23}% 
-\contentsline {paragraph}{Reduction contexts.}{24}% 
-\contentsline {subsubsection}{\numberline {2.3.1.1}Sequencing}{25}% 
-\contentsline {subsubsection}{\numberline {2.3.1.2}Mutability}{26}% 
-\contentsline {paragraph}{Example.}{27}% 
-\contentsline {subsubsection}{\numberline {2.3.1.3}Exception}{27}% 
-\contentsline {paragraph}{Example.}{30}% 
-\contentsline {subsubsection}{\numberline {2.3.1.4}Nondeterminism}{30}% 
-\contentsline {paragraph}{Specification of $\symscr {ND}$.}{31}% 
-\contentsline {paragraph}{Example.}{31}% 
-\contentsline {subsubsection}{\numberline {2.3.1.5}\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{31}% 
-\contentsline {paragraph}{Specification of $\symscr {I\hspace {-0.1em}O}$}{32}% 
-\contentsline {paragraph}{Implementation 1 of $\symscr {I\hspace {-0.1em}O}$:}{32}% 
-\contentsline {paragraph}{Implementation 2 of $\symscr {I\hspace {-0.1em}O}$:}{33}% 
-\contentsline {section}{\numberline {2.4}Motivations}{33}% 
-\contentsline {paragraph}{Generalized context for effects.}{34}% 
-\contentsline {paragraph}{Explicitly-typed effects.}{34}% 
-\contentsline {paragraph}{Programmable internal effects.}{35}% 
-\contentsline {chapter}{Chapter 3: Monadic Effects}{37}% 
-\contentsline {section}{\numberline {3.1}Introduction to Monads}{37}% 
-\contentsline {subsection}{\numberline {3.1.1}The Mutablility Monad}{38}% 
-\contentsline {paragraph}{Sequencing.}{39}% 
-\contentsline {paragraph}{Binding.}{39}% 
-\contentsline {paragraph}{Lifting.}{40}% 
-\contentsline {paragraph}{Mapping.}{41}% 
-\contentsline {paragraph}{Example.}{41}% 
-\contentsline {subsection}{\numberline {3.1.2}Formalization of Monad}{42}% 
-\contentsline {section}{\numberline {3.2}Type-classes}{43}% 
-\contentsline {subsection}{\numberline {3.2.1}Object-Oriented Classes}{43}% 
-\contentsline {subsection}{\numberline {3.2.2}Type-classes}{46}% 
-\contentsline {subsubsection}{\numberline {3.2.2.1}Notations for type-classes}{47}% 
-\contentsline {paragraph}{Type-class Specification.}{47}% 
-\contentsline {paragraph}{Type-class Instantiation.}{48}% 
-\contentsline {section}{\numberline {3.3}Monad}{50}% 
-\contentsline {subsection}{\numberline {3.3.1}Monad Type-Class}{50}% 
-\contentsline {paragraph}{Example.}{52}% 
-\contentsline {subsection}{\numberline {3.3.2}Mondad Properties}{53}% 
-\contentsline {section}{\numberline {3.4}Language {\PoiretOne \bfseries Mona}\xspace }{54}% 
-\contentsline {subsection}{\numberline {3.4.1}Monadic Internal Effects}{54}% 
-\contentsline {subsubsection}{\numberline {3.4.1.1}Exception}{54}% 
-\contentsline {paragraph}{Catching exceptions.}{55}% 
+\contentsline {subsection}{\numberline {1.2.4}Properties}{15}% 
+\contentsline {chapter}{Chapter 2: Imperative Effects}{17}% 
+\contentsline {section}{\numberline {2.1}Declarative and Imperative Languages}{17}% 
+\contentsline {section}{\numberline {2.2}Computation with Effects}{18}% 
+\contentsline {subsection}{\numberline {2.2.1}Effects}{22}% 
+\contentsline {paragraph}{Mutability.}{23}% 
+\contentsline {paragraph}{Exception.}{23}% 
+\contentsline {paragraph}{Nondeterminism.}{23}% 
+\contentsline {paragraph}{Input/Output (\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace ).}{23}% 
+\contentsline {section}{\numberline {2.3}Language {\PoiretOne \bfseries Impe}\xspace }{25}% 
+\contentsline {subsection}{\numberline {2.3.1}Imperative Effects}{25}% 
+\contentsline {paragraph}{Reduction contexts.}{26}% 
+\contentsline {subsubsection}{\numberline {2.3.1.1}Sequencing}{27}% 
+\contentsline {subsubsection}{\numberline {2.3.1.2}Mutability}{28}% 
+\contentsline {paragraph}{Example.}{29}% 
+\contentsline {subsubsection}{\numberline {2.3.1.3}Exception}{29}% 
+\contentsline {paragraph}{Example.}{32}% 
+\contentsline {subsubsection}{\numberline {2.3.1.4}Nondeterminism}{32}% 
+\contentsline {paragraph}{Specification of $\symscr {ND}$.}{33}% 
+\contentsline {paragraph}{Example.}{33}% 
+\contentsline {subsubsection}{\numberline {2.3.1.5}\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{33}% 
+\contentsline {paragraph}{Specification of $\symscr {I\hspace {-0.1em}O}$}{34}% 
+\contentsline {paragraph}{Implementation 1 of $\symscr {I\hspace {-0.1em}O}$:}{34}% 
+\contentsline {paragraph}{Implementation 2 of $\symscr {I\hspace {-0.1em}O}$:}{35}% 
+\contentsline {section}{\numberline {2.4}Motivations}{35}% 
+\contentsline {paragraph}{Generalized context for effects.}{36}% 
+\contentsline {paragraph}{Explicitly-typed effects.}{36}% 
+\contentsline {paragraph}{Programmable internal effects.}{37}% 
+\contentsline {chapter}{Chapter 3: Monadic Effects}{39}% 
+\contentsline {section}{\numberline {3.1}Introduction to Monads}{39}% 
+\contentsline {subsection}{\numberline {3.1.1}The Mutablility Monad}{40}% 
+\contentsline {paragraph}{Sequencing.}{41}% 
+\contentsline {paragraph}{Binding.}{41}% 
+\contentsline {paragraph}{Lifting.}{42}% 
+\contentsline {paragraph}{Mapping.}{43}% 
+\contentsline {paragraph}{Example.}{43}% 
+\contentsline {subsection}{\numberline {3.1.2}Formalization of Monad}{44}% 
+\contentsline {section}{\numberline {3.2}Type-classes}{45}% 
+\contentsline {subsection}{\numberline {3.2.1}Object-Oriented Classes}{45}% 
+\contentsline {subsection}{\numberline {3.2.2}Type-classes}{49}% 
+\contentsline {subsubsection}{\numberline {3.2.2.1}Notations for type-classes}{50}% 
+\contentsline {paragraph}{Type-class Specification.}{51}% 
+\contentsline {paragraph}{Type-class Instantiation.}{52}% 
+\contentsline {section}{\numberline {3.3}Monad}{54}% 
+\contentsline {subsection}{\numberline {3.3.1}Monad Type-Class}{54}% 
 \contentsline {paragraph}{Example.}{56}% 
-\contentsline {subsubsection}{\numberline {3.4.1.2}Nondeterminism}{56}% 
-\contentsline {paragraph}{Example.}{57}% 
-\contentsline {subsection}{\numberline {3.4.2}Monadic External Effects}{58}% 
-\contentsline {subsubsection}{\numberline {3.4.2.1}\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{58}% 
-\contentsline {section}{\numberline {3.5}Considerations for Monadic Effects}{59}% 
-\contentsline {chapter}{Chapter 4: Algebraic Effects with Handlers}{63}% 
-\contentsline {section}{\numberline {4.1}Breaking Down ``Effect''}{63}% 
-\contentsline {section}{\numberline {4.2}Language {\PoiretOne \bfseries Alge}\xspace }{65}% 
-\contentsline {subsection}{\numberline {4.2.1}Syntax}{65}% 
-\contentsline {subsubsection}{\numberline {4.2.1.1}Action}{65}% 
-\contentsline {subsubsection}{\numberline {4.2.1.2}Resource}{66}% 
-\contentsline {subsubsection}{\numberline {4.2.1.3}Channel}{67}% 
-\contentsline {subsubsection}{\numberline {4.2.1.4}Performance}{68}% 
-\contentsline {subsubsection}{\numberline {4.2.1.5}Handler}{68}% 
-\contentsline {subsubsection}{\numberline {4.2.1.6}Handling}{70}% 
-\contentsline {paragraph}{Nested handlings.}{71}% 
-\contentsline {subsubsection}{\numberline {4.2.1.7}Sequencing}{71}% 
-\contentsline {subsection}{\numberline {4.2.2}Reduction}{71}% 
-\contentsline {paragraph}{Reduction contexts.}{72}% 
-\contentsline {paragraph}{Relative Values.}{72}% 
-\contentsline {paragraph}{Simplification.}{72}% 
-\contentsline {paragraph}{Performing.}{72}% 
-\contentsline {paragraph}{Handling.}{73}% 
-\contentsline {paragraph}{Handling performance.}{73}% 
-\contentsline {paragraph}{Handling value.}{73}% 
-\contentsline {paragraph}{Handling final.}{73}% 
-\contentsline {paragraph}{Handler modifiers.}{74}% 
-\contentsline {subsection}{\numberline {4.2.3}Algebraic Effects with Handlers}{75}% 
-\contentsline {subsubsection}{\numberline {4.2.3.1}Mutability}{75}% 
-\contentsline {paragraph}{Example.}{75}% 
-\contentsline {subsubsection}{\numberline {4.2.3.2}Exception}{77}% 
-\contentsline {paragraph}{Example.}{77}% 
-\contentsline {paragraph}{Handler for exceptions.}{77}% 
-\contentsline {subsubsection}{\numberline {4.2.3.3}Nondeterminism}{78}% 
-\contentsline {paragraph}{Resource.}{78}% 
-\contentsline {paragraph}{Example}{78}% 
-\contentsline {paragraph}{Handler for all possibilities.}{79}% 
-\contentsline {paragraph}{Handler for fixed possibility.}{80}% 
-\contentsline {paragraph}{Handler for alternating possibilities.}{80}% 
-\contentsline {subsubsection}{\numberline {4.2.3.4}\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{81}% 
-\contentsline {paragraph}{Resource.}{81}% 
+\contentsline {subsection}{\numberline {3.3.2}Monad Properties}{57}% 
+\contentsline {section}{\numberline {3.4}Language {\PoiretOne \bfseries Mona}\xspace }{58}% 
+\contentsline {subsection}{\numberline {3.4.1}Monadic Internal Effects}{58}% 
+\contentsline {subsubsection}{\numberline {3.4.1.1}Exception}{58}% 
+\contentsline {paragraph}{Catching exceptions.}{59}% 
+\contentsline {paragraph}{Example.}{60}% 
+\contentsline {subsubsection}{\numberline {3.4.1.2}Nondeterminism}{60}% 
+\contentsline {paragraph}{Example.}{61}% 
+\contentsline {subsection}{\numberline {3.4.2}Monadic External Effects}{62}% 
+\contentsline {subsubsection}{\numberline {3.4.2.1}\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{62}% 
+\contentsline {section}{\numberline {3.5}Considerations for Monadic Effects}{63}% 
+\contentsline {chapter}{Chapter 4: Algebraic Effects with Handlers}{67}% 
+\contentsline {section}{\numberline {4.1}Breaking Down ``Effect''}{67}% 
+\contentsline {section}{\numberline {4.2}Language {\PoiretOne \bfseries Alge}\xspace }{69}% 
+\contentsline {subsection}{\numberline {4.2.1}Syntax}{69}% 
+\contentsline {subsubsection}{\numberline {4.2.1.1}Action}{69}% 
+\contentsline {subsubsection}{\numberline {4.2.1.2}Resource}{70}% 
+\contentsline {subsubsection}{\numberline {4.2.1.3}Channel}{71}% 
+\contentsline {subsubsection}{\numberline {4.2.1.4}Performance}{72}% 
+\contentsline {subsubsection}{\numberline {4.2.1.5}Handler}{72}% 
+\contentsline {subsubsection}{\numberline {4.2.1.6}Handling}{74}% 
+\contentsline {paragraph}{Nested handlings.}{74}% 
+\contentsline {subsubsection}{\numberline {4.2.1.7}Sequencing}{75}% 
+\contentsline {subsection}{\numberline {4.2.2}Reduction}{75}% 
+\contentsline {paragraph}{Reduction contexts.}{76}% 
+\contentsline {paragraph}{Relative Values.}{76}% 
+\contentsline {paragraph}{Simplification.}{76}% 
+\contentsline {paragraph}{Performing.}{76}% 
+\contentsline {paragraph}{Handling.}{77}% 
+\contentsline {paragraph}{Handling performance.}{77}% 
+\contentsline {paragraph}{Handling value.}{77}% 
+\contentsline {paragraph}{Handling final.}{77}% 
+\contentsline {paragraph}{Handler modifiers.}{77}% 
+\contentsline {subsection}{\numberline {4.2.3}Algebraic Effects with Handlers}{79}% 
+\contentsline {subsubsection}{\numberline {4.2.3.1}Mutability}{79}% 
+\contentsline {paragraph}{Example.}{79}% 
+\contentsline {subsubsection}{\numberline {4.2.3.2}Exception}{81}% 
+\contentsline {paragraph}{Example.}{81}% 
+\contentsline {paragraph}{Handler for exceptions.}{81}% 
+\contentsline {subsubsection}{\numberline {4.2.3.3}Nondeterminism}{82}% 
+\contentsline {paragraph}{Resource.}{82}% 
 \contentsline {paragraph}{Example}{82}% 
-\contentsline {paragraph}{Handlerlessness of external \unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace .}{82}% 
-\contentsline {paragraph}{Handler for internal \unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{83}% 
-\contentsline {section}{\numberline {4.3}Considerations for Algebraic Effects with Handlers}{85}% 
-\contentsline {chapter}{Chapter 5: Freer-Monadic Effects}{87}% 
-\contentsline {section}{\numberline {5.1}Interleaved Effects}{87}% 
-\contentsline {section}{\numberline {5.2}Freer Monad}{88}% 
-\contentsline {section}{\numberline {5.3}Language {\PoiretOne \bfseries Frer}\xspace }{90}% 
-\contentsline {subsubsection}{\numberline {5.3.0.1}Exception}{93}% 
-\contentsline {subsubsection}{\numberline {5.3.0.2}Nondeterminism}{95}% 
-\contentsline {subsubsection}{\numberline {5.3.0.3}\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{97}% 
-\contentsline {paragraph}{External \unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace .}{98}% 
-\contentsline {paragraph}{Internal \unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace .}{98}% 
-\contentsline {section}{\numberline {5.4}Stacked-Freer Monad}{99}% 
-\contentsline {section}{\numberline {5.5}Considerations for Freer-Monadic Effects}{100}% 
-\contentsline {chapter}{Chapter 6: Appendix: Conventions}{101}% 
-\contentsline {section}{\numberline {6.1}Languages}{101}% 
-\contentsline {section}{\numberline {6.2}Fonts}{101}% 
-\contentsline {section}{\numberline {6.3}Names}{102}% 
-\contentsline {chapter}{Chapter 7: Appendix: Language Definitions}{103}% 
-\contentsline {section}{\numberline {7.1}{\PoiretOne \bfseries Func}\xspace }{104}% 
-\contentsline {subsection}{\numberline {7.1.1}Syntax}{104}% 
-\contentsline {subsection}{\numberline {7.1.2}Notation}{104}% 
-\contentsline {paragraph}{Declarations}{105}% 
-\contentsline {paragraph}{Parameters}{105}% 
-\contentsline {paragraph}{Local bindings}{106}% 
-\contentsline {paragraph}{Omitted types}{107}% 
-\contentsline {subsubsection}{\numberline {7.1.2.1}Primitives}{107}% 
-\contentsline {paragraph}{Arrow Type}{107}% 
-\contentsline {subparagraph}{Notation for infixed type arrow.}{107}% 
-\contentsline {paragraph}{Sum Type}{108}% 
-\contentsline {subparagraph}{Notation for infixed type sum.}{108}% 
-\contentsline {subparagraph}{Notation for cases of a sum term.}{109}% 
-\contentsline {subparagraph}{$n$-ary sums.}{109}% 
-\contentsline {subparagraph}{Named sums.}{111}% 
-\contentsline {paragraph}{Product Type}{111}% 
-\contentsline {subparagraph}{Infixed type product.}{112}% 
-\contentsline {subparagraph}{$n$-ary products.}{112}% 
-\contentsline {subparagraph}{Named products.}{113}% 
-\contentsline {paragraph}{Other Common Primitives}{114}% 
-\contentsline {paragraph}{Infixed-notation Associativity Levels}{114}% 
-\contentsline {subsubsection}{\numberline {7.1.2.2}Type application}{114}% 
-\contentsline {subsection}{\numberline {7.1.3}Typing}{115}% 
-\contentsline {subsection}{\numberline {7.1.4}Reduction}{116}% 
-\contentsline {section}{\numberline {7.2}{\PoiretOne \bfseries Impe}\xspace }{117}% 
-\contentsline {subsection}{\numberline {7.2.1}Reduction}{117}% 
-\contentsline {section}{\numberline {7.3}{\PoiretOne \bfseries Mona}\xspace }{119}% 
-\contentsline {subsection}{\numberline {7.3.1}Reduction}{119}% 
-\contentsline {section}{\numberline {7.4}{\PoiretOne \bfseries Alge}\xspace }{120}% 
-\contentsline {subsection}{\numberline {7.4.1}Syntax}{120}% 
-\contentsline {subsection}{\numberline {7.4.2}Typing}{121}% 
-\contentsline {subsection}{\numberline {7.4.3}Reduction}{122}% 
-\contentsline {chapter}{Chapter 8: Appendix: Language Preludes}{123}% 
-\contentsline {section}{\numberline {8.1}{\PoiretOne \bfseries Func}\xspace }{123}% 
-\contentsline {subsection}{\numberline {8.1.1}Functions}{123}% 
-\contentsline {subsection}{\numberline {8.1.2}Data}{123}% 
-\contentsline {subparagraph}{Characters and Strings.}{126}% 
-\contentsline {subsection}{\numberline {8.1.3}Data Structures}{127}% 
-\contentsline {chapter}{Chapter 9: {\PoiretOne \bfseries Mona}\xspace }{131}% 
-\contentsline {section}{\numberline {9.1}Type-Classes}{131}% 
-\contentsline {subsection}{\numberline {9.1.1}Monad}{131}% 
-\contentsline {subsection}{\numberline {9.1.2}Equalible}{132}% 
-\contentsline {chapter}{Bibliography}{133}% 
+\contentsline {paragraph}{Handler for all possibilities.}{83}% 
+\contentsline {paragraph}{Handler for fixed possibility.}{84}% 
+\contentsline {paragraph}{Handler for alternating possibilities.}{84}% 
+\contentsline {subsubsection}{\numberline {4.2.3.4}\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{85}% 
+\contentsline {paragraph}{Resource.}{85}% 
+\contentsline {paragraph}{Example}{86}% 
+\contentsline {paragraph}{Handlerlessness of external \unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace .}{86}% 
+\contentsline {paragraph}{Handler for internal \unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{87}% 
+\contentsline {section}{\numberline {4.3}Considerations for Algebraic Effects with Handlers}{89}% 
+\contentsline {chapter}{Chapter 5: Freer-Monadic Effects}{91}% 
+\contentsline {section}{\numberline {5.1}Interleaved Effects}{91}% 
+\contentsline {section}{\numberline {5.2}Freer Monad}{92}% 
+\contentsline {section}{\numberline {5.3}Language {\PoiretOne \bfseries Frer}\xspace }{94}% 
+\contentsline {subsubsection}{\numberline {5.3.0.1}Exception}{97}% 
+\contentsline {subsubsection}{\numberline {5.3.0.2}Nondeterminism}{99}% 
+\contentsline {subsubsection}{\numberline {5.3.0.3}\unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace }{101}% 
+\contentsline {paragraph}{External \unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace .}{102}% 
+\contentsline {paragraph}{Internal \unhbox \voidb@x \hbox {I\hspace {-0.1em}/\hspace {-0.1em}O}\xspace .}{102}% 
+\contentsline {section}{\numberline {5.4}Stacked-Freer Monad}{103}% 
+\contentsline {section}{\numberline {5.5}Considerations for Freer-Monadic Effects}{104}% 
+\contentsline {chapter}{Chapter 6: Appendix: Conventions}{105}% 
+\contentsline {section}{\numberline {6.1}Languages}{105}% 
+\contentsline {section}{\numberline {6.2}Fonts}{105}% 
+\contentsline {section}{\numberline {6.3}Names}{106}% 
+\contentsline {chapter}{Chapter 7: Appendix: Language Definitions}{107}% 
+\contentsline {section}{\numberline {7.1}{\PoiretOne \bfseries Func}\xspace }{108}% 
+\contentsline {subsection}{\numberline {7.1.1}Syntax}{108}% 
+\contentsline {subsection}{\numberline {7.1.2}Notation}{108}% 
+\contentsline {paragraph}{Declarations}{109}% 
+\contentsline {paragraph}{Parameters}{109}% 
+\contentsline {paragraph}{Local bindings}{110}% 
+\contentsline {paragraph}{Omitted types}{111}% 
+\contentsline {subsubsection}{\numberline {7.1.2.1}Primitives}{111}% 
+\contentsline {paragraph}{Arrow Type}{111}% 
+\contentsline {subparagraph}{Notation for infixed type arrow.}{111}% 
+\contentsline {paragraph}{Sum Type}{112}% 
+\contentsline {subparagraph}{Notation for infixed type sum.}{112}% 
+\contentsline {subparagraph}{Notation for cases of a sum term.}{113}% 
+\contentsline {subparagraph}{$n$-ary sums.}{113}% 
+\contentsline {subparagraph}{Named sums.}{115}% 
+\contentsline {paragraph}{Product Type}{115}% 
+\contentsline {subparagraph}{Infixed type product.}{116}% 
+\contentsline {subparagraph}{$n$-ary products.}{116}% 
+\contentsline {subparagraph}{Named products.}{117}% 
+\contentsline {paragraph}{Other Common Primitives}{118}% 
+\contentsline {paragraph}{Infixed-notation Associativity Levels}{118}% 
+\contentsline {subsubsection}{\numberline {7.1.2.2}Type application}{118}% 
+\contentsline {subsection}{\numberline {7.1.3}Typing}{119}% 
+\contentsline {subsection}{\numberline {7.1.4}Reduction}{120}% 
+\contentsline {section}{\numberline {7.2}{\PoiretOne \bfseries Impe}\xspace }{121}% 
+\contentsline {subsection}{\numberline {7.2.1}Reduction}{121}% 
+\contentsline {section}{\numberline {7.3}{\PoiretOne \bfseries Mona}\xspace }{123}% 
+\contentsline {subsection}{\numberline {7.3.1}Reduction}{123}% 
+\contentsline {section}{\numberline {7.4}{\PoiretOne \bfseries Alge}\xspace }{124}% 
+\contentsline {subsection}{\numberline {7.4.1}Syntax}{124}% 
+\contentsline {subsection}{\numberline {7.4.2}Typing}{125}% 
+\contentsline {subsection}{\numberline {7.4.3}Reduction}{126}% 
+\contentsline {chapter}{Chapter 8: Appendix: Language Preludes}{127}% 
+\contentsline {section}{\numberline {8.1}{\PoiretOne \bfseries Func}\xspace }{127}% 
+\contentsline {subsection}{\numberline {8.1.1}Functions}{127}% 
+\contentsline {subsection}{\numberline {8.1.2}Data}{127}% 
+\contentsline {subparagraph}{Characters and Strings.}{130}% 
+\contentsline {subsection}{\numberline {8.1.3}Data Structures}{131}% 
+\contentsline {section}{\numberline {8.2}{\PoiretOne \bfseries Mona}\xspace }{133}% 
+\contentsline {subsection}{\numberline {8.2.1}Type-Classes}{133}% 
+\contentsline {subsubsection}{\numberline {8.2.1.1}Monad}{133}% 
+\contentsline {subsubsection}{\numberline {8.2.1.2}Equalable}{134}% 
+\contentsline {chapter}{Bibliography}{137}% 

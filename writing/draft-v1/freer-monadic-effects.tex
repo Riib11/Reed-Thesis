@@ -8,7 +8,7 @@
 % -----------------------------------------------------------------------------
 \section{Interleaved Effects}
 
-To \ep{interleave} effects is to use multiple effects at the level.
+To \ep{interleave} effects is to use different effects in sequence --- at the same level as opposed to hierarchically (a problem considered at the end of chapter \ref{ch:ME}).
 For example, abstracting away from a particular effects implementation, the following code uses three effects at the same level:
 %
 \begin{snippet}[numbers=left]
@@ -37,7 +37,7 @@ The \code|get-username| example could be written in \LangD with the same structu
 However, algebraic effect handlers sacrificed some of the type-safety of \LangC and re-introduced a reliance on language-external reduction contexts (for handlers and performances).
 
 Although monadic effects and algebraic effect handlers have been presented thus far as completely orthogonal approaches to implementing, it turns out that there is a way to implement a variant of algebraic effect handlers with \LangA using monads.
-The strategy is to define a generalized monad that is parametrized by an effect type as well as a result type.
+The strategy is to define a generalized monad that is parameterized by an effect type as well as a result type.
 
 We will construct a type \code|freer : (kind → kind) → kind → kind| which lifts particular effects of type \code|kind → kind| into a single overarching effect type.
 For example, \code|freer (mutable $σ$) $α$| is the lifted mutability effect.
@@ -62,7 +62,11 @@ However that work approaches freer monads as a generalization of \ep{free monads
 \footnote{
   Describing these structures is beyond the scope of this work.
 }
-whereas this work approaches freer monads as a monadic implementation of algebraic effect handlers.
+whereas this work approaches freer monads as a monadic implementation of algebraic effect handlers.%
+\footnote{
+  The word ``freer'' is derived from ``free-er'', as in free-er than free monads.
+  However, the hyphenation is cumbersome to make us of in code, so ``free-re'' is collapsed to ``freer.''
+}
 The idea behind freer monads is to lift types \code|$υ$ : kind → kind| to monad instances in a generalized way.
 Such a lifting is described to yield a monad instance ``for free'' because no monadic structure is required of $υ$, yet monadic structure involving $υ$ is produced.%
 \footnote{
@@ -75,7 +79,7 @@ the \code|Monad| type-class requires each instance to individually implement mon
 the \code|freer| type generally lifts a type to a monadic structure that requires no implementation.
 
 So, how can this be done?
-Our goal is, given \code|$υ$ : kind → kind|, to define a type \code|freer : (kind → kind) → kind → kind| such that we can instantiate \code|Monad (freer $υ$)| parametrized by result type $α$.
+Our goal is, given \code|$υ$ : kind → kind|, to define a type \code|freer : (kind → kind) → kind → kind| such that we can instantiate \code|Monad (freer $υ$)| parameterized by result type $α$.
 Recall the monad capabilities: lifting, mapping, and binding.
 With these in mind, consider the following definition:
 \begin{program}[caption={Definition of \code|freer|}]
@@ -92,14 +96,14 @@ It is named so to reflect the lifting of a pure $α$ to the impure type \code|fr
   joining the nesting of the same monad.
 }
 The motivation for constructor \code|impure| is less obvious.
-It's type signature appears as a sort of mixing between the binding monad capabilities for each of $υ$ on its own and the wrapped \code|freer $υ$|.
+Its type signature appears as a sort of mixing between the binding monad capabilities for each of $υ$ on its own and the wrapped \code|freer $υ$|.
 It is named so to reflect the the handling of \code|$($$υ$ $χ$$)$|-terms as effectual, given the \code|$($$χ$ → freer $υ$ $α$$)$|-continuation, in order to produce a \code|freer $υ$ $α$|.
 % This appears similar to the binding monad capability, but has a \code|$υ$ $χ$| in place of a \code|freer $υ$ $α$|
 The intuition is that \code|impure $y$ $k$| encodes a $υ$-wrapped $χ$-term and a continuation $k$ that is waiting for an (unwrapped) $χ$-term.
 By itself, a term \code|impure $y$ $k$| merely encodes such a performance but does not actually \ep{perform} it.
 It must be provided with a handler that uses $y$ and $k$ to perform the encoded performance and produce the next step of the computation (i.e. a term of type \code|freer $υ$ $α$|).
 Such a handler must depend on the structure of the base type $υ$, and so much be implemented separately for each $υ$.
-A \kw{freer-monadic handler}, or just \kw{handler}, has a type of the form \code|freer $υ$ $α$ → $ω$ $α$|, where $ω$ is the type of affected results (parametrized by the result type $α$).
+A \kw{freer-monadic handler}, or just \kw{handler}, has a type of the form \code|freer $υ$ $α$ → $ω$ $α$|, where $ω$ is the type of affected results (parameterized by the result type $α$).
 This abstracting away of the handling from the performing mimics algebraic effects handlers, in contrast to how monadic effects require the effect handling to be implemented by each effect's monad instance.
 
 To instantiate \code|freer $υ$| as a monad, the implementations of mapping and binding must be provided:
@@ -114,7 +118,7 @@ To instantiate \code|freer $υ$| as a monad, the implementations of mapping and 
   \item For binding in $fm$ the result of
   \begin{itemize}
     \item \code|pure $a$|, simply appled $fm$ to $a$.
-    \item \code|impure $y$ $k$|, maintain $y$ and as the new continuation, parametrized by $a$, bind \code|$k$ $a$| to the parameter of $fm$.
+    \item \code|impure $y$ $k$|, maintain $y$ and as the new continuation, parameterized by $a$, bind \code|$k$ $a$| to the parameter of $fm$.
         Note that this case defines \code|bind| recursively.
   \end{itemize}
 \end{itemize}
@@ -123,17 +127,17 @@ Termination is not guaranteed otherwise.)
 The following implements in code the above informal descriptions.
 \begin{program}[caption={Monad instance of \code|freer|}]
 instance (υ : kind → kind) ⇒ Monad (freer υ)
-  { lift   a  ≔ pure a
-  ; map  f m  ≔ cases m
+  { lift   a ≔ pure a
+  ; map  f m ≔ cases m
                   { pure   a   ⇒ pure (f a)
                   | impure y k ⇒ impure y (map f ○ k) }
-  ; bind m fm ≔ cases m
-                  { pure   a   ⇒ fm a
-                  | impure y k ⇒ impure y (a ⇒ bind (k a) fm) } }
+  ; bind m k ≔ cases m
+                  { pure   a   ⇒ k a
+                  | impure y q ⇒ impure y (a ⇒ bind (q a) k) } }.
 \end{program}
 Indeed this results in a monad instance for any $υ$.
 
-So far we have defined the \code|freer| type as a way of lifting a type \code|$υ$ : kind → kind| to a monad instance \code|freer $υ$| (parametrized by result type $α$).
+So far we have defined the \code|freer| type as a way of lifting a type \code|$υ$ : kind → kind| to a monad instance \code|freer $υ$| (parameterized by result type $α$).
 However, we still need a way of lifting a corresponding term \code|$y$ : $υ$ $α$| to a computation of \code|freer $υ$ $α$|.
 Such a lift is simply to wrap $y$ as the first parameter of \code|impure|, and then provide \code|pure| as the trivial continuation.
 The following function implements the informal description in code.
@@ -545,12 +549,12 @@ term internal-main : list string ✕ unit
 The goal in adopting freer monads as a framework for effects was to vary monadic effects in a way that allows for composable effects.
 However, the \code|freer| type given in this chapter only appears to facilitate the same organization of effects as \LangC --- the freer-monadic effects given in this chapter don't compose as given so far.
 What is missing is a way of taking a term \code|$m$ : freer $υ$ $α$| and a term \code|$fn$ : $α$ → freer $ζ$ $β$| and binding them (notice crucially that the base types $υ$ and $ζ$ do not necessarily match).
-The given \code|Monad| instance for \code|freer| is parametrized by a single base type, and is not compatible with mutliple base types at once.
+The given \code|Monad| instance for \code|freer| is parameterized by a single base type, and is not compatible with mutliple base types at once.
 What is missing from \LangE is something corresponding to the \LangD's reduction context $\hctx$ containing a stack of handlers.
 
 A solution to this is \ep{stacked freer monads}, which are implemented by the Polysemy\footnote{https://hackage.haskell.org/package/polysemy} package for Haskell.
 A \kw{stacked-freer monad} is a freer monad that has base type \code|$Σ$ : Base-Stack|,
-where \code|Base-Stack $α$| is the kind of stack of base types parametrized by a shared result type $α$.
+where \code|Base-Stack $α$| is the kind of stack of base types parameterized by a shared result type $α$.
 The base stack $Σ$ in \code|$m$ : freer $Σ$ $α$| contains the base types of each effect used in $m$.
 In order to monadically bind the result of $m$ to the parameter of the continuation \code|$fm$ : $α$ → freer $Σ'$ $β$|, the stacks are concatenated into a result of type \code|freer ($Σ$ $⬡$ $Σ'$) $β$| (where the $⬡$ operator concatenates \code|Base-Stack|-types).
 Thus the composing of effects is achieved!

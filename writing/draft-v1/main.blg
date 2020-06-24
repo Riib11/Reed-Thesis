@@ -3,52 +3,44 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: main.aux
 The style file: plain.bst
 Database file #1: main.bib
-Warning--empty booktitle in Bauer2013
-Warning--empty booktitle in KiselyovIshii2015
-Warning--empty booktitle in Milner1999
-Warning--empty booktitle in Plotkin200101
-Warning--empty booktitle in Plotkin2001
-Warning--empty booktitle in Plotkin2009
-Warning--empty journal in Turing1936
 You've used 14 entries,
             2118 wiz_defined-function locations,
-            595 strings with 5753 characters,
-and the built_in function-call counts, 4061 in all, are:
-= -- 384
-> -- 134
-< -- 6
-+ -- 57
-- -- 40
-* -- 249
-:= -- 668
-add.period$ -- 43
+            605 strings with 6092 characters,
+and the built_in function-call counts, 4164 in all, are:
+= -- 418
+> -- 138
+< -- 4
++ -- 58
+- -- 41
+* -- 266
+:= -- 701
+add.period$ -- 46
 call.type$ -- 14
-change.case$ -- 61
+change.case$ -- 60
 chr.to.int$ -- 0
-cite$ -- 21
-duplicate$ -- 181
-empty$ -- 374
-format.name$ -- 40
-if$ -- 865
+cite$ -- 14
+duplicate$ -- 178
+empty$ -- 366
+format.name$ -- 41
+if$ -- 890
 int.to.chr$ -- 0
 int.to.str$ -- 14
-missing$ -- 15
+missing$ -- 16
 newline$ -- 74
-num.names$ -- 28
-pop$ -- 81
+num.names$ -- 30
+pop$ -- 58
 preamble$ -- 1
 purify$ -- 48
 quote$ -- 0
-skip$ -- 125
+skip$ -- 120
 stack$ -- 0
-substring$ -- 235
-swap$ -- 31
-text.length$ -- 6
+substring$ -- 260
+swap$ -- 32
+text.length$ -- 4
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 54
-warning$ -- 7
-while$ -- 40
+type$ -- 52
+warning$ -- 0
+while$ -- 43
 width$ -- 16
-write$ -- 149
-(There were 7 warnings)
+write$ -- 161

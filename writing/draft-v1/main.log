@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2019.5.9)  4 MAY 2020 16:06
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2019.5.9)  14 MAY 2020 14:21
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1624,44 +1624,44 @@ LaTeX Warning: Label `tab:LangD-reduction' multiply defined.
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for LY/yfrak/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for LYG/ygoth/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for LY/yfrak/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for LYG/ygoth/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
 (Font)                  TU/GFSNeohellenicMath(2)/m/n --> TU/lmr/m/n on input li
-ne 28.
+ne 22.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> TU/lmr/m/it on input line 28.
+(Font)                  OT1/cmr/m/it --> TU/lmr/m/it on input line 22.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> TU/lmr/bx/n on input line 28.
+(Font)                  OT1/cmr/bx/n --> TU/lmr/bx/n on input line 22.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 28.
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 22.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/bx/n on input line 28.
+(Font)                  OT1/cmss/bx/n --> TU/lmss/bx/n on input line 22.
 
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmroman12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 28.
+(babel)                Reported on input line 22.
 
 
 Package unicode-math Warning: Using \overbracket and \underbracket from
@@ -1676,22 +1676,22 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Font shape `TU/GFSNeohellenicMath(2)/m/n' will be
-(Font)              scaled to size 9.6pt on input line 30.
+(Font)              scaled to size 9.6pt on input line 24.
 LaTeX Font Info:    Font shape `TU/GFSNeohellenicMath(2)/m/n' will be
-(Font)              scaled to size 8.4pt on input line 30.
+(Font)              scaled to size 8.4pt on input line 24.
 LaTeX Font Info:    Font shape `TU/GFSNeohellenicMath(3)/m/n' will be
-(Font)              scaled to size 12.00128pt on input line 30.
+(Font)              scaled to size 12.00128pt on input line 24.
 LaTeX Font Info:    Font shape `TU/GFSNeohellenicMath(3)/m/n' will be
-(Font)              scaled to size 9.60103pt on input line 30.
+(Font)              scaled to size 9.60103pt on input line 24.
 LaTeX Font Info:    Font shape `TU/GFSNeohellenicMath(3)/m/n' will be
-(Font)              scaled to size 8.40088pt on input line 30.
+(Font)              scaled to size 8.40088pt on input line 24.
 LaTeX Font Info:    Font shape `TU/GFSNeohellenicMath(4)/m/n' will be
-(Font)              scaled to size 11.99872pt on input line 30.
+(Font)              scaled to size 11.99872pt on input line 24.
 LaTeX Font Info:    Font shape `TU/GFSNeohellenicMath(4)/m/n' will be
-(Font)              scaled to size 9.59897pt on input line 30.
+(Font)              scaled to size 9.59897pt on input line 24.
 LaTeX Font Info:    Font shape `TU/GFSNeohellenicMath(4)/m/n' will be
-(Font)              scaled to size 8.3991pt on input line 30.
-LaTeX Font Info:    Try loading font information for U+stmry on input line 30.
+(Font)              scaled to size 8.3991pt on input line 24.
+LaTeX Font Info:    Try loading font information for U+stmry on input line 24.
 
 (/usr/local/texlive/2019basic/texmf-dist/tex/latex/stmaryrd/Ustmry.fd) [1
 
@@ -1720,13 +1720,13 @@ LaTeX Font Info:    Font shape `TU/PoiretOne-Bold(0)/bx/n' will be
 [1
 
 
-] [2])
+])
 \tf@toc=\write4
 \openout4 = `main.toc'.
 
- (./abstract.tex [3] [4
+ (./abstract.tex [2]) [3
 
-]) [5] [6
+] [4
 
 ] (./introduction.tex
 Chapter 1.
@@ -1751,7 +1751,7 @@ LaTeX Font Info:    Font shape `TU/GFSNeohellenicMath(4)/m/n' will be
 [1
 
 ]
-Underfull \vbox (badness 1221) has occurred while \output is active []
+Underfull \vbox (badness 2512) has occurred while \output is active []
 
 
 
@@ -1759,7 +1759,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 73.
+(babel)                Reported on input line 77.
 
 
 Package Fancyhdr Warning: \headheight is too small (0.0pt): 
@@ -1775,68 +1775,67 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 90.
+(babel)                Reported on input line 94.
 
 [3]
 LaTeX Font Info:    Font shape `TU/PoiretOne-Bold(0)/bx/n' will be
-(Font)              scaled to size 17.28pt on input line 91.
+(Font)              scaled to size 17.28pt on input line 95.
 LaTeX Font Info:    Font shape `TU/SourceCodePro(2)/m/n' will be
-(Font)              scaled to size 10.20007pt on input line 102.
+(Font)              scaled to size 10.20007pt on input line 110.
 
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 111.
+(babel)                Reported on input line 119.
 
-[4] (./langs/a/syntax.tex
-LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
-(Font)              scaled to size 10.20007pt on input line 10.
-LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
-(Font)              scaled to size 8.16005pt on input line 10.
-LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
-(Font)              scaled to size 7.14005pt on input line 10.
+[4]
 LaTeX Font Info:    Font shape `TU/SourceCodePro(2)/bx/n' will be
-(Font)              scaled to size 10.20007pt on input line 14.
+(Font)              scaled to size 10.20007pt on input line 127.
+LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
+(Font)              scaled to size 10.20007pt on input line 139.
+LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
+(Font)              scaled to size 8.16005pt on input line 139.
+LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
+(Font)              scaled to size 7.14005pt on input line 139.
 LaTeX Font Info:    Font shape `TU/SourceCodePro(2)/m/n' will be
-(Font)              scaled to size 8.16005pt on input line 14.
+(Font)              scaled to size 8.16005pt on input line 143.
 LaTeX Font Info:    Font shape `TU/SourceCodePro(2)/m/n' will be
-(Font)              scaled to size 7.14005pt on input line 14.
-)
+(Font)              scaled to size 7.14005pt on input line 143.
+LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
+(Font)              scaled to size 8.50006pt on input line 196.
+LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
+(Font)              scaled to size 5.95004pt on input line 196.
+LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
+(Font)              scaled to size 4.25003pt on input line 196.
+LaTeX Font Info:    Font shape `TU/SourceCodePro(2)/m/n' will be
+(Font)              scaled to size 8.50006pt on input line 196.
+
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 129.
+(babel)                Reported on input line 199.
 
 
 LaTeX Font Warning: Font shape `TU/PoiretOne-Bold(0)/m/sl' undefined
-(Font)              using `TU/PoiretOne-Bold(0)/m/n' instead on input line 129.
+(Font)              using `TU/PoiretOne-Bold(0)/m/n' instead on input line 199.
 
 
 
 LaTeX Font Warning: Font shape `TU/PoiretOne-Bold(0)/bx/sl' undefined
-(Font)              using `TU/PoiretOne-Bold(0)/bx/n' instead on input line 129
+(Font)              using `TU/PoiretOne-Bold(0)/bx/n' instead on input line 199
 .
 
 [5]
-LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
-(Font)              scaled to size 8.50006pt on input line 174.
-LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
-(Font)              scaled to size 5.95004pt on input line 174.
-LaTeX Font Info:    Font shape `TU/SourceCodePro(3)/m/n' will be
-(Font)              scaled to size 4.25003pt on input line 174.
-LaTeX Font Info:    Font shape `TU/SourceCodePro(2)/m/n' will be
-(Font)              scaled to size 8.50006pt on input line 174.
-
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 198.
+(babel)                Reported on input line 248.
 
 [6]
 
@@ -1844,19 +1843,19 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 247.
+(babel)                Reported on input line 308.
 
 LaTeX Font Info:    Font shape `TU/PoiretOne-Bold(0)/m/sl' will be
-(Font)              scaled to size 12.0pt on input line 247.
+(Font)              scaled to size 12.0pt on input line 308.
 LaTeX Font Info:    Font shape `TU/PoiretOne-Bold(0)/bx/sl' will be
-(Font)              scaled to size 12.0pt on input line 247.
+(Font)              scaled to size 12.0pt on input line 308.
 [7]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 304.
+(babel)                Reported on input line 361.
 
 [8]
 
@@ -1864,7 +1863,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 342.
+(babel)                Reported on input line 406.
 
 [9]
 
@@ -1872,7 +1871,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 383.
+(babel)                Reported on input line 447.
 
 [10] (./langs/A/typing.tex
 LaTeX Font Info:    Font shape `TU/CMUSerif(0)/m/n' will be
@@ -1905,7 +1904,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 420.
+(babel)                Reported on input line 484.
 
 [11] (./langs/A/reduction.tex)
 
@@ -1913,20 +1912,28 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 455.
+(babel)                Reported on input line 516.
 
 [12]
 LaTeX Font Info:    Font shape `TU/CMUSerif(0)/m/it' will be
-(Font)              scaled to size 11.70135pt on input line 455.
+(Font)              scaled to size 11.70135pt on input line 520.
 
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 506.
+(babel)                Reported on input line 543.
 
-[13]) (./simple-effects.tex
+[13]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 580.
+
+[14]) (./simple-effects.tex
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -1934,11 +1941,11 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 1.
 
-[14]
-Chapter 2.
-[15
+[15] [16
 
-] (/usr/local/texlive/2019basic/texmf-dist/tex/latex/listings/lstlang1.sty
+]
+Chapter 2.
+[17] (/usr/local/texlive/2019basic/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2019/02/27 1.8b listings language file
 )
 
@@ -1948,7 +1955,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 104.
 
-[16]
+[18]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -1956,7 +1963,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 151.
 
-[17]
+[19]
 LaTeX Font Info:    Font shape `TU/PoiretOne-Bold(0)/m/n' will be
 (Font)              scaled to size 10.0pt on input line 170.
 LaTeX Font Info:    Font shape `TU/PoiretOne-Bold(0)/bx/n' will be
@@ -1972,8 +1979,8 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 180.
 
-[18]
-Overfull \hbox (24.82982pt too wide) in paragraph at lines 189--195
+[20]
+Overfull \hbox (24.82982pt too wide) in paragraph at lines 189--196
 []\TU/lmr/m/n/12 From however unpopular origins, the benefits of some features 
 from more purely-mathematical,
  []
@@ -1983,23 +1990,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 217.
-
-[19]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 262.
-
-[20]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 298.
+(babel)                Reported on input line 218.
 
 [21]
 
@@ -2007,7 +1998,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 341.
+(babel)                Reported on input line 263.
 
 [22]
 
@@ -2015,17 +2006,33 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 379.
+(babel)                Reported on input line 299.
 
-[23] (./langs/B/reduction-simplify.tex)
+[23]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 427.
+(babel)                Reported on input line 361.
 
-[24] (./langs/B/reduction-sequencing.tex
+[24]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 399.
+
+[25] (./langs/B/reduction-simplify.tex)
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 430.
+
+[26] (./langs/B/reduction-sequencing.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 5--14
 []|[]| 
  []
@@ -2036,29 +2043,29 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 468.
+(babel)                Reported on input line 492.
 
-[25] (./langs/B/reduction-mutability.tex)
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 502.
-
-[26]
+[27] (./langs/B/reduction-mutability.tex)
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 545.
+(babel)                Reported on input line 526.
 
-[27]
+[28]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 569.
+
+[29]
 LaTeX Font Info:    Font shape `TU/SourceCodePro(2)/m/it' will be
-(Font)              scaled to size 10.20007pt on input line 553.
+(Font)              scaled to size 10.20007pt on input line 577.
 
-Overfull \hbox (3.03177pt too wide) in paragraph at lines 556--562
+Overfull \hbox (3.03177pt too wide) in paragraph at lines 580--586
 \TU/lmr/m/n/12 Suppose that we do not have exceptions, like in \TU/PoiretOne-Bo
 ld(0)/bx/sl/12 Func\TU/lmr/m/n/12 . Then in the definition of []
  []
@@ -2069,11 +2076,11 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 577.
+(babel)                Reported on input line 601.
 
-[28]
+[30]
 
-LaTeX Warning: Command \textmusicalnote invalid in math mode on input line 598.
+LaTeX Warning: Command \textmusicalnote invalid in math mode on input line 622.
 
 
 (./langs/B/reduction-exception.tex
@@ -2104,9 +2111,9 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 603.
+(babel)                Reported on input line 627.
 
-[29] (./langs/B/reduction-nondeterminism.tex
+[31] (./langs/B/reduction-nondeterminism.tex
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2114,7 +2121,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 10.
 
-[30]) (./langs/B/reduction-io.tex
+[32]) (./langs/B/reduction-io.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 5--12
 []|[]| 
  []
@@ -2130,23 +2137,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 691.
-
-[31]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 732.
-
-[32]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 772.
+(babel)                Reported on input line 698.
 
 [33]
 
@@ -2154,9 +2145,25 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 808.
+(babel)                Reported on input line 739.
 
-[34]) (./monadic-effects.tex
+[34]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 779.
+
+[35]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 815.
+
+[36]) (./monadic-effects.tex
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2164,14 +2171,14 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 1.
 
-[35] [36
+[37] [38
 
 ]
 Chapter 3.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [37]
+ [39]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2179,7 +2186,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 76.
 
-[38]
+[40]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2187,7 +2194,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 120.
 
-[39]
+[41]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2195,7 +2202,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 165.
 
-[40]
+[42]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2203,7 +2210,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 215.
 
-[41]
+[43]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2211,7 +2218,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 260.
 
-[42]
+[44]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2219,29 +2226,13 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 329.
 
-[43]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 374.
-
-[44]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 429.
-
 [45]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 468.
+(babel)                Reported on input line 375.
 
 [46]
 
@@ -2249,7 +2240,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 506.
+(babel)                Reported on input line 386.
 
 [47]
 
@@ -2257,18 +2248,15 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 541.
+(babel)                Reported on input line 441.
 
 [48]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 588.
+(babel)                Reported on input line 480.
 
 [49]
 
@@ -2276,7 +2264,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 618.
+(babel)                Reported on input line 507.
 
 [50]
 
@@ -2284,7 +2272,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 643.
+(babel)                Reported on input line 537.
 
 [51]
 
@@ -2292,7 +2280,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 679.
+(babel)                Reported on input line 555.
 
 [52]
 
@@ -2300,7 +2288,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 734.
+(babel)                Reported on input line 595.
 
 [53]
 
@@ -2308,10 +2296,42 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 758.
+(babel)                Reported on input line 636.
 
 [54]
-Overfull \hbox (10.01437pt too wide) in paragraph at lines 780--783
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 661.
+
+[55]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 697.
+
+[56]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 753.
+
+[57]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 777.
+
+[58]
+Overfull \hbox (10.01437pt too wide) in paragraph at lines 797--800
  \TU/lmr/bx/n/12 Catching exceptions.[] \TU/lmr/m/n/12 For terms of type [][][]
 []$[]$[][], we would like a catching-capability
  []
@@ -2321,25 +2341,25 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 802.
+(babel)                Reported on input line 819.
 
-[55]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 846.
-
-[56]
+[59]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 902.
+(babel)                Reported on input line 863.
 
-[57] (./langs/C/reduction-io.tex
+[60]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 919.
+
+[61] (./langs/C/reduction-io.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 6--13
 []|[]| 
  []
@@ -2353,25 +2373,17 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 924.
+(babel)                Reported on input line 941.
 
-[58]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 954.
-
-[59]) (./algebraic-effect-handlers.tex
+[62]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 1.
+(babel)                Reported on input line 971.
 
-[60]
+[63]) (./algebraic-effect-handlers.tex
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2379,11 +2391,19 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 1.
 
-[61] [62
+[64]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 1.
+
+[65] [66
 
 ]
 Chapter 4.
-[63]
+[67]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2391,7 +2411,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 66.
 
-[64] (./langs/D/syntax.tex
+[68] (./langs/D/syntax.tex
 Overfull \hbox (10.37302pt too wide) in paragraph at lines 5--44
  [][] 
  []
@@ -2404,7 +2424,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 88.
 
-[65]
+[69]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2412,7 +2432,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 107.
 
-[66] (./langs/D/typing-resource.tex
+[70] (./langs/D/typing-resource.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 6--16
 []|[]| 
  []
@@ -2428,7 +2448,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 218.
 
-[67] (./langs/D/typing-performance.tex
+[71] (./langs/D/typing-performance.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 6--15
 []|[]| 
  []
@@ -2441,15 +2461,15 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 266.
 
-[68] (./langs/D/typing-handler.tex)
+[72] (./langs/D/typing-handler.tex)
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 296.
+(babel)                Reported on input line 298.
 
-[69] (./langs/D/typing-handling.tex)
+[73] (./langs/D/typing-handling.tex)
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2457,7 +2477,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 342.
 
-[70]
+[74]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2465,7 +2485,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 387.
 
-[71]
+[75]
 Overfull \hbox (1.32248pt too wide) in paragraph at lines 417--424
 \TU/lmr/m/n/12 duction context. This reduction of a performance $[]$[][]$[]$[][
 ]$[]$[][] yields the \TU/lmr/m/it/12 pushing \TU/lmr/m/n/12 of the performance-
@@ -2477,9 +2497,9 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 424.
+(babel)                Reported on input line 425.
 
-[72]
+[76]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2487,7 +2507,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 466.
 
-[73] (./langs/D/reduction.tex
+[77] (./langs/D/reduction.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 6--12
 []|[]| 
  []
@@ -2528,146 +2548,6 @@ Overfull \hbox (12.0pt too wide) in paragraph at lines 75--85
  []
 
 )
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 481.
-
-[74]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 520.
-
-[75]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 617.
-
-[76]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 660.
-
-[77]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 712.
-
-[78]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 744.
-
-[79]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 792.
-
-[80]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 840.
-
-[81] (./langs/D/old/LangD-reduction-example-external-io.tex
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 1.
-
-[82])
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 899.
-
-[83]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 913.
-
-[84] (./langs/D/old/LangD-reduction-example-internal-io.tex)
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 928.
-
-[85]) (./freer-monadic-effects.tex
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 1.
-
-[86]
-Chapter 5.
-[87
-
-]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 104.
-
-[88]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 140.
-
-[89]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 179.
-
-[90]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 211.
-
-[91]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -2676,10 +2556,153 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 263.
+(babel)                Reported on input line 481.
+
+[78]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 520.
+
+[79]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 617.
+
+[80]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 660.
+
+[81]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 712.
+
+[82]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 744.
+
+[83]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 792.
+
+[84]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 840.
+
+[85] (./langs/D/old/LangD-reduction-example-external-io.tex
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 1.
+
+[86])
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 899.
+
+[87]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 913.
+
+[88] (./langs/D/old/LangD-reduction-example-internal-io.tex)
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 928.
+
+[89]) (./freer-monadic-effects.tex
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 1.
+
+[90]
+Chapter 5.
+[91
+
+]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 108.
 
 [92]
-Overfull \hbox (5.56218pt too wide) in paragraph at lines 291--295
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 138.
+
+[93]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 183.
+
+[94]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 215.
+
+[95]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 267.
+
+[96]
+Overfull \hbox (5.56218pt too wide) in paragraph at lines 295--299
 []\TU/lmr/m/n/12 The handler [][][][] handles a exceptional computation, given 
 an exception-continuation
  []
@@ -2689,39 +2712,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 307.
-
-[93]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 349.
-
-[94]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 395.
-
-[95]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 438.
-
-[96]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 489.
+(babel)                Reported on input line 311.
 
 [97]
 
@@ -2729,7 +2720,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 524.
+(babel)                Reported on input line 353.
 
 [98]
 
@@ -2737,9 +2728,41 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 567.
+(babel)                Reported on input line 399.
 
-[99]) (./appendices.tex (./conventions.tex
+[99]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 442.
+
+[100]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 493.
+
+[101]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 528.
+
+[102]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 571.
+
+[103]) (./appendices.tex (./conventions.tex
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2747,9 +2770,9 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 1.
 
-[100]
+[104]
 Chapter 6.
-[101
+[105
 
 ]
 Overfull \hbox (64.55394pt too wide) in paragraph at lines 43--44
@@ -2765,9 +2788,9 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 1.
 
-[102]
+[106]
 Chapter 7.
-[103
+[107
 
 ] (./langs/A/definition.tex (./langs/A/syntax.tex) (./langs/A/notation.tex
 
@@ -2777,7 +2800,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 7.
 
-[104]
+[108]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2785,7 +2808,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 32.
 
-[105]
+[109]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2793,7 +2816,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 68.
 
-[106]
+[110]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2801,45 +2824,13 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 119.
 
-[107]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 138.
-
-[108]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 167.
-
-[109]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 189.
-
-[110]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 231.
-
 [111]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 266.
+(babel)                Reported on input line 137.
 
 [112]
 
@@ -2847,9 +2838,41 @@ Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 166.
+
+[113]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 188.
+
+[114]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 231.
+
+[115]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 266.
+
+[116]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 295.
 
-[113])
+[117])
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2857,7 +2880,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 9.
 
-[114] (./langs/A/typing.tex
+[118] (./langs/A/typing.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 11--16
 []|[]| 
  []
@@ -2885,7 +2908,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 13.
 
-[115] (./langs/A/reduction.tex))
+[119] (./langs/A/reduction.tex))
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
@@ -2893,7 +2916,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 6.
 
-[116] (./langs/B/definition.tex (./langs/B/reduction.tex
+[120] (./langs/B/definition.tex (./langs/B/reduction.tex
 (./langs/B/reduction-simplify.tex) (./langs/B/reduction-sequencing.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 5--14
 []|[]| 
@@ -2929,7 +2952,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 10.
 
-[117]) (./langs/B/reduction-io.tex
+[121]) (./langs/B/reduction-io.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 5--12
 []|[]| 
  []
@@ -2947,7 +2970,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 8.
 
-[118] (./langs/C/definition.tex (./langs/C/reduction.tex
+[122] (./langs/C/definition.tex (./langs/C/reduction.tex
 (./langs/C/reduction-io.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 6--13
 []|[]| 
@@ -2961,7 +2984,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 10.
 
-[119] (./langs/D/definition.tex (./langs/D/syntax.tex
+[123] (./langs/D/definition.tex (./langs/D/syntax.tex
 Overfull \hbox (10.37302pt too wide) in paragraph at lines 5--44
  [][] 
  []
@@ -2982,7 +3005,7 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 13.
 
-[120]) (./langs/D/typing-performance.tex
+[124]) (./langs/D/typing-performance.tex
 Overfull \hbox (12.0pt too wide) in paragraph at lines 6--15
 []|[]| 
  []
@@ -3036,84 +3059,97 @@ Package babel Warning: The current font is not a standard family:
 (babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 1.
 
-[121]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 1.
-
-[122]
-Chapter 8.
-(./langs/A/prelude.tex [123
-
-]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 76.
-
-[124]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 117.
-
 [125]
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 156.
-
-[126]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 198.
-
-[127]
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 240.
-
-[128]) (./langs/C/prelude.tex
-
-Package babel Warning: The current font is not a standard family:
-(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
-(babel)                Script and Language are not applied. Consider
-(babel)                defining a new family with \babelfont.
 (babel)                Reported on input line 1.
 
-[129] [130
+[126]
+Chapter 8.
+(./langs/A/prelude.tex
+Missing character: There is no ○ in font [lmroman12-regular]:mapping=tex-text;!
+ [127
 
 ]
-Chapter 9.
-LaTeX Font Info:    Font shape `TU/PoiretOne-Bold(0)/bx/n' will be
-(Font)              scaled to size 24.88pt on input line 1.
-[131])))
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
 (babel)                Script and Language are not applied. Consider
 (babel)                defining a new family with \babelfont.
-(babel)                Reported on input line 57.
+(babel)                Reported on input line 71.
 
-[132] (./main.bbl) [133
+[128]
 
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 111.
 
-] (./main.aux
+[129]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 152.
+
+[130]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 192.
+
+[131]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 233.
+
+[132]) (./langs/C/prelude.tex
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 35.
+
+[133]
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 77.
+
+[134])))
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 51.
+
+[135] [136
+
+] (./main.bbl [137
+
+])
+
+Package babel Warning: The current font is not a standard family:
+(babel)                "[lmromanslant12-regular]:mapping=tex-text;" at 12.0pt
+(babel)                Script and Language are not applied. Consider
+(babel)                defining a new family with \babelfont.
+(babel)                Reported on input line 56.
+
+[138] (./main.aux
 
 Package babel Warning: The current font is not a standard family:
 (babel)                "[lmroman12-regular]:mapping=tex-text;" at 12.0pt
@@ -3130,12 +3166,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 34793 strings out of 494425
- 683536 string characters out of 6164831
- 1158325 words of memory out of 5000000
- 38036 multiletter control sequences out of 15000+600000
- 537899 words of font info for 129 fonts, out of 8000000 for 9000
+ 34795 strings out of 494425
+ 683465 string characters out of 6164831
+ 1173311 words of memory out of 5000000
+ 38042 multiletter control sequences out of 15000+600000
+ 537891 words of font info for 128 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  80i,29n,122p,820b,1837s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on main.pdf (143 pages).
+Output written on main.pdf (146 pages).

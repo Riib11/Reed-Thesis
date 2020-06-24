@@ -8,11 +8,11 @@
 
 % Programming languages are a formal way of expressing computation.
 
-In 1936, Alan Turing proposed \ep{Turing machines}%
+In 1936%
 \footnote{
   Turing first described Turing machines, but did not name them such, in \cite{Turing1936}.
-}
-as a formal representation of \ep{computation}.
+}%
+, Alan Turing proposed \ep{Turing machines} as a formal representation of \ep{computation}.
 A Turing machine performs computation by taking as input a string of symbols (a \ep{program}), reading the symbols, changing its own internal state via some pre-defined rules prescribed by its construction, and writing an output.
 A Turing machine's \ep{program} amounts to a series of instructions dictating the order and specifics of these activities (e.g. what to write, what to read, which state to change to).
 The language style resulting from using this model as a programmer's interface to computation will be detailed in chapter~\ref{ch:simple-effects} as \ep{imperative programming}.
@@ -29,7 +29,7 @@ A \lc \ep{program} is a term that, when provided the proper inputs, reduces to t
 In this way, \lc programs look much more like mathematical functions than computer code.
 The language style resulting from using this model as a programmer's interface to computation will be detailed in chapter~\ref{ch:simple-effects} as \ep{declarative programming}.
 
-Both of these highly abstract systems are still used prolifically in the theoretical computer science community, but how well do they map on to how real-world programmers treat computers?%
+Both of these highly abstract systems are still used prolifically in the theoretical computer science community, but how well do they map onto how real-world programmers treat computers?%
 \footnote{
   I do not mean to claim that the original purpose of the systems was to map onto future programming languages.
   However, the comparison is useful to see what is commonly used in real-world programming but missing in the theoretical framework.
@@ -39,7 +39,7 @@ On the one hand, Turing machines at a high level behave very similarly to progra
 
 On the other hand, the \lc is almost completely%
 \footnote{
-  Though, importantly, there are a few programming language communities making use of \lc inspired languages such as Haskell, OCaml, and of course the legendary Lisp language.
+  Though, importantly, there are a few programming language communities making use of \lc-inspired languages such as Haskell, OCaml, and of course the legendary Lisp language.
 }
 removed from any reasonable description of real-world programs.
 Only very small sections, such as simple mathematical operations, could be feasibly translated into \lc terms.
@@ -49,20 +49,24 @@ Why have real-world programming languages so heavily adopted a Turing-machine-li
 Though the simply-typed \lc has been proven to be exactly as \ep{expressive} as Turing machines (that is, there is a correspondence between pairs of Turing machines with their programs and \lc terms),
 the \lc requires the entire behavior of each term to be specified within the term itself,
 whereas a Turing machine can make use of its state to keep track of external contexts when reading each individual instruction of a program.
-Real-world languages for real-world software heavily rely on externally-defined behavior, and so the Turing machine model better fits this need.
+Real-world languages for real-world software heavily rely on externally defined behavior, and so the Turing machine model better fits this need.
 This observation is the inspiration for the concept of \ep{effects}, which will be detailed in chapter~\ref{ch:simple-effects}.
 
 However, the \lc model still has significant benefits that are desirable yet lacking in many real-world programming languages.
 \lc is a very \kw{safe} language --- that is, its programs are very easy to formally analyze and predict the behavior of.
-This is in contrast to the \kw{dangerous} inescapable complexity of implicit dependencies on implicit contexts and externally-defined behavior of real-world languages, which is very difficult to formally analyze, test, and predict the behavior of.
-This safety, though, is easily lost when the features needed for real-world programs --- namely, effects --- are added to a \lc-like language (as will be demonstrated by \LangB).
+This is in contrast to the \kw{dangerous} inescapable complexity of implicit dependencies on implicit contexts and externally defined behavior of real-world languages, which is very difficult to formally analyze, test, and predict the behavior of.
+
+This safety, though, is easily lost when the features needed for real-world programs --- namely, \ep{effects} --- are added to a \lc-like language (as will be demonstrated by \LangB).
 The goal of this thesis is to consider an alternative to this predicament by introducing a general way of implementing such features in a \lc-like language while still preserving safety.
 The rest of this chapter introduces \LangA, a slightly-embellished version of the typed \lc that will serve as a basis for the later extensions.
 
-Chapter~\ref{ch:simple-effects} expands the concept of and programming-language relevance of the concept of \ep{effects} (i.e. the features missing yet desired for real-world programming languages).
+Chapter~\ref{ch:simple-effects} expands the programming-langauge relevance of the concept of effects --- effects which provide the features missing yet desired for real-world programming languages).
 It then introduces \LangB (extension of \LangA), which takes a simple approach in implementing \ep{imperative} effects, using a selection of example effects: mutability, exception, nondeterminism, and input/output.
 It ends with some considerations for imperative-effect framework.
-Pros: it is good for quick and dirty programs that correspond closely to imperative languages' (in fact, the real-world language OCaml uses this effect framework).
+Pros: it is good for quick and dirty programs that correspond closely to imperative languages.%
+\footnote{
+  In fact, the real-world language OCaml uses this effect framework.
+}
 Cons: it \ep{dangerously} lacks \ep{explicitly-typed} effects, programmable \ep{internal} effects, and a generalized language-structure for defining effects.
 
 Chapter~\ref{ch:ME} introduces the concept of \ep{monad} (and its corresponding type-class) as a way to represent effects within \LangA.
@@ -93,11 +97,15 @@ Cons: it still requires some complicated type considerations in the background (
 
 This section presents the language \LangA, a slightly-embellished version of the typed \lc.
 There are three parts to working with \LangA programs: \ep{syntax}, \ep{typing}, and \ep{reduction}.
-Syntax defines a grammar for what kinds of expression are \kw{well-formed} i.e. are meaningful strings of symbols.
-Typing defines an inference scheme for which kinds of well-formed are \kw{well-typed} i.e. strings that correspond to valid programs.
-Finally, reduction defines the logical steps used for \kw{evaluating} well-typed terms i.e. computing.
+Syntax defines a grammar for what kinds of expression are \kw{well-formed} --- meaningful strings of symbols.
+Typing defines an inference scheme for which kinds of well-formed are \kw{well-typed} --- strings that correspond to valid programs.
+Finally, reduction defines the logical steps used for \kw{evaluating} well-typed terms --- computing the result of programs.
 
-Keep in mind that \LangA and all other languages defined in this thesis are \ep{not} sensitive to the white-space (i.e. spaces and line-returns), which is manipulated freely for the sake of readability.
+Keep in mind that \LangA and all other languages defined in this thesis are \ep{not} sensitive to the white space%
+\footnote{
+  Spaces and line returns.
+}%
+, which is manipulated freely for the sake of readability.
 For example, the string
 \begin{snippet}
 a (b c)
@@ -115,16 +123,78 @@ This is not the norm in many programming languages (e.g. Python).
 
 % give a sort of narrative introduction to programming
 
-Table~\ref{tab:LangA-syntax} fully defines the syntax \LangA.
+Table~\ref{tab:LangA-syntax} fully defines the core syntax \LangA.
+Additionally, there are several intuitive notations (such as the \code|if $\dots$ then $\dots$ else $\cdots$| notation) are used as well, which all expand into this core syntax (see \prelude{\LangA} for exact details).
 The rest of the section explains the significance of and how to interpret \LangA programs.
 
-\input{langs/a/syntax}
+\begin{table}[H]
+  \centering
+  \captionof{table}{Syntax for \LangA}
+  \begin{tabular}{r|L{21.5em}|l}
+    \tbf{metavariable} &
+    \tbf{generator} &
+    \tbf{name}
+  \\ \hline \hline && \\
+    \mvar{program}
+      & $〚$ \mvar{declaration} $〛$
+      & program
+  \\[1em] \hline && \\
+    \mvar{declaration}
+      & \code|type $\mvar{type-name}$ : $\mvar{kind}$ ≔ $\mvar{kind}$.|
+      & constructed type
+    \\[1em]
+      & \code|primitive type $\mvar{type-name}$ : $\mvar{kind}$.|
+      & primitive type
+    \\[1em]
+      & \code|term $\mvar{term-name}$ : $\mvar{type}$ ≔ $\mvar{term}$.|
+      & constructed term
+    \\[1em]
+      & \code|basic term $\mvar{term-name}$ : $\mvar{type}$ ≔ $\mvar{term}$.|
+      & basic term
+    \\[1em]
+      & \code|primitive term $\mvar{term-name}$ : $\mvar{type}$.|
+      & primitive term
+  \\[1em] \hline && \\
+    \mvar{kind}
+      & \code|kind|
+      & atom
+    \\[1em]
+      & \code|kind → $\mvar{kind}$|
+      & arrow
+  \\[1em] \hline && \\
+    \mvar{type}
+      & \mvar{type-name}
+      & atom
+    \\[1em]
+      & \code|($\mvar{type-param}$:$\mvar{kind}$) ⇒ $\mvar{kind}$|
+      & function
+    \\[1em]
+      & \code|$\mvar{kind}$ $\mvar{kind}$|
+      & application
+  \\[1em] \hline && \\
+    \mvar{term}
+      & \mvar{term-name}
+      & atom
+    \\[1em]
+      & \code|($\mvar{term-param}$:$\mvar{type}$) ⇒ $\mvar{term}$|
+      & function
+    \\[1em]
+      & \code|$\mvar{term}$ $\mvar{term}$|
+      & application
+  \end{tabular}
+  \label{tab:LangA-syntax}
+\end{table}
 
 \newparagraph
-Declarations are written at the top-level of a program, and declare globally-accessible \kw{names}.
+Declarations are written at the top level of a program, and declare globally accessible \kw{names}.
 Names can be declared either \ep{primitively} or \ep{constructively}.
 A \kw{primitive} declaration is axiomatic in that it only declares the type of a new term name (or the kind of a new type name) without defining the term or type that the name is equal to.
-For example, the type \code|unit| and its one term can be introduced primitively declared by the following.
+For example, we would like to have a type with exactly one term.%
+\footnote{
+  This is the \ep{trivial data type}, and is often referred to my other names in different programming languages (with minor variations on behavior at times).
+  E.g. Java's and C/C++'s type \code|void|, Python's term \code|None|, Haskell's term \code|()| and \code|Unit|, the ML familily's term \code|()| and type \code|unit|.
+}
+Call this type \code|unit| and its single term \code|•|, and can introduce them primitively as follows.
 %
 \begin{snippet}
 primitive type unit : kind.
@@ -139,7 +209,7 @@ For example, we can declare two synonyms for the previously declared names.
 \begin{snippet}
 type unit' : kind ≔ unit.
 
-term •' : unit-again ≔ •.
+term •' : unit' ≔ •.
 \end{snippet}
 
 There are three sorts of expressions: \ep{terms}, \ep{types}, and \ep{kinds}.
@@ -149,7 +219,7 @@ There are three forms of terms: \ep{term atoms}, \ep{term functions}, and \ep{te
 \kw{Term atoms} are simply names posited as terms.
 For example: the number \code|1|, the boolean \code|true|, the string \code|"hello world"|, and the boolean function \code|not| are all term atoms.
 \kw{Term functions} is a term that encodes a function of one parameter.
-suppose we want to write a function equivalent to \code|not| ---
+Suppose we want to write a function equivalent to \code|not| ---
 it takes one boolean parameter, $b$, then evaluates to \code|false| if $b$ is true and \code|true| if $b$ is true.
 In \LangA this is written as follows.
 %
@@ -168,10 +238,8 @@ We could also write the boolean and function of two parameters as follows.
       else false
 \end{snippet}
 %
-Observe that this function of two parameters is really encoded as a function of one parameter, \code|b1|, to another function of one parameter, \code|b2|.%
-\footnote{
-  It is read this way because the infixed ``\code| => |'' is right-associative i.e. \code|a => b => c| implicitly expands to \code|a => (b => c)|.
-}
+Observe that this function of two parameters is really encoded as a function of one parameter, \code|b1|, to another function of one parameter, \code|b2|.
+It is read this way because the infixed ``\code| => |'' is right-associative i.e. \code|a => b => c| implicitly expands to \code|a => (b => c)|.
 We adopt a convention of collecting parameters on the left side of the ``\code| ⇒ |'' and combining their type annotation if they are shared.
 So we could more simply write the following.
 %
@@ -188,11 +256,8 @@ In order to \ep{do} something, we need to provide it with arguments.
 A \kw{term application} is a term that encodes the application of a function to an argument.
 To write the application of a function $f$ to an argument $a$, we write \code|$f$ $a$|.
 For example, to apply the function \code|not| to the argument \code|true|, we write \code|not true|.
-As for applying functions of multiple parameters, application is left-associative%
-\footnote{
-  I.e. \code|a b c| implicitly expands to \code|(a b) c|
-}
-so arguments can simply be written in sequence after the function.
+As for applying functions of multiple parameters, application is left-associative --- \code|a b c| implicitly expands to \code|(a b) c|.
+In this way, arguments can simply be written in sequence after the function.
 For example, to apply the function \code|and| to two arguments is written
 %
 \begin{snippet}
@@ -210,7 +275,7 @@ This style of writing functions of multiple arguments is called \ep{currying}.
 
 There are two sorts of types that have specially constructed terms that we will be using often: \ep{sum types} and \ep{product types}.
 Firstly, a \kw{sum type} is a type with terms that must be constructed via a few defined cases.
-For example, the type \code|boolean| is a sum type who's terms have two atomic cases \code|true| and \code|false|.
+For example, the type \code|boolean| is a sum type whose terms have two atomic cases \code|true| and \code|false|.
 We can declare such a sum type with the following syntax.
 %
 \begin{snippet}
@@ -235,7 +300,7 @@ term and (b1 b2 : boolean) : boolean
       | false ⇒ false }.
 \end{snippet}
 %
-Another useful pattern, especially for sum types, is that of \ep{recursive} definitions i.e. a term who's definition refers to itself.
+Another useful pattern, especially for sum types, is that of \ep{recursive} definitions i.e. a term whose definition refers to itself.
 Though this can sometimes result in functions that do not terminate during evaluation, we shall only consider recursive functions that do terminate i.e. \ep{total} functions.
 A classic \ep{inductive} type is that of the natural numbers, called inductive because it is recursively structured and has a base case.
 It is a sum type that can be defined as follows.
@@ -297,7 +362,6 @@ The type \code|list| is formed as a recursive type function as follows.
 type list : kind ≔ (α:kind) ⇒ unit ⊕ (α ✕ list α)
 \end{snippet}
 %
-where \code|unit| is the type that has exactly one term of it, \code|•|.
 A list of $α$ is either an empty list, represented by \code|•|, or list head $α$-term and a list tail \code|(list $α$)|-term.
 We could also write \code|list| in the more convenient named sum type notation, where the empty list is named \code|nil| and constructor appending an $α$-term to a tail list is named \code|app|.
 %
@@ -310,7 +374,7 @@ type list (α:kind) : kind
 As \code|list| is such a common data structure, we shall adopt a few notations for it: \code|[]| abbreviates \code|nil| and \code|$a$∷$as$| abbreviates \code|app $a$ $as$|.
 Additionally a longer list can be written using the notation \code|[$a_1$, $\dots$, $a_n$]| which abbreviates \code|$a_1$∷ $\cdots$ ∷$a_n$∷[]|.
 
-Notice that since \code|list| is parametrized by a type $α$, the type of \code|app| is \code|α ⇒ α → list α → list α|.
+Notice that since \code|list| is parameterized by a type $α$, the type of \code|app| is \code|α ⇒ α → list α → list α|.
 It can be easy to get confused by the mixture of arrow-like infixed operators.
 When applying \code|app|, the argument provided in place for \code|α| can be provided explicitly or inferred by the other arguments.
 For example, \code|app integer 1 (nil integer)| provides \code|integer| explicitly as a first argument to \code|app| and \code|nil| to fill in for \code|α|, requiring the other arguments to match \code|α $=$ integer|.
@@ -325,22 +389,22 @@ See \prelude{\LangA} for more detailed examples of basic \LangA programs.
 \subsection{Typing}
 \label{sec:LangA-typing}
 
-Terms and types are related by a \kw{typing judgement}, by which a term is stated to \ep{be of} or \ep{have} a type.
-The judgement that term $a$ has type $α$ is written as \code|$a$:$α$|.
-Similarly, types and kinds are related by a \kw{kinding judgement}, where the judgement that type $α$ has kind $K$ is written \code|$α$:$K$|.
-(Kinding will be much less central to our considerations however, so we refer to typing judgements as also implicitly including kinding judgements.)
+Terms and types are related by a \kw{typing judgment}, by which a term is stated to \ep{be of} or \ep{have} a type.
+The judgment that term $a$ has type $α$ is written as \code|$a$:$α$|.
+Similarly, types and kinds are related by a \kw{kinding judgment}, where the judgment that type $α$ has kind $K$ is written \code|$α$:$K$|.
+(Kinding will be much less central to our considerations however, so we refer to typing judgments as also implicitly including kinding judgments.)
 
 A well-formed (following syntax rules) term may or may not be well-typed (following typing rules).
 Observe that \code|not true| is well-formed and well-typed, since \code|not| is a function with a \code|boolean|-parameter and \code|true| is a \code|boolean|-term supplied as the application's argument.
 Observe also that \code|not 1| is well-formed but \ep{not} well-typed, since \code|not| has a \code|boolean|-parameter yet \code|1| is an \code|integer|-term.
 The checking that terms have properly-corresponding types, as will be detailed in this section, is called \kw{type-checking} or just \kw{typing}.
 
-In order to build typed terms using the generators presented in~\ref{tab:LangA-syntax}, the types of complex terms are inferred from their sub-terms via inference rules within a \ep{judgement context}, where a \kw{judgement context} is a collection of typing (and kinding) judgements.
+In order to build typed terms using the generators presented in~\ref{tab:LangA-syntax}, the types of complex terms are inferred from their sub-terms via inference rules within a \ep{judgment context}, where a \kw{judgment context} is a collection of typing (and kinding) judgments.
 Here, ``inference'' correlates with the intuitive concept, but the \ep{only} inferences allowed are those exactly corresponding to the collection of inference rules provided --- these are pure formalisms.
 A proposition of the form \code|$\jctx$ $⊢$ $a$:$α$| asserts that the context $\jctx$ entails \code|$a$:$α$|.
-If a particular judgement $J$ from the judgement context is required in an entailment's premise, then the notation \code|$\jctx$, $J$ $⊢$ $J'$| abbreviates \code|$\jctx \cup \set{J}$ $⊢$ $J'$|.
+If a particular judgment $J$ from the judgment context is required in an entailment's premise, then the notation \code|$\jctx$, $J$ $⊢$ $J'$| abbreviates \code|$\jctx \cup \set{J}$ $⊢$ $J'$|.
 
-With judgements, we now can state the \kw{typing inferences rules} for \LangA.
+With judgments, we now can state the \kw{typing inferences rules} for \LangA.
 An inference rule has form
 %
 \begin{display}
@@ -356,10 +420,10 @@ For example,
 %
 \begin{display}
 \begin{tabular}{l}
-  $\jctx$ is a judgement context \\
+  $\jctx$ is a judgment context \\
   $a$ is a term \\
   $α$ is a term \\
-  $K$ is a kind \\
+  $A$ is a kind \\
   \code|$\jctx$ $⊢$ $a$:$α$| \\
   \code|$\jctx$ $⊢$ $α$:$A$|
 \\\hline
@@ -372,7 +436,7 @@ could be a particularly uninteresting inference rule.
 Explicitly stating the domain of each name in the premises is cumbersome however, so the the domains of names are adopted based on their names:
 %
 \begin{itemize}
-  \item $\jctx$ is a judgement context,
+  \item $\jctx$ is a judgment context,
   \item $a, b, c, \dots$ are terms,
   \item $α, β, γ, \dots$ are types,
   \item $A, B, C, \dots$ are kinds.
@@ -389,7 +453,7 @@ Though typing rules will be presented for each new syntactical structure in late
 All expressions from here on will be assumed well-typed.
 % For the sake of explanation however, consider the following program.
 For the sake of explanation however, the following demonstrates the typing of the term \code|[not true]|, which forms a proof that the term is indeed well-typed.
-Let $Γ$ be the judgement context yielded by the declarations provided so far in this chapter.
+Let $Γ$ be the judgment context yielded by the declarations provided so far in this chapter.
 %
 \begin{display}
 \begin{tabular}{l}
@@ -449,6 +513,7 @@ type boolean : kind ≔ unit ⊕ unit.
 The \code|left •| case is abbreviated by \code|true| and the \code|right •| case is abbreviated by \code|false|.
 Then consider the following definition of \code|not|.
 %
+\newpage
 \begin{snippet}
 term not (b:boolean) : boolean
   ≔ cases b
@@ -475,6 +540,7 @@ $↠$ $\ruleapp{Apply}$
 false
 \end{snippet}
 
+\newpage
 As another example, recall the function \code|add : natural → natural → natural|.
 The addition of \code|N2 $:=$ succ (succ zero)| to \code|N3 $:=$ succ (succ (succ zero))| is computed as follows.
 %
@@ -491,13 +557,15 @@ $↠$ $\ruleapp{Definition}$
 (m' ⇒ succ((m n ⇒ cases m{zero ⇒ n | succ m' ⇒ succ(add m' n)}) m' N3))
   (succ zero)
 $↠$ $\ruleapp{Apply}$
-succ((m n ⇒ cases m{ zero ⇒ n | succ m' ⇒ succ(add m' n) }) (succ zero) N3)
+succ((m n ⇒ cases m
+              { zero ⇒ n | succ m' ⇒ succ(add m' n) }) (succ zero) N3)
 $↠$ $\ruleapp{Apply}$
 succ(cases (succ zero){ zero ⇒ N3 | succ m' ⇒ succ(add m' N3) })
 $↠$ $\ruleapp{Split-Right}$
 succ(m' ⇒ succ(add m' N3) zero)
 $↠$ $\ruleapp{Definition}$
-succ(succ((m n ⇒ cases m{ zero⇒n | succ m' ⇒ succ (add m' n) }) zero N3))
+succ(succ((m n ⇒ cases m
+                  { zero ⇒ n | succ m' ⇒ succ (add m' n) }) zero N3))
 $↠$ $\ruleapp{Apply}$
 succ(succ((cases zero{ zero ⇒ N3 | succ m' ⇒ succ (add m' N3) })))
 $↠$ $\ruleapp{Split-Left}$
@@ -509,6 +577,7 @@ N5
 \end{snippet}
 
 % ------------------------------------------------------------------------------
+\newpage
 \subsection{Properties}
 % usefule source:
 % https://web-static-aws.seas.harvard.edu/courses/cs152/2016sp/lectures/lec11-types.pdf
@@ -534,7 +603,7 @@ Here when referring to a \ep{term} there is the implicit premise that the term i
   If
     \code|$\set{}$ $⊢$ $a$:$α$|,
   then
-    either $\valprop{a}$ or
+    either $a$ is a value or
     there exists a term $a'$ such that $a \rto a'$.
   I.e. well-typed terms are either values or reducible.
 \end{theorem}
@@ -570,8 +639,8 @@ Here when referring to a \ep{term} there is the implicit premise that the term i
   \kw{(Strong Normalization in \LangA)}.
   For any term $a$,
   either
-    $\valprop{a}$
+    $a$ is a value
   or
-    there is a sequence of reductions from $a$ that ends in a term $a'$ such that $\valprop{a'}$.
+    there is a sequence of reductions from $a$ that ends in a term $a'$ such that $a'$ is a value.
   I.e. every term evaluates in a finite number of steps.
 \end{theorem}

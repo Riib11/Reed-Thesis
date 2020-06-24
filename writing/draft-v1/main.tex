@@ -1,16 +1,10 @@
 \documentclass[12pt,twoside]{reedthesis}
 \usepackage{main}
 
-\addto\captionsenglish{% Replace "english" with the language you use
-  \renewcommand{\contentsname}%
-    {Whatever}%
-}
-
-\addto\captionsgreek{% Replace "english" with the language you use
+\addto\captionsgreek{
   \renewcommand{\contentsname}{Table of Contents}
   \renewcommand{\chaptername}{Chapter}
-  \renewcommand{\tablename}{Table}
-}
+  \renewcommand{\tablename}{Table}}
 
 % -----------------------------------------------------------------------------
 % HEAD
@@ -47,7 +41,7 @@
 \input{monadic-effects}
 \input{algebraic-effect-handlers}
 \input{freer-monadic-effects}
-
+%
 \input{appendices}
 
 % -----------------------------------------------------------------------------
@@ -56,7 +50,6 @@
 
 \backmatter
 \renewcommand{\bibname}{Bibliography}
-% \bibliographystyle{APA/apa-good}
 \bibliographystyle{plain}
 \bibliography{main.bib}
 

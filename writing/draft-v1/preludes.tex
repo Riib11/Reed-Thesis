@@ -1,6 +1,18 @@
 \chapter{Appendix: Language Preludes}
 \label{app:preludes}
 
+This chapter defines \ep{preludes} for a few of the languages presented in this work.
+A \kw{prelude} for a programming language is a program implicitly included loaded before a program written in the language.
+A prelude's purpose to provide some useful, ubiquitous structures that are expected by the programmer and would be a bother to define for every program.
+These include
+data types such as \code|unit|, \code|boolean|, and \code|integer|,
+functions such as \code|compose|, and
+type-classes such as \code|Equalable|.
+
+
+Additionally, a language's prelude is inherited by its extensions.
+For example, the prelude for \LangA is implicitly loaded as part of the prelude for each of \LangB, \LangC, \LangD, and \LangE.
+
 \input{langs/A/prelude}
 % \input{langs/B/prelude}
 \input{langs/C/prelude}

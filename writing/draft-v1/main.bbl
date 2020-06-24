@@ -8,7 +8,7 @@ Steven Awodey and Andrej Bauer.
 \bibitem{Bauer2013}
 Andrej Bauer and Matija Pretnar.
 \newblock An effect system for algebraic effects and handlers.
-\newblock volume~10, 06 2013.
+\newblock {\em Logical Methods in Computer Science}, 10, 06 2013.
 
 \bibitem{Bauer2015ProgrammingWA}
 Andrej Bauer and Matija Pretnar.
@@ -28,12 +28,12 @@ Alonzo Church.
 \bibitem{KiselyovIshii2015}
 Ishii~H Kiselyov~O.
 \newblock Freer monads, more extensible effects.
-\newblock volume~50, 03 2015.
+\newblock {\em ACM SIGPLAN Notices}, 50, 03 2015.
 
 \bibitem{Milner1999}
 Robin Milner.
-\newblock Communicating and mobile systems: the pi-calculus.
-\newblock 1999.
+\newblock {\em Communicating and Mobile Systems: the Pi-Calculus}.
+\newblock Cambridge University Press, 1999.
 
 \bibitem{MOGGI199155}
 Eugenio Moggi.
@@ -50,23 +50,27 @@ Simon Peyton~Jones.
 \bibitem{Plotkin200101}
 Gordon Plotkin and John Power.
 \newblock Adequacy for algebraic effects.
-\newblock volume 2030, 01 2001.
+\newblock In {\em Proceedings of the 4th International Conference on
+  Foundations of Software}, volume 2030. Springer, 01 2001.
 
 \bibitem{Plotkin2001}
 Gordon Plotkin and John Power.
 \newblock Notions of computation determine monads.
-\newblock volume 2303, 12 2001.
+\newblock In {\em Proceedings of the 5th International Conference on
+  Foundations of Software Science and Computation Structures}, volume 2303.
+  Springer, 12 2001.
 
 \bibitem{Plotkin2009}
 Gordon Plotkin and Matija Pretnar.
 \newblock Handlers of algebraic effects.
-\newblock pages 80--94, 08 2009.
+\newblock In Giuseppe Castagna, editor, {\em Programming Languages and
+  Systems}, pages 80--94, Berlin, Heidelberg, 2009. Springer Berlin Heidelberg.
 
 \bibitem{Turing1936}
-Alan Turing.
+A.M. Turing.
 \newblock On computable numbers, with an application to the
   entscheidungsproblem.
-\newblock 1936.
+\newblock {\em Proc Lond Math Soc}, 58:345--363, 01 1936.
 
 \bibitem{Wadler2015}
 Philip Wadler.
